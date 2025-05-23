@@ -1,0 +1,337 @@
+.giftFinderOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: var(--spacing-4);
+    animation: fadeIn 0.3s ease;
+  }
+  
+  .giftFinderModal {
+    background-color: var(--color-white);
+    border-radius: var(--radius-lg);
+    width: 100%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  }
+  
+  .closeButton {
+    position: absolute;
+    top: var(--spacing-4);
+    right: var(--spacing-4);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--color-light-gray);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    z-index: 5;
+  }
+  
+  .closeButton:hover {
+    background-color: var(--color-accent-light);
+  }
+  
+  .closeIcon {
+    width: 20px;
+    height: 20px;
+    position: relative;
+  }
+  
+  .closeIcon::before,
+  .closeIcon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 18px;
+    height: 2px;
+    background-color: var(--text-primary);
+  }
+  
+  .closeIcon::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+  
+  .closeIcon::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+  }
+  
+  .closeButton:hover .closeIcon::before,
+  .closeButton:hover .closeIcon::after {
+    background-color: var(--color-white);
+  }
+  
+  .modalHeader {
+    padding: var(--spacing-6) var(--spacing-8);
+    border-bottom: 1px solid var(--color-light-gray);
+    text-align: center;
+  }
+  
+  .modalHeader h3 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-light);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-4);
+  }
+  
+  .progressContainer {
+    height: 4px;
+    background-color: var(--color-light-gray);
+    border-radius: var(--radius-full);
+    margin-bottom: var(--spacing-2);
+    overflow: hidden;
+  }
+  
+  .progressBar {
+    height: 100%;
+    background-color: var(--color-accent);
+    transition: width 0.3s ease;
+  }
+  
+  .progressText {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+  
+  .questionContainer {
+    padding: var(--spacing-8);
+    min-height: 300px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+  
+  .fadeIn {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .fadeOut {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  
+  .questionTitle {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-lg);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-6);
+    text-align: center;
+  }
+  
+  .optionsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--spacing-4);
+  }
+  
+  .optionButton {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    color: var(--text-primary);
+    background-color: var(--color-secondary);
+    border: 1px solid var(--color-light-gray);
+    padding: var(--spacing-4);
+    border-radius: var(--radius-md);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .optionButton:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+  }
+  
+  .optionButton.selected {
+    background-color: var(--color-accent);
+    color: var(--color-white);
+    border-color: var(--color-accent);
+  }
+  
+  .previousButton {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: var(--spacing-4) var(--spacing-6);
+    position: absolute;
+    bottom: var(--spacing-4);
+    left: var(--spacing-4);
+  }
+  
+  .previousButton::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: var(--spacing-6);
+    width: 0;
+    height: 1px;
+    background-color: var(--text-secondary);
+    transition: width 0.3s ease;
+  }
+  
+  .previousButton:hover::after {
+    width: calc(100% - var(--spacing-12));
+  }
+  
+  /* Phone form specific styles */
+  .phoneFormContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+    padding: var(--spacing-6);
+    background-color: var(--color-white);
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  }
+  
+  .inputGroup {
+    margin-bottom: var(--spacing-8);
+  }
+  
+  .phoneLabel {
+    display: block;
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-2);
+  }
+  
+  .phoneInput {
+    width: 100%;
+    padding: var(--spacing-4);
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    color: var(--text-primary);
+    border: 1px solid var(--color-light-gray);
+    border-radius: var(--radius-sm);
+    transition: border-color 0.3s ease;
+    background-color: var(--color-white);
+  }
+  
+  .phoneInput:focus {
+    outline: none;
+    border-color: var(--color-accent);
+  }
+  
+  .phoneError {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-xs);
+    color: var(--color-error);
+    margin-top: var(--spacing-2);
+  }
+  
+  .phoneNote {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-xs);
+    color: var(--color-mid-gray);
+    margin-top: var(--spacing-3);
+    line-height: var(--line-height-relaxed);
+  }
+  
+  .phoneFormActions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+  
+  .submitButton {
+    padding: var(--spacing-4) var(--spacing-6);
+    background-color: var(--color-accent);
+    color: var(--color-white);
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .submitButton:hover {
+    background-color: var(--color-accent-dark);
+    transform: translateY(-2px);
+  }
+  
+  .skipButton {
+    padding: var(--spacing-3);
+    background-color: transparent;
+    color: var(--color-mid-gray);
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    border: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+  }
+  
+  .skipButton:hover {
+    color: var(--color-dark);
+    text-decoration: underline;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  /* Media Queries */
+  @media (max-width: 768px) {
+    .questionTitle {
+      font-size: var(--font-size-md);
+    }
+    
+    .optionsGrid {
+      grid-template-columns: 1fr;
+    }
+    
+    .previousButton {
+      position: static;
+      display: block;
+      margin: var(--spacing-4) auto;
+      text-align: center;
+    }
+    
+    .previousButton::after {
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    
+    .previousButton:hover::after {
+      width: 100px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .giftFinderModal {
+      max-height: 100vh;
+      border-radius: 0;
+    }
+    
+    .questionContainer {
+      padding: var(--spacing-6) var(--spacing-4);
+    }
+    
+    .phoneFormContainer {
+      padding: var(--spacing-4);
+    }
+  }

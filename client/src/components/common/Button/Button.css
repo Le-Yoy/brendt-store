@@ -1,0 +1,219 @@
+/* src/components/common/Button/Button.css */
+
+/* Base Button Styles */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-primary);
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-widest);
+  }
+  
+  /* Primary Button (Your secondary color) */
+  .btn--primary {
+    background-color: var(--color-secondary);
+    color: var(--color-dark);
+    border: 2px solid rgba(0, 0, 0, 0.25); /* Thinner border with opacity */
+    border-radius: 0;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-light);
+    padding: var(--spacing-2) var(--spacing-8); /* More horizontal padding */
+  }
+  
+  .btn--primary:hover:not(:disabled) {
+    background-color: #ECEAE3; /* Slightly darker than secondary */
+    transform: scale(1.01); /* Subtler growth */
+    letter-spacing: calc(var(--letter-spacing-widest) + 0.01em); /* Subtle letter spacing increase */
+  }
+  
+  .btn--primary:active:not(:disabled) {
+    transform: scale(0.99);
+  }
+  
+  /* Secondary Button (Accent color) */
+  .btn--secondary {
+    background-color: var(--color-accent);
+    color: var(--color-white);
+    border: 2px solid rgba(0, 0, 0, 0.25); /* Thinner border with opacity */
+    border-radius: 0;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-light);
+    padding: var(--spacing-2) var(--spacing-8); /* More horizontal padding */
+  }
+  
+  .btn--secondary:hover:not(:disabled) {
+    background-color: var(--color-accent-dark);
+    transform: translateY(-1px); /* Subtler lift */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+  }
+  
+  .btn--secondary:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+  
+  /* Dark Button (Additional style) */
+  .btn--dark {
+    background-color: var(--color-dark);
+    color: var(--color-white);
+    border: 2px solid rgba(255, 255, 255, 0.15); /* Thinner border with opacity */
+    border-radius: 0;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-light);
+  }
+  
+  .btn--dark:hover:not(:disabled) {
+    background-color: #1c1c1c; /* Slightly lighter than black */
+    transform: scale(1.01);
+  }
+  
+  .btn--dark:active:not(:disabled) {
+    transform: scale(0.99);
+  }
+  
+  /* Outline Button (Additional style) - Old money style border button */
+  .btn--outline {
+    background-color: transparent;
+    color: var(--color-dark);
+    border: 1px solid var(--color-dark);
+    border-radius: 0;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-light);
+  }
+  
+  .btn--outline:hover:not(:disabled) {
+    background-color: rgba(0, 0, 0, 0.03);
+    border-color: #000000;
+    color: #000000;
+  }
+  
+  .btn--outline:active:not(:disabled) {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Text Button (Additional style) */
+  .btn--text {
+    background-color: transparent;
+    color: var(--color-dark);
+    border: none;
+    text-decoration: none;
+    position: relative;
+    padding: var(--spacing-1) var(--spacing-2);
+    font-weight: var(--font-weight-light);
+  }
+  
+  /* Elegant underline animation for text button */
+  .btn--text::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 1px;
+    bottom: 0;
+    left: 0;
+    background-color: currentColor;
+    transition: width 0.3s ease;
+  }
+  
+  .btn--text:hover:not(:disabled)::after {
+    width: 100%;
+  }
+  
+  /* Button Sizes */
+  .btn--small {
+    padding: var(--spacing-1) var(--spacing-5);
+    font-size: var(--font-size-xs);
+    min-width: 100px;
+    height: 32px;
+  }
+  
+  .btn--medium {
+    padding: var(--spacing-2) var(--spacing-8);
+    font-size: var(--font-size-xs);
+    min-width: 140px;
+    height: 40px;
+  }
+  
+  .btn--large {
+    padding: var(--spacing-3) var(--spacing-10);
+    font-size: var(--font-size-sm);
+    min-width: 180px;
+    height: 48px;
+  }
+  
+  /* Full Width Button */
+  .btn--full-width {
+    width: 100%;
+  }
+  
+  /* Disabled State */
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  /* Loading State */
+  .btn--loading {
+    cursor: wait;
+  }
+  
+  .btn__content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2);
+  }
+  
+  /* Loading Indicator - more elegant and subtle */
+  .btn__loading-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-1);
+  }
+  
+  .btn__loading-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: currentColor;
+    opacity: 0.7;
+    animation: loading-dot 1.4s infinite ease-in-out both;
+  }
+  
+  .btn__loading-dot:nth-child(1) {
+    animation-delay: -0.32s;
+  }
+  
+  .btn__loading-dot:nth-child(2) {
+    animation-delay: -0.16s;
+  }
+  
+  @keyframes loading-dot {
+    0%, 80%, 100% {
+      transform: scale(0);
+    }
+    40% {
+      transform: scale(1);
+    }
+  }
+  
+  /* Media Queries for Responsive Adjustments */
+  @media (max-width: 640px) {
+    .btn--medium {
+      padding: var(--spacing-1) var(--spacing-6);
+      min-width: 120px;
+      height: 38px;
+    }
+    
+    .btn--large {
+      padding: var(--spacing-2) var(--spacing-8);
+      min-width: 150px;
+      height: 44px;
+    }
+  }

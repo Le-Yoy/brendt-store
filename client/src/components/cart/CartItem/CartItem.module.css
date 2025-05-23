@@ -1,0 +1,141 @@
+/* src/components/cart/CartItem/CartItem.module.css */
+.cartItem {
+    display: flex;
+    padding: 20px 0;
+    border-bottom: 1px solid #eaeaea;
+    position: relative;
+  }
+  
+  .itemImage {
+    width: 100px;
+    height: 100px;
+    margin-right: 20px;
+    background-color: #f7f7f7;
+    position: relative;
+  }
+  
+  .productImage {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .imagePlaceholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #eaeaea;
+    color: #666;
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+  
+  .itemDetails {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .itemName {
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0 0 5px 0;
+  }
+  
+  .itemVariants {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .colorVariant {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-right: 10px;
+    border: 1px solid #eaeaea;
+  }
+  
+  .sizeVariant {
+    font-size: 0.875rem;
+    color: #666;
+  }
+  
+  .itemPrice {
+    font-size: 0.875rem;
+    margin-bottom: 10px;
+  }
+  
+  .itemActions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+  }
+  
+  .quantityControls {
+    display: flex;
+    align-items: center;
+    border: 1px solid #eaeaea;
+    border-radius: 4px;
+  }
+  
+  .quantityButton {
+    width: 30px;
+    height: 30px;
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .quantityButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .quantityValue {
+    margin: 0 10px;
+    font-size: 0.875rem;
+  }
+  
+  .removeButton {
+    background: none;
+    border: none;
+    color: #666;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: 0.75rem;
+  }
+  
+  .itemTotal {
+    min-width: 80px;
+    text-align: right;
+    font-weight: 500;
+  }
+  
+  @media (max-width: 768px) {
+    .cartItem {
+      flex-wrap: wrap;
+    }
+    
+    .itemTotal {
+      position: absolute;
+      top: 20px;
+      right: 0;
+    }
+    
+    .itemDetails {
+      width: calc(100% - 120px);
+    }
+    
+    .itemActions {
+      margin-top: 10px;
+      width: 100%;
+    }
+  }

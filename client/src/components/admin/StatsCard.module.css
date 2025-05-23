@@ -1,0 +1,95 @@
+/* StatsCard.module.css */
+/* Based on BRENDT luxury design system */
+
+.statsCard {
+    background-color: var(--color-white);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    padding: var(--spacing-6);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .statsCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .cardHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-4);
+  }
+  
+  .cardTitle {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    font-family: var(--font-secondary);
+  }
+  
+  .iconContainer {
+    background-color: rgba(157, 82, 71, 0.1); /* var(--color-accent) with opacity */
+    color: var(--color-accent);
+    padding: var(--spacing-2);
+    border-radius: 9999px;
+  }
+  
+  .cardContent {
+    flex-grow: 1;
+  }
+  
+  .value {
+    color: var(--text-primary);
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-semibold);
+    font-family: var(--font-primary);
+    margin-bottom: var(--spacing-1);
+    line-height: var(--line-height-tight);
+  }
+  
+  .description {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    font-family: var(--font-secondary);
+  }
+  
+  .cardFooter {
+    margin-top: var(--spacing-4);
+    display: flex;
+    align-items: center;
+  }
+  
+  .changeIndicator {
+    display: flex;
+    align-items: center;
+  }
+  
+  .changeIconIncrease {
+    color: var(--color-success);
+  }
+  
+  .changeIconDecrease {
+    color: var(--color-error);
+  }
+  
+  .changeText {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    margin-left: var(--spacing-1);
+  }
+  
+  .changeIncrease {
+    color: var(--color-success);
+  }
+  
+  .changeDecrease {
+    color: var(--color-error);
+  }
+  
+  .changeNeutral {
+    color: var(--text-secondary);
+  }

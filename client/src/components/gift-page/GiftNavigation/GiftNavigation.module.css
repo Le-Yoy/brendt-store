@@ -1,0 +1,225 @@
+.giftNavigation {
+    width: 100%;
+    background-color: var(--color-white);
+    padding: var(--spacing-4) var(--side-padding);
+    border-bottom: 1px solid var(--color-light-gray);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    z-index: 100;
+  }
+  
+  .contentContainer {
+    max-width: var(--container-xl);
+    margin: 0 auto;
+  }
+  /*
+  .sticky {
+    position: sticky;
+    top: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    animation: slideDown 0.3s ease;
+  }
+    */
+  
+  @keyframes slideDown {
+    from {
+      transform: translateY(-100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+  
+  .navigationTabs {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--spacing-8);
+    margin-bottom: var(--spacing-4);
+  }
+  
+  .tabItem {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--spacing-3) var(--spacing-4);
+    cursor: pointer;
+    transition: color 0.3s ease;
+    position: relative;
+  }
+  
+  .tabItem::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background-color: var(--color-accent);
+    transition: width 0.3s ease, left 0.3s ease;
+  }
+  
+  .tabItem.active {
+    color: var(--color-accent);
+  }
+  
+  .tabItem.active::after {
+    width: 100%;
+    left: 0;
+  }
+  
+  .tabIcon {
+    width: 24px;
+    height: 24px;
+    margin-bottom: var(--spacing-2);
+    background-color: currentColor;
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+  }
+  
+  .tabIcon[data-icon="occasion"] {
+    mask-image: url('/assets/icons/calendar.svg');
+  }
+  
+  .tabIcon[data-icon="relationship"] {
+    mask-image: url('/assets/icons/users.svg');
+  }
+  
+  .tabIcon[data-icon="price"] {
+    mask-image: url('/assets/icons/tag.svg');
+  }
+  
+  .tabIcon[data-icon="product"] {
+    mask-image: url('/assets/icons/box.svg');
+  }
+  
+  .tabLabel {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+  }
+  
+  .filterOptions {
+    margin-bottom: var(--spacing-4);
+    min-height: 50px;
+  }
+  
+  .optionsRow {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-3);
+  }
+  
+  .filterButton {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    background-color: transparent;
+    border: 1px solid var(--color-light-gray);
+    border-radius: var(--radius-full);
+    padding: var(--spacing-2) var(--spacing-4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .filterButton:hover {
+    border-color: var(--color-accent-light);
+    color: var(--color-accent);
+  }
+  
+  .filterButton.active {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-white);
+  }
+  
+  .sectionLinks {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-6);
+    margin-top: var(--spacing-4);
+    padding-top: var(--spacing-4);
+    border-top: 1px solid var(--color-light-gray);
+  }
+  
+  .sectionLink {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+    background-color: transparent;
+    border: none;
+    padding: var(--spacing-2);
+    cursor: pointer;
+    transition: color 0.3s ease;
+    position: relative;
+  }
+  
+  .sectionLink::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 1px;
+    background-color: var(--color-accent);
+    transition: width 0.3s ease;
+  }
+  
+  .sectionLink:hover {
+    color: var(--color-accent);
+  }
+  
+  .sectionLink:hover::after {
+    width: 100%;
+  }
+  
+  /* Media Queries */
+  @media (max-width: 1024px) {
+    .navigationTabs {
+      gap: var(--spacing-6);
+    }
+    
+    .sectionLinks {
+      gap: var(--spacing-4);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .navigationTabs {
+      gap: var(--spacing-4);
+      margin-bottom: var(--spacing-3);
+    }
+    
+    .tabLabel {
+      font-size: var(--font-size-xs);
+    }
+    
+    .filterButton {
+      font-size: var(--font-size-xs);
+      padding: var(--spacing-1) var(--spacing-3);
+    }
+    
+    .sectionLinks {
+      flex-wrap: wrap;
+      gap: var(--spacing-3);
+    }
+    
+    .sectionLink {
+      font-size: var(--font-size-xs);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .navigationTabs {
+      gap: var(--spacing-2);
+    }
+    
+    .tabIcon {
+      width: 20px;
+      height: 20px;
+    }
+    
+    .optionsRow {
+      gap: var(--spacing-2);
+    }
+  }

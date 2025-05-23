@@ -1,0 +1,13 @@
+/* Custom cursors */
+.gift-cursor-default {
+    cursor: url('/assets/cursors/gift-default.png'), auto;
+  }
+  
+  .gift-cursor-hover {
+    cursor: url('/assets/cursors/gift-hover.png'), pointer;
+  }
+  
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }

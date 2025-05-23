@@ -1,0 +1,122 @@
+.featuredProducts {
+    /* Increased vertical margins */
+    margin: var(--spacing-32) auto;
+    /* Reduced horizontal padding */
+    padding: 0 var(--spacing-24);
+    width: 100%;
+    max-width: var(--container-2xl);
+  }
+  
+  .container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .divider {
+    position: relative;
+    width: 1px;
+    height: 80px;
+    background-color: transparent;
+    margin: 0 auto var(--spacing-8);
+  }
+  
+  .divider::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 20%;
+    background-color: var(--color-accent);
+  }
+  
+  .divider::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 1px;
+    height: 10%;
+    background-color: var(--color-accent);
+  }
+  
+  .divider::after {
+    content: '';
+    position: absolute;
+    top: 30%;
+    left: 0;
+    width: 1px;
+    height: 50%;
+    background-color: var(--color-accent);
+  }
+  
+  .quote {
+    font-family: var(--font-primary);
+    font-size: 1.3rem;
+    line-height: 1.6rem;
+    color: var(--color-mid-gray);
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto var(--spacing-32);
+  }
+  
+  .title {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-light);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-10);
+    text-align: center;
+    position: relative;
+    letter-spacing: var(--letter-spacing-wide);
+  }
+  
+  .title:after {
+    content: '';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 1px;
+    background-color: var(--color-accent);
+  }
+  
+  @media (max-width: 1024px) {
+    .featuredProducts {
+      margin: var(--spacing-32) auto;
+    }
+    
+    .quote {
+      padding: 0 var(--spacing-6);
+    }
+    
+    .divider {
+      height: 70px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .featuredProducts {
+      margin: var(--spacing-10) auto;
+      padding: 0 var(--spacing-2);
+      margin-top: var(--spacing-20);
+    }
+    
+    .quote {
+      font-size: var(--font-size-sm);
+      padding: 0 var(--spacing-4);
+      margin-bottom: var(--spacing-20);
+    }
+    
+    .title {
+      font-size: var(--font-size-lg);
+      margin-bottom: var(--spacing-6);
+    }
+    
+    .divider {
+      height: 50px;
+    }
+  }

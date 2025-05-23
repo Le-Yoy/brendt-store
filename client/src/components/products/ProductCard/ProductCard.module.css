@@ -1,0 +1,642 @@
+/* ProductCard.module.css */
+/* Refined styling for luxury e-commerce product cards */
+
+.productCard {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-secondary);
+  transition: all 0.4s ease-out;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.productCard:hover {
+  transform: scale(1.02); /* Exact specification */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15); /* Enhanced shadow as specified */
+}
+
+.productLink {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  text-decoration: none;
+  color: inherit;
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  height: 80%; /* Take up most of the card */
+  overflow: hidden;
+  margin-bottom: 0;
+  transition: transform 0.4s ease-out;
+}
+
+/* Image container sizing based on card type */
+.productStandardGrid .imageContainer {
+  height: 75%; /* Standard grid spec */
+}
+
+.smallProductWrapper .imageContainer {
+  height: 65%; /* Small product spec */
+}
+
+.featuredProduct .imageContainer {
+  height: 70%; /* Featured product spec */
+}
+
+.regularProductWrapper .imageContainer {
+  height: 68%; /* Regular product in row spec */
+}
+
+.productImage {
+  object-fit: contain !important;
+  mix-blend-mode: multiply;
+  max-height: 88% !important; /* As specified (85-90%) */
+  max-width: 88% !important; /* As specified (85-90%) */
+  width: auto !important;
+  height: auto !important;
+  position: relative !important;
+  transition: transform 0.4s ease-out;
+}
+
+.productCard:hover .productImage {
+  transform: scale(1.05);
+}
+
+.productInfo {
+  padding: 0.25rem 0;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.featuredProduct .productInfo {
+  /* Special styling for featured product info */
+  text-align: left;
+  padding-left: 0.5rem;
+}
+
+.productName {
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-medium); /* Medium weight as specified */
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+  line-height: 1.4; /* As specified */
+  color: var(--text-primary);
+  letter-spacing: 0.02em; /* As specified */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.featuredProduct .productName {
+  font-size: 1.05rem; /* 1.2x standard size as specified */
+}
+
+.productPrice {
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-regular); /* Regular weight as specified */
+  font-size: 0.8125rem;
+  color: var(--text-accent);
+  display: block;
+  margin-top: 0.25rem;
+  line-height: 1.2; /* As specified */
+}
+
+.colorName {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  font-size: 0.6875rem;
+}
+
+.colorVariants {
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
+.featuredProduct .colorVariants {
+  justify-content: flex-start;
+  margin-left: 0.5rem;
+}
+
+.colorSwatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid var(--border-light);
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.colorSwatch:hover {
+  transform: scale(1.2);
+}
+
+.labelsContainer {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  z-index: 1;
+}
+
+.newLabel, .bestsellerLabel {
+  display: inline-block;
+  padding: 0.25rem 0.375rem;
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em; /* As specified */
+  border-radius: var(--radius-sm);
+}
+
+.newLabel {
+  background-color: var(--bg-accent);
+  color: var(--text-light);
+}
+
+.bestsellerLabel {
+  background-color: var(--color-dark-gray);
+  color: var(--text-light);
+}
+
+/* Quick view button - appears on hover */
+.quickViewButton {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 0.5rem 0;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em; /* As specified */
+  opacity: 0;
+  transform: translateY(100%);
+  transition: transform 0.4s ease-out, opacity 0.4s ease-out;
+  cursor: pointer;
+}
+
+.productCard:hover .quickViewButton {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Editorial-inspired elements */
+.categoryTag {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 0.25rem 0.375rem;
+  border-radius: var(--radius-sm);
+}
+
+.featuredProduct .productDescription {
+  font-style: italic;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin: 0.5rem 0;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
+  padding-left: 0.5rem;
+}
+
+/* Responsive design for medium screens and up */
+@media (min-width: 769px) {
+  .productLink {
+    padding: 20px; /* Consistent across viewports */
+  }
+
+  .productName {
+    font-size: 0.9375rem;
+  }
+
+  .productPrice {
+    font-size: 0.875rem;
+  }
+
+  .featuredProduct .productName {
+    font-size: 1.125rem;
+  }
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+  .productLink {
+    padding: 15px;
+  }
+  
+  .imageContainer {
+    /* Maintains proper ratio on mobile */
+    aspect-ratio: 1/1; /* 1:1 ratio for featured product */
+  }
+  
+  .featuredProduct .imageContainer {
+    aspect-ratio: 4/3; /* 4:3 ratio for standard products */
+  }
+}
+
+/* Fix for Next.js Image component to fill container */
+.imageContainer > span {
+  position: unset !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.imageContainer .productImage {
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}/* ProductCard.module.css */
+
+.productCard {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-secondary);
+  transition: all 0.3s ease;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.productCard:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.productLink {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  padding: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.imageContainer {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+  transition: transform 0.3s ease;
+  min-height: 160px;
+  max-height: 70%;
+  width: 100%;
+}
+
+.productImage {
+  object-fit: contain !important;
+  mix-blend-mode: multiply;
+  max-height: 100% !important;
+  max-width: 100% !important;
+  width: auto !important;
+  height: auto !important;
+  position: relative !important;
+  transition: transform 0.3s ease;
+}
+
+.productCard:hover .productImage {
+  transform: scale(1.05);
+}
+
+.productInfo {
+  padding: 0.25rem 0;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.productName {
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-regular);
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+  line-height: 1.4;
+  color: var(--text-primary);
+  letter-spacing: var(--letter-spacing-wide);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.productPrice {
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-light);
+  font-size: 0.8125rem;
+  color: var(--text-accent);
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.colorName {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.colorVariants {
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
+.colorSwatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid var(--border-light);
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.colorSwatch:hover {
+  transform: scale(1.2);
+}
+
+.labelsContainer {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  z-index: 1;
+}
+
+.newLabel, .bestsellerLabel {
+  display: inline-block;
+  padding: 0.25rem 0.375rem;
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wider);
+  border-radius: var(--radius-sm);
+}
+
+.newLabel {
+  background-color: var(--bg-accent);
+  color: var(--text-light);
+}
+
+.bestsellerLabel {
+  background-color: var(--color-dark-gray);
+  color: var(--text-light);
+}
+
+/* Responsive design for medium screens and up */
+@media (min-width: 769px) {
+  .productLink {
+    padding: 1.25rem;
+  }
+
+  .imageContainer {
+    margin-bottom: 1rem;
+    min-height: 200px;
+  }
+
+  .productName {
+    font-size: 1rem;
+  }
+
+  .productPrice {
+    font-size: 0.9375rem;
+  }
+
+  /* Featured product styling */
+  .featuredCard .imageContainer {
+    max-height: 75%;
+    min-height: 240px;
+  }
+}
+
+/* Fix for Next.js Image component in Safari */
+.imageContainer > span {
+  position: unset !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.imageContainer .productImage {
+  position: relative !important;
+  width: auto !important;
+  height: auto !important;
+  max-height: 90% !important;
+  max-width: 90% !important;
+  object-fit: contain !important;
+  height: auto !important;
+  position: relative !important;
+  transition: transform 0.3s ease;
+}
+
+.productCard:hover .productImage {
+  transform: scale(1.05);
+}
+
+.productInfo {
+  padding: 0.25rem 0;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.productName {
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-regular);
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+  line-height: 1.4;
+  color: var(--text-primary);
+  letter-spacing: var(--letter-spacing-wide);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.productPrice {
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-light);
+  font-size: 0.8125rem;
+  color: var(--text-accent);
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.colorName {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.colorVariants {
+  display: flex;
+  justify-content: center;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+}
+
+.colorSwatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid var(--border-light);
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.colorSwatch:hover {
+  transform: scale(1.2);
+}
+
+.labelsContainer {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  z-index: 1;
+}
+
+.newLabel, .bestsellerLabel {
+  display: inline-block;
+  padding: 0.25rem 0.375rem;
+  font-size: 0.625rem;
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wider);
+  border-radius: var(--radius-sm);
+}
+
+.newLabel {
+  background-color: var(--bg-accent);
+  color: var(--text-light);
+}
+
+.bestsellerLabel {
+  background-color: var(--color-dark-gray);
+  color: var(--text-light);
+}
+
+/* Responsive design for medium screens and up */
+@media (min-width: 769px) {
+  .productLink {
+    padding: 1.25rem;
+  }
+
+  .imageContainer {
+    margin-bottom: 1rem;
+    min-height: 200px;
+  }
+
+  .productName {
+    font-size: 1rem;
+  }
+
+  .productPrice {
+    font-size: 0.9375rem;
+  }
+
+  /* Featured product styling */
+  .featuredCard .imageContainer {
+    max-height: 75%;
+    min-height: 240px;
+  }
+}
+
+/* Fix for Next.js Image component in Safari */
+.imageContainer > span {
+  position: unset !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.imageContainer .productImage {
+  position: relative !important;
+  width: auto !important;
+  height: auto !important;
+  max-height: 90% !important;
+  max-width: 90% !important;
+  object-fit: contain !important;
+}
+/* Add these styles to ProductCard.module.css */
+.outOfStock {
+  pointer-events: none;
+  cursor: default;
+}
+
+.outOfStockOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.outOfStockText {
+  color: white;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 8px 16px;
+  border-radius: 4px;
+}
+
+.outOfStockNotice {
+  color: #dc2626;
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+.outOfStock .productImage {
+  opacity: 0.5;
+  filter: grayscale(100%);
+}
+
+.outOfStock .productInfo {
+  opacity: 0.7;
+}

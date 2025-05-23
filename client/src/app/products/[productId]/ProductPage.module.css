@@ -1,0 +1,116 @@
+/* src/app/products/[productId]/ProductPage.module.css */
+.productPageContainer {
+    width: 100%;
+    padding: 0 calc(var(--side-padding) * 0.7);
+    margin-top: 150px; /* Increased space below header */
+  }
+  
+  .productContentWrapper {
+    display: flex;
+    gap: 5%;
+    margin-bottom: var(--spacing-8);
+  }
+  
+  .productGallerySection {
+    width: 65%;
+    height: auto;
+    position: relative;
+    padding-right: var(--spacing-2);
+  }
+  
+  .productInfoSection {
+    width: 30%;
+    position: relative;
+    height: auto;
+    padding-left: var(--spacing-3);
+    padding-right: var(--spacing-2);
+  }
+  
+  .relatedProductsSection {
+    margin-top: var(--spacing-8);
+    margin-bottom: var(--spacing-8);
+    width: 100%;
+  }
+  
+  .loadingContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70vh;
+  }
+  
+  .loadingSpinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--color-secondary);
+    border-top: 3px solid var(--color-accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  .errorContainer {
+    text-align: center;
+    padding: var(--spacing-8);
+    color: var(--color-dark);
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  /* Media queries for responsiveness */
+  @media (max-width: 1024px) {
+    .productContentWrapper {
+      gap: 5%;
+    }
+    
+    .productGallerySection {
+      width: 60%;
+    }
+    
+    .productInfoSection {
+      width: 35%;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .productContentWrapper {
+      flex-direction: column;
+    }
+    
+    .productGallerySection {
+      width: 100%;
+      height: auto;
+      padding-right: 0;
+    }
+    
+    .productInfoSection {
+      width: 100%;
+      margin: var(--spacing-6) 0 0;
+      padding-left: var(--spacing-2);
+      padding-right: var(--spacing-2);
+    }
+    
+    .productPageContainer {
+      margin-top: 120px; /* More space on mobile */
+      padding: 0;
+    }
+    
+    /* Sticky buy now button */
+    .mobileSticky {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: var(--color-white);
+      padding: var(--spacing-3) var(--spacing-2);
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 100;
+      transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    
+    .mobileSticky.hidden {
+      transform: translateY(100%);
+    }
+  }

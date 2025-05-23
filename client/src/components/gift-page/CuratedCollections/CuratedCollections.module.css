@@ -1,0 +1,160 @@
+.curatedCollectionsSection {
+    padding: var(--spacing-20) var(--side-padding);
+    background-color: var(--color-secondary);
+    width: 100%;
+  }
+  
+  .contentContainer {
+    max-width: var(--container-xl);
+    margin: 0 auto;
+  }
+  
+  .sectionHeader {
+    text-align: center;
+    margin-bottom: var(--spacing-12);
+  }
+  
+  .sectionHeader h2 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-light);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-4);
+    letter-spacing: var(--letter-spacing-wide);
+  }
+  
+  .sectionHeader p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-md);
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .collectionsContainer {
+    position: relative;
+    width: 100%;
+    padding: 0 var(--spacing-8);
+  }
+  
+  .collectionsScroll {
+    display: flex;
+    gap: var(--spacing-8);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+    padding: var(--spacing-4) 0;
+  }
+  
+  .collectionsScroll::-webkit-scrollbar {
+    display: none; /* Chrome/Safari/Opera */
+  }
+  
+  .scrollButton {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--color-white);
+    border: 1px solid var(--color-light-gray);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    transition: all 0.3s ease;
+  }
+  
+  .scrollButton:hover {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+  
+  .scrollButton:hover .scrollIcon {
+    background-color: var(--color-white);
+  }
+  
+  .scrollLeft {
+    left: 0;
+  }
+  
+  .scrollRight {
+    right: 0;
+  }
+  
+  .scrollButton.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  .scrollIcon {
+    width: 24px;
+    height: 24px;
+    background-color: var(--text-primary);
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    transition: background-color 0.3s ease;
+  }
+  
+  .scrollLeft .scrollIcon {
+    mask-image: url('/assets/icons/chevron-left.svg');
+  }
+  
+  .scrollRight .scrollIcon {
+    mask-image: url('/assets/icons/chevron-right.svg');
+  }
+  
+  /* Media Queries */
+  @media (max-width: 1024px) {
+    .sectionHeader h2 {
+      font-size: var(--font-size-2xl);
+    }
+    
+    .sectionHeader p {
+      font-size: var(--font-size-base);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .curatedCollectionsSection {
+      padding: var(--spacing-16) var(--side-padding);
+    }
+    
+    .sectionHeader {
+      margin-bottom: var(--spacing-8);
+    }
+    
+    .sectionHeader h2 {
+      font-size: var(--font-size-xl);
+    }
+    
+    .collectionsContainer {
+      padding: 0;
+    }
+    
+    .scrollButton {
+      width: 40px;
+      height: 40px;
+    }
+    
+    .scrollIcon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .scrollButton {
+      display: none;
+    }
+    
+    .collectionsScroll {
+      gap: var(--spacing-4);
+      padding-bottom: var(--spacing-6);
+    }
+  }

@@ -1,0 +1,185 @@
+/* File: /src/components/account/ProfileForm/ProfileForm.module.css */
+
+.profileFormContainer {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.formTabs {
+  display: flex;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-6);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.tabButton {
+  background: transparent;
+  border: none;
+  padding: var(--spacing-3) var(--spacing-4);
+  font-size: var(--font-size-base);
+  color: var(--text-secondary);
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.tabButton:hover {
+  color: var(--color-accent);
+}
+
+.activeTab {
+  color: var(--color-accent);
+  font-weight: var(--font-weight-medium);
+}
+
+.activeTab::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--color-accent);
+}
+
+.successMessage {
+  padding: var(--spacing-3);
+  background-color: var(--color-success-light);
+  color: var(--color-success);
+  border-radius: var(--border-radius);
+  margin-bottom: var(--spacing-4);
+  text-align: center;
+}
+
+.formError {
+  padding: var(--spacing-3);
+  background-color: var(--color-error-light);
+  color: var(--color-error);
+  border-radius: var(--border-radius);
+  margin-bottom: var(--spacing-4);
+  text-align: center;
+}
+
+.profileForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.formGroup label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.formGroup input {
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  transition: border-color 0.2s ease;
+}
+
+.formGroup input:focus {
+  border-color: var(--color-accent);
+  outline: none;
+}
+
+.inputError {
+  border-color: var(--color-error) !important;
+}
+
+.errorMessage {
+  color: var(--color-error);
+  font-size: var(--font-size-xs);
+  margin-top: var(--spacing-1);
+}
+
+.passwordHint {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  margin-top: var(--spacing-1);
+}
+
+.preferencesSection {
+  margin-bottom: var(--spacing-4);
+}
+
+.preferencesSection h3 {
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-3);
+}
+
+.formCheckbox {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-2);
+}
+
+.formCheckbox input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-accent);
+}
+
+.formCheckbox label {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+}
+
+.formActions {
+  margin-top: var(--spacing-4);
+}
+
+.submitButton {
+  width: 100%;
+  padding: var(--spacing-3);
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.submitButton:hover:not(:disabled) {
+  background-color: var(--color-accent-dark);
+}
+
+.submitButton:disabled {
+  background-color: var(--color-light-gray);
+  cursor: not-allowed;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .formTabs {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .tabButton {
+    text-align: left;
+    padding: var(--spacing-2) 0;
+  }
+  
+  .activeTab::after {
+    display: none;
+  }
+  
+  .activeTab {
+    background-color: var(--color-secondary);
+    border-left: 3px solid var(--color-accent);
+    padding-left: var(--spacing-2);
+  }
+}

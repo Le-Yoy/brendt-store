@@ -1,0 +1,332 @@
+.orderList {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.orderCard {
+  background-color: var(--color-white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.orderCard:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.orderHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.orderInfo {
+  flex: 2;
+}
+
+.orderNumber {
+  display: flex;
+  align-items: center;
+  font-weight: var(--font-weight-medium);
+  margin-bottom: 0.25rem;
+}
+
+.copyButton {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.25rem;
+  margin-left: 0.5rem;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.copyButton:hover {
+  opacity: 1;
+}
+
+.orderDate {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.orderStatus {
+  flex: 1;
+  text-align: center;
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.5px;
+}
+
+.statusPending {
+  background-color: var(--color-warning-light);
+  color: var(--color-warning);
+}
+
+.statusProcessing {
+  background-color: var(--color-info-light);
+  color: var(--color-info);
+}
+
+.statusShipped {
+  background-color: var(--color-accent-light);
+  color: var(--color-accent);
+}
+
+.statusDelivered {
+  background-color: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.statusCanceled {
+  background-color: var(--color-error-light);
+  color: var(--color-error);
+}
+
+.orderTotal {
+  flex: 1;
+  text-align: right;
+  font-weight: var(--font-weight-medium);
+}
+
+.expandButton {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: transform 0.3s ease;
+}
+
+.orderDetails {
+  padding: 1.5rem;
+  border-top: 1px solid var(--border-light);
+  animation: slideDown 0.3s ease-in-out;
+}
+
+.orderProgress {
+  margin-bottom: 2rem;
+}
+
+.progressTrack {
+  height: 4px;
+  background-color: var(--color-light-gray);
+  border-radius: var(--radius-full);
+  position: relative;
+  margin-bottom: 1rem;
+  z-index: 1;
+}
+
+.progressFill {
+  position: absolute;
+  height: 100%;
+  background-color: var(--color-accent);
+  border-radius: var(--radius-full);
+  transition: width 0.5s ease;
+}
+
+.progressSteps {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.progressStep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  position: relative;
+  width: 25%;
+}
+
+.stepDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--color-light-gray);
+  margin-bottom: 0.5rem;
+  z-index: 2;
+}
+
+.progressStep.active {
+  color: var(--color-accent);
+}
+
+.progressStep.active .stepDot {
+  background-color: var(--color-accent);
+}
+
+.orderProducts {
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.orderProducts h3 {
+  font-size: var(--font-size-md);
+  margin-bottom: 1rem;
+}
+
+.productList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.productItem {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background-color: var(--color-secondary);
+  border-radius: var(--border-radius-sm);
+  transition: transform 0.2s ease;
+}
+
+.productItem:hover {
+  transform: translateY(-2px);
+}
+
+.productImage {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--border-radius-sm);
+  overflow: hidden;
+  position: relative;
+  margin-right: 1rem;
+}
+
+.productInfo {
+  flex: 1;
+}
+
+.productInfo h4 {
+  font-size: var(--font-size-sm);
+  margin-bottom: 0.5rem;
+}
+
+.productMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.productPrice {
+  font-weight: var(--font-weight-medium);
+}
+
+.orderSummary {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background-color: var(--color-secondary);
+  border-radius: var(--border-radius-sm);
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: var(--font-size-sm);
+}
+
+.totalRow {
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-md);
+  border-top: 1px solid var(--border-light);
+  padding-top: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.orderActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.detailButton {
+  padding: 0.5rem 1rem;
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  border-radius: var(--border-radius-sm);
+  text-decoration: none;
+  font-size: var(--font-size-sm);
+  transition: background-color 0.2s ease;
+}
+
+.detailButton:hover {
+  background-color: var(--color-accent-dark);
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background-color: var(--color-white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius-sm);
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.actionButton svg {
+  margin-right: 0.5rem;
+}
+
+.actionButton:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+@keyframes slideDown {
+  from { max-height: 0; opacity: 0; }
+  to { max-height: 1000px; opacity: 1; }
+}
+
+@media (max-width: 768px) {
+  .orderHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .orderInfo {
+    margin-bottom: 0.5rem;
+  }
+  
+  .orderStatus, .orderTotal {
+    margin: 0.5rem 0;
+    text-align: left;
+  }
+  
+  .expandButton {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+  }
+  
+  .orderActions {
+    flex-direction: column;
+  }
+  
+  .detailButton, .actionButton {
+    width: 100%;
+    justify-content: center;
+  }
+}

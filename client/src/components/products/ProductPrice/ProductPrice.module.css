@@ -1,0 +1,39 @@
+/* components/products/ProductPrice/ProductPrice.module.css */
+.priceContainer {
+    display: flex;
+    align-items: center;
+    margin: 1rem 0;
+  }
+  
+  .prices {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .currentPrice {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #000;
+  }
+  
+  .previousPrice {
+    font-size: 1.2rem;
+    color: #777;
+    text-decoration: line-through;
+  }
+  
+  .discount {
+    margin-left: 1rem;
+    padding: 0.25rem 0.5rem;
+    background-color: #e74c3c;
+    color: white;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-radius: 4px;
+  }
+  
+  .singlePrice {
+    display: flex;
+    align-items: center;
+  }

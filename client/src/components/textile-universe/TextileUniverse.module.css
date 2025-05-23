@@ -1,0 +1,1375 @@
+.textileUniverse {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+  }
+  
+  /* Navigation Styles */
+  .materialNavigation {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--color-dark);
+    padding: var(--spacing-4) var(--side-padding);
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+  }
+  
+  .materialNavigation::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+  }
+  
+  .navWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: min-content;
+    gap: var(--spacing-6);
+  }
+  
+  .navItem {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wider);
+    color: var(--color-white);
+    white-space: nowrap;
+    cursor: pointer;
+    padding-bottom: var(--spacing-2);
+    position: relative;
+    transition: color 0.3s ease;
+  }
+  
+  .navItem.active {
+    color: var(--color-accent);
+  }
+  
+  .navItem.active::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: var(--color-accent);
+  }
+  
+  /* Introduction Section */
+  .introSection {
+    position: relative;
+    height: 90vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-secondary);
+    padding: var(--spacing-16) var(--side-padding);
+  }
+  
+  .introContent {
+    max-width: 800px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1.2s ease, transform 1.2s ease;
+  }
+  
+  .visible .introContent {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .introTitle {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-light);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-6);
+    letter-spacing: var(--letter-spacing-wider);
+  }
+  
+  .introText {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-light);
+    font-style: italic;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto var(--spacing-16);
+  }
+  
+  .materialSwatches {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-6);
+    margin-bottom: var(--spacing-16);
+  }
+  
+  .materialSwatch {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .materialSwatch:hover {
+    transform: scale(1.1);
+  }
+  
+  .materialSwatch[data-material="cuir"] {
+    background-color: #8B4513;
+  }
+  
+  .materialSwatch[data-material="crocodile"] {
+    background-color: #2D4739;
+  }
+  
+  .materialSwatch[data-material="daim"] {
+    background-color: #A07E56;
+  }
+  
+  .materialSwatch[data-material="laine"] {
+    background-color: #E5DCC9;
+  }
+  
+  .scrollPrompt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: var(--spacing-12);
+  }
+  
+  .scrollPrompt span {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-4);
+  }
+  
+  .scrollIndicator {
+    width: 2px;
+    height: 60px;
+    position: relative;
+  }
+  
+  .scrollIndicator span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-accent);
+    animation: scrollDown 2s ease-in-out infinite;
+  }
+  
+  @keyframes scrollDown {
+    0% {
+      transform: scaleY(0);
+      transform-origin: top center;
+      opacity: 0;
+    }
+    50% {
+      transform: scaleY(1);
+      transform-origin: top center;
+      opacity: 1;
+    }
+    51% {
+      transform-origin: bottom center;
+    }
+    100% {
+      transform: scaleY(0);
+      transform-origin: bottom center;
+      opacity: 0;
+    }
+  }
+  
+  /* Common Section Styles */
+  .leatherSection,
+  .crocodileSection,
+  .varietiesSection,
+  .woolSection,
+  .suedeSection,
+  .heritageSection,
+  .propertiesSection,
+  .sustainabilitySection,
+  .careSection {
+    padding: var(--spacing-24) var(--side-padding);
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+  
+  .visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .sectionHeader {
+    text-align: center;
+    margin-bottom: var(--spacing-16);
+  }
+  
+  .sectionHeader h2 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-light);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-4);
+  }
+  
+  .sectionHeader p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-md);
+    font-style: italic;
+    color: var(--text-secondary);
+  }
+  
+  /* Leather Section */
+  .leatherShowcase {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-12);
+  }
+  
+  .leatherVisual {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+  }
+  
+  .leatherImage {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+  }
+  
+  .leatherColorPoints {
+    position: absolute;
+    bottom: var(--spacing-6);
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .colorPoint {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: var(--color-white);
+    border: 2px solid var(--color-white);
+    position: absolute;
+    transform: translateY(0);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .colorPoint.active {
+    transform: translateY(-8px);
+    background-color: var(--color-accent);
+  }
+  
+  .leatherInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-8);
+  }
+  
+  .leatherColorPreview {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: var(--spacing-4);
+  }
+  
+  .leatherColorPreview[data-color="0"] {
+    background-color: #1A1A1A; /* Noir Intense */
+  }
+  
+  .leatherColorPreview[data-color="1"] {
+    background-color: #B87333; /* Cognac */
+  }
+  
+  .leatherColorPreview[data-color="2"] {
+    background-color: #6B0F1A; /* Bordeaux */
+  }
+  
+  .leatherColorPreview[data-color="3"] {
+    background-color: #954535; /* Brun Châtaigne */
+  }
+  
+  .leatherColorPreview[data-color="4"] {
+    background-color: #1B365D; /* Marine */
+  }
+  
+  .leatherColorPreview[data-color="5"] {
+    background-color: #8B7D6B; /* Taupe */
+  }
+  
+  .colorName {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: var(--color-white);
+    padding: var(--spacing-2);
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-xs);
+  }
+  
+  .leatherProperties {
+    text-align: center;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .leatherProperties p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-normal);
+  }
+  
+  .leatherFeatures {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-8);
+    margin-top: var(--spacing-6);
+  }
+  
+  .featureItem {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+  }
+  
+  .featureIcon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: var(--color-accent);
+  }
+  
+  .featureText {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+  }
+  
+  /* Crocodile Leather Section */
+  .crocodileShowcase {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-12);
+  }
+  
+  .crocodileImageContainer {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    aspect-ratio: 16/9;
+    cursor: crosshair;
+  }
+  
+  .crocodileImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+  }
+  
+  .zoomLens {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 2px solid var(--color-white);
+    background-image: url('/assets/images/savoir/crocoleather.webp');
+    background-size: 300% 300%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  }
+  
+  .crocodileInfo {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-8);
+  }
+  
+  .infoCard {
+    background-color: var(--color-secondary);
+    padding: var(--spacing-6);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--color-accent);
+  }
+  
+  .infoCard h3 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-lg);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-3);
+  }
+  
+  .infoCard p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-normal);
+  }
+  
+  /* Leather Varieties Section */
+  .leatherVarieties {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-12);
+  }
+  
+  .varietiesImage {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .varietiesMainImage {
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+  }
+  
+  .varietiesCompare {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-8);
+  }
+  
+  .varietyCard {
+    background-color: var(--color-secondary);
+    padding: var(--spacing-6);
+    border-radius: var(--radius-md);
+    transition: transform 0.3s ease;
+  }
+  
+  .varietyCard:hover {
+    transform: translateY(-5px);
+  }
+  
+  .varietySwatch {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 0 auto var(--spacing-4);
+  }
+  
+  .varietySwatch[data-type="boxcalf"] {
+    background-color: #3A3028;
+  }
+  
+  .varietySwatch[data-type="nubuck"] {
+    background-color: #A18267;
+  }
+  
+  .varietySwatch[data-type="cordovan"] {
+    background-color: #5C2E2E;
+  }
+  
+  .varietyCard h3 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-lg);
+    text-align: center;
+    margin-bottom: var(--spacing-4);
+  }
+  
+  .varietyCard p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-normal);
+    margin-bottom: var(--spacing-6);
+  }
+  
+  .propertyRatings {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-3);
+  }
+  
+  .propertyRating {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .propertyRating span {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+  }
+  
+  .ratingBar {
+    width: 60%;
+    height: 6px;
+    background-color: var(--color-light-gray);
+    border-radius: var(--radius-full);
+    position: relative;
+  }
+  
+  .ratingBar::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: var(--color-accent);
+    border-radius: var(--radius-full);
+  }
+  
+  .ratingBar[data-rating="1"]::after {
+    width: 20%;
+  }
+  
+  .ratingBar[data-rating="2"]::after {
+    width: 40%;
+  }
+  
+  .ratingBar[data-rating="3"]::after {
+    width: 60%;
+  }
+  
+  .ratingBar[data-rating="4"]::after {
+    width: 80%;
+  }
+  
+  .ratingBar[data-rating="5"]::after {
+    width: 100%;
+  }
+  
+  /* Wool Section */
+  .woolShowcase {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-12);
+  }
+  
+  .woolImageContainer {
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+  }
+  
+  .woolImage {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    transition: transform 2s ease;
+  }
+  
+  .visible .woolImage {
+    transform: scale(1.05);
+  }
+  
+  .woolInfo {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-12);
+  }
+  
+  .woolJourney {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-8);
+  }
+  
+  .journeyStep {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-6);
+  }
+  
+  .stepIcon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--color-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-accent);
+    font-weight: var(--font-weight-bold);
+    font-family: var(--font-secondary);
+    flex-shrink: 0;
+    position: relative;
+  }
+  
+  .stepIcon::before {
+    content: attr(data-step);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: var(--font-size-base);
+    color: var(--color-accent);
+  }
+  
+  .stepContent {
+    flex-grow: 1;
+  }
+  
+  .stepContent h3 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-2);
+  }
+  
+  .stepContent p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-normal);
+  }
+  
+  .woolBenefits {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-6);
+    margin-top: var(--spacing-6);
+  }
+  
+  .benefitItem {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+  }
+  
+  .benefitIcon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--color-accent-light);
+    flex-shrink: 0;
+  }
+  
+  .benefitText {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    color: var(--text-primary);
+  }
+  
+  /* Suede Section */
+  .suedeShowcase {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-12);
+  }
+  
+  .suedeVisual {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+  }
+  
+  .suedeImage {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+  }
+  
+  .craftTools {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .toolIndicator {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 2px solid var(--color-white);
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .toolIndicator:hover {
+    background-color: var(--color-accent);
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+  
+  .suedeProcess {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-8);
+  }
+  
+  .processStep {
+    background-color: var(--color-secondary);
+    padding: var(--spacing-6);
+    border-radius: var(--radius-md);
+  }
+  
+  .processStep h3 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-3);
+    color: var(--text-primary);
+  }
+  
+  .processStep p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-normal);
+  }
+  
+  .suedeCare {
+    grid-column: 1 / -1;
+    background-color: var(--color-secondary);
+    padding: var(--spacing-6);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--color-accent);
+    margin-top: var(--spacing-6);
+  }
+  
+  .suedeCare h3 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-3);
+    color: var(--text-primary);
+  }
+  
+  .suedeCare p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-normal);
+  }
+  
+  /* Heritage Section */
+  .heritageContent {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-16);
+  }
+  
+  .heritageTimeline {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-12);
+  }
+  
+  .timelineItem {
+    display: flex;
+    gap: var(--spacing-6);
+    position: relative;
+  }
+  
+  .timelineItem::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 30px;
+    width: 1px;
+    height: 100%;
+    background-color: var(--color-light-gray);
+    z-index: -1;
+  }
+  
+  .timelineItem:last-child::before {
+    display: none;
+  }
+  
+  .timelineYear {
+    width: 60px;
+    height: 40px;
+    background-color: var(--color-accent);
+    color: var(--color-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-primary);
+    font-size: var(--font-size-base);
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+  }
+  
+  .timelineContent {
+    padding-bottom: var(--spacing-8);
+  }
+  
+  .timelineContent h3 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-2);
+  }
+  
+  .timelineContent p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-normal);
+  }
+  
+  .heritageQuote {
+    padding: var(--spacing-8);
+    border-left: 2px solid var(--color-accent);
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .heritageQuote blockquote {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-lg);
+    font-style: italic;
+    margin-bottom: var(--spacing-4);
+    line-height: var(--line-height-snug);
+  }
+  
+  .heritageQuote cite {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+  
+  /* Properties Section */
+  .propertiesMatrix {
+    display: grid;
+    grid-template-columns: 1.5fr repeat(4, 1fr);
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-12);
+    overflow-x: auto;
+  }
+  
+  .propertyColumn,
+  .materialColumn {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .propertyHeader,
+  .materialHeader {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-primary);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    text-align: center;
+    background-color: var(--color-secondary);
+    border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+    border-bottom: 1px solid var(--color-light-gray);
+  }
+  
+  .propertyItem {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    padding: 0 var(--spacing-4);
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    border-bottom: 1px solid var(--color-light-gray);
+  }
+  
+  .materialRating {
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--color-light-gray);
+    position: relative;
+  }
+  
+  .materialRating::before {
+    content: "";
+    width: 80%;
+    height: 6px;
+    background-color: var(--color-light-gray);
+    border-radius: var(--radius-full);
+    position: relative;
+  }
+  
+  .materialRating::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 6px;
+    background-color: var(--color-accent);
+    border-radius: var(--radius-full);
+  }
+  
+  .materialRating[data-rating="1"]::after {
+    width: 16%;
+  }
+  
+  .materialRating[data-rating="2"]::after {
+    width: 32%;
+  }
+  
+  .materialRating[data-rating="3"]::after {
+    width: 48%;
+  }
+  
+  .materialRating[data-rating="4"]::after {
+    width: 64%;
+  }
+  
+  .materialRating[data-rating="5"]::after {
+    width: 80%;
+  }
+  
+  .propertyGuide {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .propertyGuide h3 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-4);
+  }
+  
+  .propertyGuide p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-normal);
+  }
+  
+  /* Sustainability Section */
+  .sustainabilityContent {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-16);
+  }
+  
+  .originMap {
+    width: 100%;
+    height: 400px;
+    background-color: var(--color-secondary);
+    border-radius: var(--radius-md);
+    position: relative;
+    background-image: url('/assets/images/savoir/worldmap.avif');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  
+  .mapMarker {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: var(--color-accent);
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .mapMarker:hover {
+    transform: translate(-50%, -50%) scale(1.5);
+  }
+  
+  .mapMarker::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    background-color: var(--color-white);
+    border-radius: 50%;
+  }
+  
+  .markerTooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 160px;
+    background-color: var(--color-white);
+    border-radius: var(--radius-sm);
+    padding: var(--spacing-3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    z-index: 2;
+  }
+  
+  .mapMarker:hover .markerTooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-8px);
+  }
+  
+  .markerTooltip h4 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-1);
+    color: var(--text-primary);
+  }
+  
+  .markerTooltip p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+  }
+  
+  .sustainabilityCommitments {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-8);
+  }
+  
+  .commitmentItem {
+    display: flex;
+    gap: var(--spacing-6);
+    align-items: flex-start;
+  }
+  
+  .commitmentIcon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: var(--color-secondary);
+    position: relative;
+    flex-shrink: 0;
+  }
+  
+  .commitmentIcon::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30px;
+    height: 30px;
+    background-color: var(--color-accent);
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+  }
+  
+  .commitmentIcon[data-icon="certification"]::before {
+    mask-image: url('/assets/images/savoir/icons/certification.svg');
+  }
+  
+  .commitmentIcon[data-icon="traceability"]::before {
+    mask-image: url('/assets/images/savoir/icons/traceability.svg');
+  }
+  
+  .commitmentIcon[data-icon="zerowaste"]::before {
+    mask-image: url('/assets/images/savoir/icons/zerowaste.svg');
+  }
+  
+  .commitmentIcon[data-icon="community"]::before {
+    mask-image: url('/assets/images/savoir/icons/community.svg');
+  }
+  
+  .commitmentContent {
+    flex-grow: 1;
+  }
+  
+  .commitmentContent h3 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-2);
+  }
+  
+  .commitmentContent p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-normal);
+  }
+  
+  /* Care and Aging Section */
+  .careContent {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-16);
+  }
+  
+  .agingGallery {
+    display: flex;
+    justify-content: center;
+    margin-bottom: var(--spacing-8);
+  }
+  
+  .agingExample {
+    max-width: 800px;
+  }
+  
+  .agingImages {
+    display: flex;
+    gap: var(--spacing-6);
+    margin-bottom: var(--spacing-8);
+  }
+  
+  .agingImageNew,
+  .agingImageAged {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+  }
+  
+  .agingImage {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+  }
+  
+  .agingImage.aged {
+    filter: sepia(0.3) contrast(1.1) saturate(1.2);
+  }
+  
+  .agingLabel {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: var(--spacing-2) 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: var(--color-white);
+    text-align: center;
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+  }
+  
+  .agingDescription {
+    text-align: center;
+  }
+  
+  .agingDescription h3 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-3);
+  }
+  
+  .agingDescription p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-normal);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .careGuide {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .careGuide h3 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-xl);
+    text-align: center;
+    margin-bottom: var(--spacing-6);
+  }
+  
+  .careGuide > p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-normal);
+    text-align: center;
+    margin-bottom: var(--spacing-8);
+  }
+  
+  .careTips {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-8);
+  }
+  
+  .careTip {
+    display: flex;
+    gap: var(--spacing-4);
+  }
+  
+  .tipIcon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--color-secondary);
+    position: relative;
+    flex-shrink: 0;
+  }
+  
+  .tipIcon::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 24px;
+    height: 24px;
+    background-color: var(--color-accent);
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+  }
+  
+  .tipIcon[data-icon="regular"]::before {
+    mask-image: url('/assets/images/savoir/icons/brush.svg');
+  }
+  
+  .tipIcon[data-icon="protection"]::before {
+    mask-image: url('/assets/images/savoir/icons/shield.svg');
+  }
+  
+  .tipIcon[data-icon="storage"]::before {
+    mask-image: url('/assets/images/savoir/icons/box.svg');
+  }
+  
+  .tipIcon[data-icon="restoration"]::before {
+    mask-image: url('/assets/images/savoir/icons/restore.svg');
+  }
+  
+  .tipContent {
+    flex-grow: 1;
+  }
+  
+  .tipContent h4 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-2);
+  }
+  
+  .tipContent p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-normal);
+  }
+  
+  /* Media Queries */
+  @media (max-width: 1024px) {
+    .introTitle {
+      font-size: var(--font-size-3xl);
+    }
+    
+    .introSection {
+      height: auto;
+      min-height: 80vh;
+    }
+    
+    .leatherShowcase,
+    .crocodileShowcase,
+    .heritageContent {
+      flex-direction: column;
+    }
+    
+    .propertiesMatrix {
+      font-size: var(--font-size-sm);
+    }
+    
+    .agingImages {
+      flex-direction: column;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .introTitle {
+      font-size: var(--font-size-2xl);
+    }
+    
+    .sectionHeader h2 {
+      font-size: var(--font-size-2xl);
+    }
+    
+    .materialSwatches {
+      flex-wrap: wrap;
+    }
+    
+    .leatherSection,
+    .crocodileSection,
+    .varietiesSection,
+    .woolSection,
+    .suedeSection,
+    .heritageSection,
+    .propertiesSection,
+    .sustainabilitySection,
+    .careSection {
+      padding: var(--spacing-16) var(--side-padding);
+    }
+    
+    .sectionHeader {
+      margin-bottom: var(--spacing-8);
+    }
+    
+    .propertiesMatrix {
+      grid-template-columns: 120px repeat(4, 1fr);
+      font-size: var(--font-size-xs);
+    }
+    
+    .commitmentItem {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .introTitle {
+      font-size: var(--font-size-xl);
+    }
+    
+    .introText {
+      font-size: var(--font-size-base);
+    }
+    
+    .propertiesMatrix {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .propertyColumn {
+      display: none;
+    }
+    
+    .materialColumn {
+      margin-bottom: var(--spacing-6);
+    }
+    
+    .materialHeader {
+      border-radius: var(--radius-sm);
+    }
+    
+    .materialRating {
+      display: none;
+    }
+    
+    .careTips {
+      grid-template-columns: 1fr;
+    }
+    
+    .originMap {
+      height: 300px;
+    }
+  }

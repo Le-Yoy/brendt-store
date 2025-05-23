@@ -1,0 +1,280 @@
+.container {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+  }
+  
+  .customerHeader {
+    background-color: #f9fafb;
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .customerName {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+  }
+  
+  .customerMeta {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+  
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .tab {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #6b7280;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  
+  .tab:hover {
+    color: #4b5563;
+  }
+  
+  .activeTab {
+    color: var(--color-accent);
+    border-bottom: 2px solid var(--color-accent);
+  }
+  
+  .content {
+    padding: 1rem;
+  }
+  
+  .metricsGrid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    .metricsGrid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  
+  .metricCard {
+    background-color: #f9fafb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+  }
+  
+  .metricLabel {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+  
+  .metricValue {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 0.25rem;
+  }
+  
+  .sectionTitle {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #1f2937;
+    margin-bottom: 0.75rem;
+  }
+  
+  .preferencesSection,
+  .recentOrders {
+    margin-bottom: 1.5rem;
+  }
+  
+  .preferencesTitle {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+  }
+  
+  .preferencesList {
+    background-color: #f9fafb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+  }
+  
+  .preferenceCategories {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .categoryItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .categoryName {
+    color: #1f2937;
+  }
+  
+  .categoryCount {
+    font-size: 0.875rem;
+    background-color: #e5e7eb;
+    color: #4b5563;
+    border-radius: 9999px;
+    padding: 0.125rem 0.5rem;
+  }
+  
+  .noPreferences,
+  .noOrders,
+  .noInteractions {
+    color: #6b7280;
+    font-style: italic;
+  }
+  
+  .recentOrdersList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .orderCard {
+    background-color: #f9fafb;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+  }
+  
+  .orderHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .orderId {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-accent);
+  }
+  
+  .orderDate {
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+  
+  .orderDetails {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .orderItems {
+    font-size: 0.875rem;
+    color: #4b5563;
+  }
+  
+  .orderTotal {
+    font-weight: 500;
+  }
+  
+  .orderStatus {
+    margin-top: 0.5rem;
+  }
+  
+  .statusBadge {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.625rem;
+    border-radius: 9999px;
+  }
+  
+  .ordersTable {
+    overflow-x: auto;
+  }
+  
+  .table {
+    min-width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  
+  .tableHeaderCell {
+    padding: 0.75rem 1.5rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background-color: #f9fafb;
+  }
+  
+  .tableCell {
+    padding: 1rem 1.5rem;
+    white-space: nowrap;
+    font-size: 0.875rem;
+  }
+  
+  .tableRow:hover {
+    background-color: #f9fafb;
+  }
+  
+  .viewButton {
+    color: var(--color-accent);
+    font-weight: 500;
+    cursor: pointer;
+  }
+  
+  .viewButton:hover {
+    color: var(--color-accent-dark);
+  }
+  
+  .interactionsList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .interactionCard {
+    background-color: #f9fafb;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+  }
+  
+  .interactionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .interactionType {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .interactionDate {
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+  
+  .interactionDetails {
+    font-size: 0.875rem;
+    color: #4b5563;
+  }
+  
+  .loading {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+  }
+  
+  .error {
+    padding: 1rem;
+    text-align: center;
+    color: #6b7280;
+  }

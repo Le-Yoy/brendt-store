@@ -1,0 +1,55 @@
+/* src/components/layout/Header/PreHeader.css */
+.pre-header {
+    background-color: var(--color-dark);
+    color: var(--color-background);
+    padding: var(--spacing-2) 0;
+  }
+  
+  .pre-header__container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  
+  .pre-header__message {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-light);
+    letter-spacing: var(--letter-spacing-wider);
+    margin: 0;
+    text-align: center;
+  }
+  
+  .pre-header__close {
+    position: absolute;
+    right: var(--spacing-4);
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--color-background);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-base);
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
+  
+  .pre-header__close:hover {
+    opacity: 1;
+  }
+  
+  @media (max-width: 768px) {
+    .pre-header__message {
+      font-size: 10px;
+      padding: 0 var(--spacing-4);
+    }
+    
+    .pre-header__close {
+      right: var(--spacing-2);
+      font-size: var(--font-size-sm);
+    }
+  }

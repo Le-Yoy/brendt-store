@@ -1,0 +1,28 @@
+.giftPage {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  background-color: var(--bg-primary);
+  margin-top: -30px; /* Desktop adjustment */
+}
+
+/* Tablet adjustment */
+@media (max-width: 1024px) {
+  .giftPage {
+    margin-top: -25px;
+  }
+}
+
+/* Mobile adjustment */
+@media (max-width: 768px) {
+  .giftPage {
+    margin-top: -190px !important;
+  }
+}
+
+/* Small mobile adjustment */
+@media (max-width: 480px) {
+  .giftPage {
+    margin-top: -10px;
+  }
+}

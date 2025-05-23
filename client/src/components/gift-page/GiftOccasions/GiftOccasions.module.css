@@ -1,0 +1,120 @@
+.giftOccasionsSection {
+    padding: var(--spacing-20) var(--side-padding);
+    background-color: var(--bg-primary);
+    width: 100%;
+  }
+  
+  .contentContainer {
+    max-width: var(--container-xl);
+    margin: 0 auto;
+  }
+  
+  .sectionHeader {
+    text-align: center;
+    margin-bottom: var(--spacing-16);
+  }
+  
+  .sectionHeader h2 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-light);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-4);
+    letter-spacing: var(--letter-spacing-wide);
+  }
+  
+  .sectionHeader p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-md);
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .occasionsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--spacing-8);
+    margin-bottom: var(--spacing-16);
+  }
+  
+  .occasionQuote {
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+    font-style: italic;
+  }
+  
+  .occasionQuote blockquote {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-lg);
+    color: var(--text-primary);
+    line-height: var(--line-height-relaxed);
+    position: relative;
+    padding: 0 var(--spacing-8);
+  }
+  
+  .occasionQuote blockquote::before,
+  .occasionQuote blockquote::after {
+    content: '"';
+    font-family: var(--font-primary);
+    font-size: var(--font-size-3xl);
+    color: var(--color-accent);
+    position: absolute;
+    opacity: 0.5;
+  }
+  
+  .occasionQuote blockquote::before {
+    top: -20px;
+    left: 0;
+  }
+  
+  .occasionQuote blockquote::after {
+    bottom: -20px;
+    right: 0;
+  }
+  
+  /* Media Queries */
+  @media (max-width: 1024px) {
+    .sectionHeader h2 {
+      font-size: var(--font-size-2xl);
+    }
+    
+    .sectionHeader p {
+      font-size: var(--font-size-base);
+    }
+    
+    .occasionQuote blockquote {
+      font-size: var(--font-size-md);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .giftOccasionsSection {
+      padding: var(--spacing-16) var(--side-padding);
+    }
+    
+    .sectionHeader {
+      margin-bottom: var(--spacing-10);
+    }
+    
+    .sectionHeader h2 {
+      font-size: var(--font-size-xl);
+    }
+    
+    .occasionsGrid {
+      gap: var(--spacing-6);
+      margin-bottom: var(--spacing-12);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .occasionsGrid {
+      grid-template-columns: 1fr;
+    }
+    
+    .occasionQuote blockquote {
+      font-size: var(--font-size-base);
+      padding: 0 var(--spacing-4);
+    }
+  }

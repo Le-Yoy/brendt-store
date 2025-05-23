@@ -1,0 +1,203 @@
+.occasionCard {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    height: 400px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+    transition: transform 0.6s cubic-bezier(0.25, 0.45, 0.45, 0.95),
+                box-shadow 0.6s cubic-bezier(0.25, 0.45, 0.45, 0.95);
+    cursor: pointer;
+  }
+  
+  .occasionCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  .occasionCard.active {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+    border: 2px solid var(--color-accent);
+  }
+  
+  .occasionImageContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+  
+  .occasionImage {
+    object-fit: cover;
+    transition: transform 1.2s cubic-bezier(0.25, 0.45, 0.45, 0.95);
+  }
+  
+  .occasionCard:hover .occasionImage {
+    transform: scale(1.05);
+  }
+  
+  .imageOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.3) 0%,
+      rgba(0, 0, 0, 0.6) 70%,
+      rgba(0, 0, 0, 0.8) 100%
+    );
+    z-index: 1;
+  }
+  
+  .occasionContent {
+    position: relative;
+    height: 100%;
+    padding: var(--spacing-6);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    z-index: 2;
+  }
+  
+  .occasionTitle {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-white);
+    margin-bottom: var(--spacing-2);
+  }
+  
+  .occasionDescription {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    color: rgba(255, 255, 255, 0.9);
+    margin-bottom: var(--spacing-4);
+    line-height: var(--line-height-normal);
+  }
+  
+  .featuredProducts {
+    margin-bottom: var(--spacing-4);
+  }
+  
+  .featuredLabel {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-white);
+    margin-bottom: var(--spacing-2);
+    opacity: 0.8;
+  }
+  
+  .productsGrid {
+    display: flex;
+    gap: var(--spacing-3);
+  }
+  
+  .productLink {
+    text-decoration: none;
+  }
+  
+  .productThumbnail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-1);
+  }
+  
+  .productImage {
+    width: 60px;
+    height: 60px;
+    border-radius: var(--radius-md);
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.7);
+    transition: border-color 0.3s ease;
+  }
+  
+  .productLink:hover .productImage {
+    border-color: var(--color-accent);
+  }
+  
+  .productName {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-xs);
+    color: var(--color-white);
+    text-align: center;
+    max-width: 80px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .occasionCta {
+    margin-top: auto;
+  }
+  
+  .occasionLink {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-sm);
+    color: var(--color-white);
+    text-decoration: none;
+    position: relative;
+    transition: color 0.3s ease;
+  }
+  
+  .occasionLink::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: var(--color-white);
+    transition: background-color 0.3s ease;
+  }
+  
+  .occasionLink:hover {
+    color: var(--color-accent-light);
+  }
+  
+  .occasionLink:hover::after {
+    background-color: var(--color-accent-light);
+  }
+  
+  /* Media Queries */
+  @media (max-width: 1024px) {
+    .occasionCard {
+      height: 380px;
+    }
+    
+    .occasionTitle {
+      font-size: var(--font-size-lg);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .occasionCard {
+      height: 350px;
+    }
+    
+    .occasionContent {
+      padding: var(--spacing-4);
+    }
+    
+    .occasionTitle {
+      font-size: var(--font-size-md);
+    }
+    
+    .occasionDescription {
+      font-size: var(--font-size-xs);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .occasionTitle {
+      font-size: var(--font-size-lg);
+    }
+    
+    .occasionDescription {
+      font-size: var(--font-size-sm);
+    }
+  }

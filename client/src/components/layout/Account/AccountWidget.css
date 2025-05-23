@@ -1,0 +1,278 @@
+/* File: /src/components/layout/Account/AccountWidget.css */
+
+.account-widget {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 100%;
+  max-width: 400px;
+  height: 100vh;
+  background-color: #FFFFFF;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transition: right 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.account-widget.open {
+  right: 0;
+}
+
+.account-widget__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #EEEEEE;
+}
+
+.account-widget__header h2 {
+  font-size: 1.375rem;
+  font-weight: 400;
+  color: #000000;
+  margin: 0;
+}
+
+.account-widget__close-btn {
+  background: transparent;
+  border: none;
+  color: #666666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+.account-widget__content {
+  flex: 1;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.account-widget__loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: #666666;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.spinner {
+  border: 3px solid rgba(0, 0, 0, 0.1);
+  border-radius: 50%;
+  border-top: 3px solid #9D5247;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 0.75rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.account-widget__user-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #EEEEEE;
+}
+
+.account-widget__avatar {
+  width: 50px;
+  height: 50px;
+  background-color: #F7F5F0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  color: #9D5247;
+  font-size: 1.5rem;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.account-widget__welcome {
+  font-size: 0.9375rem;
+  color: #666666;
+  margin: 0;
+}
+
+.account-widget__name {
+  font-size: 1.1875rem;
+  font-weight: 500;
+  color: #000000;
+  margin: 0.2rem 0 0;
+}
+
+.account-widget__menu {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.account-widget__menu-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  color: #000000;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.account-widget__menu-item:hover {
+  color: #9D5247;
+  background-color: rgba(157, 82, 71, 0.05);
+}
+
+.account-widget__menu-item svg {
+  margin-right: 0.75rem;
+  min-width: 18px;
+}
+
+.account-widget__menu-item span {
+  display: block;
+}
+
+.account-widget__logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  background-color: #9D5247;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: auto;
+  font-size: 1rem;
+}
+
+.account-widget__logout-btn:hover {
+  background-color: #7A3F37;
+}
+
+.account-widget__logout-btn svg {
+  margin-right: 0.5rem;
+}
+
+/* Login form styles */
+.account-widget__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.account-widget__error {
+  padding: 0.75rem;
+  background-color: rgba(211, 47, 47, 0.1);
+  color: #D32F2F;
+  border-radius: 4px;
+  font-size: 0.9375rem;
+}
+
+.account-widget__form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.account-widget__form-group label {
+  font-size: 0.9375rem;
+  color: #666666;
+}
+
+.account-widget__input {
+  padding: 0.75rem;
+  border: 1px solid #EEEEEE;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.account-widget__input:focus {
+  border-color: #9D5247;
+  outline: none;
+}
+
+.account-widget__checkbox {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.account-widget__checkbox-input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: #9D5247;
+}
+
+.account-widget__submit-btn {
+  padding: 0.75rem;
+  background-color: #9D5247;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-size: 1rem;
+}
+
+.account-widget__submit-btn:hover:not(:disabled) {
+  background-color: #7A3F37;
+}
+
+.account-widget__submit-btn:disabled {
+  background-color: #CCCCCC;
+  cursor: not-allowed;
+}
+
+.account-widget__links {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.account-widget__forgot-link {
+  color: #9D5247;
+  font-size: 0.9375rem;
+  text-decoration: none;
+}
+
+.account-widget__register {
+  font-size: 0.9375rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.account-widget__register a {
+  color: #9D5247;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+@media (max-width: 480px) {
+  .account-widget {
+    max-width: 100%;
+  }
+}

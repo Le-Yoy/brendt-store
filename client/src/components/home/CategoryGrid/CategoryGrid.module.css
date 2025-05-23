@@ -1,0 +1,226 @@
+.categoryGridSection {
+    width: 100%;
+    margin: var(--spacing-12) auto;
+    padding: 0 var(--spacing-20);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .container {
+    width: 100%;
+    max-width: var(--container-2xl);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .divider {
+    position: relative;
+    width: 1px;
+    height: 80px;
+    background-color: transparent;
+    margin: 0 auto var(--spacing-12);
+    margin-top: var(--spacing-20);
+  }
+  
+  .divider::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 20%;
+    background-color: var(--color-accent);
+  }
+  
+  .divider::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 1px;
+    height: 10%;
+    background-color: var(--color-accent);
+  }
+  
+  .divider::after {
+    content: '';
+    position: absolute;
+    top: 30%;
+    left: 0;
+    width: 1px;
+    height: 50%;
+    background-color: var(--color-accent);
+  }
+  
+  .quote {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-md);
+    line-height: 1.6rem;
+    color: var(--color-mid-gray);
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto var(--spacing-32);
+    padding: 0 var(--spacing-4);
+  }
+  
+  .categoryGrid {
+    display: grid;
+    width: 100%;
+    height: 120dvh;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: repeat(12, 1fr);
+    gap: 20px;
+    grid-template-areas:
+      "boots boots boots boots boots boots boots boots sneakers sneakers sneakers sneakers"
+      "boots boots boots boots boots boots boots boots sneakers sneakers sneakers sneakers"
+      "boots boots boots boots boots boots boots boots sneakers sneakers sneakers sneakers"
+      "boots boots boots boots boots boots boots boots sneakers sneakers sneakers sneakers"
+      "boots boots boots boots boots boots boots boots sneakers sneakers sneakers sneakers"
+      "boots boots boots boots boots boots boots boots sneakers sneakers sneakers sneakers"
+      "boots boots boots boots boots boots boots boots derbies derbies derbies derbies"
+      "boucles boucles boucles boucles mocassins mocassins mocassins mocassins derbies derbies derbies derbies"
+      "boucles boucles boucles boucles mocassins mocassins mocassins mocassins derbies derbies derbies derbies"
+      "boucles boucles boucles boucles mocassins mocassins mocassins mocassins derbies derbies derbies derbies"
+      "boucles boucles boucles boucles mocassins mocassins mocassins mocassins derbies derbies derbies derbies"
+      "boucles boucles boucles boucles mocassins mocassins mocassins mocassins derbies derbies derbies derbies";
+  }
+  
+  /* Rest of the CSS remains the same */
+  
+  .categoryItem {
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .categoryItem:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .imageContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .categoryImage {
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.8s cubic-bezier(0.25, 0.45, 0.45, 0.95);
+  }
+  
+  .categoryItem:hover .categoryImage {
+    transform: scale(1.05);
+  }
+  
+  .overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0) 60%);
+    transition: background 0.3s ease;
+  }
+  
+  .categoryItem:hover .overlay {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.1) 70%);
+  }
+  
+  .categoryTitle {
+    color: var(--color-white);
+    font-family: var(--font-primary);
+    font-weight: var(--font-weight-light);
+    font-size: var(--font-size-lg);
+    text-transform: uppercase;
+    padding: 25px;
+    letter-spacing: 2px;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+  }
+  
+  .categoryItem:hover .categoryTitle {
+    transform: translateY(-5px);
+  }
+  
+  /* Assign each category to its grid area */
+  .boots {
+    grid-area: boots;
+  }
+  
+  .sneakers {
+    grid-area: sneakers;
+  }
+  
+  .derbies {
+    grid-area: derbies;
+  }
+  
+  .mocassins {
+    grid-area: mocassins;
+  }
+  
+  .boucles {
+    grid-area: boucles;
+  }
+  
+  /* Mobile styles */
+  @media (max-width: 1024px) {
+    .categoryGridSection {
+      padding: 0 var(--spacing-4);
+    }
+    .divider {
+        margin-top: var(--spacing-2);
+      }
+    .quote {
+        font-size: var(--font-size-sm);
+        margin: 0 auto var(--spacing-12);
+     }
+    .categoryGrid {
+      height: auto;
+      grid-template-columns: 1fr;
+      grid-template-rows: repeat(5, minmax(300px, 1fr));
+      grid-template-areas:
+        "boots"
+        "sneakers"
+        "derbies"
+        "mocassins"
+        "boucles";
+      gap: 15px;
+    }
+  
+    .categoryItem {
+      min-height: 300px;
+    }
+    
+    .categoryTitle {
+      font-size: var(--font-size-md);
+      padding: 20px;
+    }
+  }
+  
+  /* Tablet styles */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .categoryGrid {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto auto;
+      grid-template-areas:
+        "boots boots"
+        "sneakers derbies"
+        "boucles mocassins";
+    }
+    
+    .boots {
+      min-height: 400px;
+    }
+  }

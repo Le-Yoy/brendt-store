@@ -1,0 +1,293 @@
+/* File: /src/components/account/AddressBook/AddressBook.module.css */
+
+.addressBookContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.addressBookHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-6);
+}
+
+.addressBookHeader h2 {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-regular);
+  color: var(--text-primary);
+}
+
+.addAddressButton {
+  padding: var(--spacing-2) var(--spacing-4);
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.addAddressButton:hover {
+  background-color: var(--color-accent-dark);
+}
+
+.addAddressButtonLarge {
+  padding: var(--spacing-3) var(--spacing-6);
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-md);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: var(--spacing-4);
+}
+
+.addAddressButtonLarge:hover {
+  background-color: var(--color-accent-dark);
+}
+
+.addressList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-4);
+}
+
+.addressCard {
+  position: relative;
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-4);
+  transition: all 0.2s ease;
+}
+
+.addressCard:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.defaultAddress {
+  border-color: var(--color-accent);
+  background-color: var(--color-secondary);
+}
+
+.defaultBadge {
+  position: absolute;
+  top: var(--spacing-2);
+  right: var(--spacing-2);
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+}
+
+.addressContent {
+  margin-bottom: var(--spacing-4);
+}
+
+.addressContent h3 {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-2);
+}
+
+.addressContent p {
+  font-size: var(--font-size-sm);
+  margin-bottom: var(--spacing-1);
+  color: var(--text-secondary);
+}
+
+.addressActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+}
+
+.editButton, .defaultButton, .deleteButton {
+  padding: var(--spacing-1) var(--spacing-2);
+  font-size: var(--font-size-xs);
+  border-radius: var(--border-radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.editButton {
+  background-color: var(--color-info-light);
+  color: var(--color-info);
+}
+
+.editButton:hover {
+  background-color: var(--color-info);
+  color: var(--color-white);
+}
+
+.defaultButton {
+  background-color: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.defaultButton:hover {
+  background-color: var(--color-success);
+  color: var(--color-white);
+}
+
+.deleteButton {
+  background-color: var(--color-error-light);
+  color: var(--color-error);
+}
+
+.deleteButton:hover {
+  background-color: var(--color-error);
+  color: var(--color-white);
+}
+
+/* Address Form */
+.addressFormContainer {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.addressFormContainer h2 {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-6);
+  text-align: center;
+}
+
+.addressForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-4);
+}
+
+.formGroup label {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.formGroup input, .formGroup select {
+  padding: var(--spacing-2) var(--spacing-3);
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-base);
+  color: var(--text-primary);
+  transition: border-color 0.2s ease;
+}
+
+.formGroup input:focus, .formGroup select:focus {
+  border-color: var(--color-accent);
+  outline: none;
+}
+
+.inputError {
+  border-color: var(--color-error) !important;
+}
+
+.errorMessage {
+  color: var(--color-error);
+  font-size: var(--font-size-xs);
+  margin-top: var(--spacing-1);
+}
+
+.formCheckbox {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-2);
+}
+
+.formCheckbox input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--color-accent);
+}
+
+.formCheckbox label {
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+}
+
+.formActions {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--spacing-4);
+  margin-top: var(--spacing-4);
+}
+
+.cancelButton, .submitButton {
+  flex: 1;
+  padding: var(--spacing-3);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cancelButton {
+  background-color: var(--color-white);
+  border: 1px solid var(--border-light);
+  color: var(--text-primary);
+}
+
+.cancelButton:hover {
+  background-color: var(--color-light-gray);
+}
+
+.submitButton {
+  background-color: var(--color-accent);
+  border: none;
+  color: var(--color-white);
+}
+
+.submitButton:hover {
+  background-color: var(--color-accent-dark);
+}
+
+.emptyState {
+  text-align: center;
+  padding: var(--spacing-10);
+  color: var(--text-secondary);
+}
+
+.loading {
+  text-align: center;
+  padding: var(--spacing-10);
+  color: var(--text-secondary);
+}
+
+.error {
+  text-align: center;
+  padding: var(--spacing-10);
+  color: var(--color-error);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .addressList {
+    grid-template-columns: 1fr;
+  }
+  
+  .formRow {
+    grid-template-columns: 1fr;
+  }
+  
+  .formActions {
+    flex-direction: column;
+  }
+}

@@ -1,0 +1,598 @@
+.container {
+    padding: var(--spacing-6);
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .header {
+    margin-bottom: var(--spacing-8);
+  }
+  
+  .pageTitle {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-dark);
+    margin-bottom: var(--spacing-2);
+  }
+  
+  .pageDescription {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    color: var(--color-mid-gray);
+  }
+  
+  /* Statistics Grid */
+  .statsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-8);
+  }
+  
+  .statCard {
+    background: var(--color-white);
+    padding: var(--spacing-4);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .statValue {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-dark);
+    margin-bottom: var(--spacing-1);
+  }
+  
+  .statLabel {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    color: var(--color-mid-gray);
+    font-weight: var(--font-weight-medium);
+  }
+  
+  /* Filter Section */
+  .filterSection {
+    background: var(--color-white);
+    padding: var(--spacing-6);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: var(--spacing-8);
+  }
+  
+  .searchRow {
+    display: flex;
+    gap: var(--spacing-4);
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  
+  .searchInput {
+    flex: 1;
+    min-width: 250px;
+    padding: var(--spacing-3);
+    border: 1px solid var(--color-light-gray);
+    border-radius: var(--radius-md);
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+  }
+  
+  .searchInput:focus {
+    outline: none;
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(157, 82, 71, 0.1);
+  }
+  
+  .filterSelect {
+    padding: var(--spacing-3);
+    border: 1px solid var(--color-light-gray);
+    border-radius: var(--radius-md);
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    background: var(--color-white);
+    min-width: 150px;
+  }
+  
+  /* Products Grid */
+  .productsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: var(--spacing-6);
+  }
+  
+  .productCard {
+    background: var(--color-white);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .productCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  .productHeader {
+    padding: var(--spacing-4);
+    border-bottom: 1px solid var(--color-light-gray);
+  }
+  
+  .productName {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-dark);
+    margin-bottom: var(--spacing-2);
+  }
+  
+  .productInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-2);
+  }
+  
+  .productCategory {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    color: var(--color-mid-gray);
+  }
+  
+  .customPriceIndicator {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-xs);
+    color: var(--color-accent);
+    background: rgba(157, 82, 71, 0.1);
+    padding: var(--spacing-1) var(--spacing-2);
+    border-radius: var(--radius-sm);
+    font-weight: var(--font-weight-medium);
+  }
+  
+  /* Price Section */
+  .priceSection {
+    padding: var(--spacing-4);
+  }
+  
+  .mainPrice {
+    margin-bottom: var(--spacing-4);
+    padding-bottom: var(--spacing-3);
+    border-bottom: 1px solid var(--color-light-gray);
+  }
+  
+  .mainPrice label {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    color: var(--color-mid-gray);
+    font-weight: var(--font-weight-medium);
+    display: block;
+    margin-bottom: var(--spacing-2);
+  }
+  
+  .priceEditControls {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+  }
+  
+  .priceInput {
+    padding: var(--spacing-2);
+    border: 1px solid var(--color-light-gray);
+    border-radius: var(--radius-md);
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    width: 120px;
+  }
+  
+  .priceInput:focus {
+    outline: none;
+    border-color: var(--color-accent);
+  }
+  
+  .saveButton,
+  .cancelButton {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-bold);
+  }
+  
+  .saveButton {
+    background: var(--color-success);
+    color: var(--color-white);
+  }
+  
+  .saveButton:hover {
+    background: #1e7e34;
+  }
+  
+  .cancelButton {
+    background: var(--color-error);
+    color: var(--color-white);
+  }
+  
+  .cancelButton:hover {
+    background: #c82333;
+  }
+  
+  .priceDisplay {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .priceValue {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-accent);
+  }
+  
+  .editButton {
+    padding: var(--spacing-2) var(--spacing-3);
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius-md);
+    background: var(--color-white);
+    color: var(--color-accent);
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .editButton:hover {
+    background: var(--color-accent);
+    color: var(--color-white);
+  }
+  
+  .colorPrices h4 {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-dark);
+    margin-bottom: var(--spacing-3);
+  }
+  
+  .colorPricesList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+  }
+  
+  .colorPriceItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-2);
+    background: var(--color-secondary);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-light-gray);
+  }
+  
+  .colorInfo {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+  }
+  
+  .colorSwatch {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid var(--color-light-gray);
+    display: block;
+  }
+  
+  .colorName {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-dark);
+  }
+  
+  .colorPrice {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+  }
+  
+  .customPrice {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-accent);
+  }
+  
+  .defaultPrice {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    color: var(--color-mid-gray);
+  }
+  
+  .customBadge {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-xs);
+    color: var(--color-accent);
+    background: rgba(157, 82, 71, 0.1);
+    padding: var(--spacing-1) var(--spacing-2);
+    border-radius: var(--radius-sm);
+    font-weight: var(--font-weight-medium);
+  }
+  
+  /* Card Actions */
+  .cardActions {
+    padding: var(--spacing-4);
+    border-top: 1px solid var(--color-light-gray);
+  }
+  
+  .actionButton {
+    width: 100%;
+    padding: var(--spacing-3);
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius-md);
+    background: var(--color-white);
+    color: var(--color-accent);
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .actionButton:hover {
+    background: var(--color-accent);
+    color: var(--color-white);
+  }
+  
+  /* Loading and Empty States */
+  .loadingSpinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+  }
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid var(--color-light-gray);
+    border-top: 3px solid var(--color-accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .emptyState {
+    text-align: center;
+    padding: var(--spacing-16);
+    color: var(--color-mid-gray);
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-lg);
+  }
+  
+  /* Modal Content */
+  .modalContent {
+    padding: var(--spacing-6);
+  }
+  
+  .mainPriceSection {
+    background: var(--color-secondary);
+    padding: var(--spacing-4);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-6);
+  }
+  
+  .mainPriceSection h3 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-dark);
+    margin-bottom: var(--spacing-3);
+  }
+  
+  .mainPriceInput {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    margin-bottom: var(--spacing-2);
+  }
+  
+  .mainPriceInput label {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    color: var(--color-mid-gray);
+    font-weight: var(--font-weight-medium);
+    min-width: 100px;
+  }
+  
+  .pricePreview {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-accent);
+  }
+  
+  .infoText {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    color: var(--color-mid-gray);
+    font-style: italic;
+  }
+  
+  .colorPricesSection h3 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-dark);
+    margin-bottom: var(--spacing-4);
+  }
+  
+  .colorPricesGrid {
+    display: grid;
+    gap: var(--spacing-4);
+  }
+  
+  .colorPriceEditItem {
+    background: var(--color-white);
+    padding: var(--spacing-4);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-light-gray);
+  }
+  
+  .colorHeader {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    margin-bottom: var(--spacing-3);
+  }
+  
+  .priceOptions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+    margin-bottom: var(--spacing-3);
+  }
+  
+  .radioLabel {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    cursor: pointer;
+    color: var(--color-dark);
+  }
+  
+  .radioLabel input[type="radio"] {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .customPriceInput {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+  }
+  
+  /* Modal Actions */
+  .modalActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-3);
+    padding-top: var(--spacing-6);
+    border-top: 1px solid var(--color-light-gray);
+    margin-top: var(--spacing-6);
+  }
+  
+  .modalActions .cancelButton {
+    width: auto;
+    height: auto;
+    padding: var(--spacing-3) var(--spacing-6);
+    border: 1px solid var(--color-light-gray);
+    border-radius: var(--radius-md);
+    background: var(--color-white);
+    color: var(--color-mid-gray);
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .modalActions .cancelButton:hover {
+    background: var(--color-secondary);
+  }
+  
+  .modalActions .saveButton {
+    width: auto;
+    height: auto;
+    padding: var(--spacing-3) var(--spacing-6);
+    border: none;
+    border-radius: var(--radius-md);
+    background: var(--color-accent);
+    color: var(--color-white);
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .modalActions .saveButton:hover {
+    background: var(--color-accent-dark);
+  }
+  
+  .modalActions .saveButton:disabled {
+    background: var(--color-light-gray);
+    color: var(--color-mid-gray);
+    cursor: not-allowed;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .productsGrid {
+      grid-template-columns: 1fr;
+    }
+    
+    .statsGrid {
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+    
+    .searchRow {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .searchInput {
+      min-width: 100%;
+    }
+    
+    .priceEditControls {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .priceDisplay {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--spacing-2);
+    }
+    
+    .colorPriceItem {
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--spacing-2);
+    }
+    
+    .mainPriceInput {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .customPriceInput {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .modalActions {
+      flex-direction: column-reverse;
+    }
+    
+    .modalActions button {
+      width: 100%;
+    }
+  }

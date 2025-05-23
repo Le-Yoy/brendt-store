@@ -1,0 +1,273 @@
+/* OrderDetails.module.css */
+
+.container {
+    margin-bottom: 1.5rem;
+  }
+  
+  .flexRow {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    .flexRow {
+      flex-direction: row;
+    }
+  }
+  
+  .column {
+    flex: 1 1 0%;
+  }
+  
+  .section {
+    margin-bottom: 1.5rem;
+    animation: fadeIn 0.3s ease-in-out;
+  }
+  
+  .sectionTitle {
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  
+  .infoCard {
+    background-color: #f9fafb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+  }
+  
+  .infoRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  .infoRow:last-child {
+    margin-bottom: 0;
+  }
+  
+  .infoLabel {
+    color: #6b7280;
+  }
+  
+  .infoValue {
+    font-weight: 500;
+  }
+  
+  .statusBadge {
+    padding: 0.125rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+  
+  .addressCard {
+    background-color: #f9fafb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+  }
+  
+  .addressName {
+    font-weight: 500;
+  }
+  
+  .addressLine {
+    color: #4b5563;
+    margin-bottom: 0.25rem;
+  }
+  
+  .tableContainer {
+    background-color: #f9fafb;
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+  
+  .tableScroll {
+    overflow-x: auto;
+  }
+  
+  @media (max-width: 640px) {
+    .tableScroll {
+      margin-left: -1rem;
+      margin-right: -1rem;
+    }
+    
+    .table {
+      min-width: 500px;
+    }
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .tableHeader {
+    background-color: #f3f4f6;
+  }
+  
+  .tableHeaderCell {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #4b5563;
+  }
+  
+  .tableBody tr {
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .tableBody tr:last-child {
+    border-bottom: none;
+  }
+  
+  .tableRow:hover {
+    background-color: #f3f4f6;
+    transition: background-color 0.3s;
+  }
+  
+  .tableCell {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+  
+  .productCell {
+    display: flex;
+    align-items: center;
+  }
+  
+  .productImage {
+    height: 2.5rem;
+    width: 2.5rem;
+    flex-shrink: 0;
+    margin-right: 0.75rem;
+    background-color: #e5e7eb;
+    border-radius: 0.25rem;
+  }
+  
+  .productInfo {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .productName {
+    font-weight: 500;
+  }
+  
+  .productId {
+    color: #6b7280;
+    font-size: 0.75rem;
+  }
+  
+  .colorDisplay {
+    display: flex;
+    align-items: center;
+  }
+  
+  .colorSwatch {
+    height: 1rem;
+    width: 1rem;
+    border-radius: 9999px;
+    margin-right: 0.5rem;
+  }
+  
+  .summaryCard {
+    background-color: #f9fafb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+  }
+  
+  .summaryRow {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+  }
+  
+  .summaryLabel {
+    color: #6b7280;
+  }
+  
+  .summaryTotal {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    font-weight: 700;
+  }
+  
+  .actionBar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding-top: 1rem;
+  }
+  
+  .closeButton {
+    padding: 0.5rem 1rem;
+    background-color: #f3f4f6;
+    color: #1f2937;
+    border-radius: 0.25rem;
+    transition: background-color 0.3s;
+  }
+  
+  .closeButton:hover {
+    background-color: #e5e7eb;
+  }
+  
+  .updateButton {
+    padding: 0.5rem 1rem;
+    background-color: #9D5247;
+    color: white;
+    border-radius: 0.25rem;
+    transition: background-color 0.3s;
+  }
+  
+  .updateButton:hover {
+    background-color: #7A3F37;
+  }
+  
+  /* Timeline styling */
+  .timeline {
+    position: relative;
+    margin-left: 1rem;
+  }
+  
+  .timeline:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 2px;
+    background-color: #e5e7eb;
+  }
+  
+  .timelineItem {
+    position: relative;
+    padding-left: 1.5rem;
+    padding-bottom: 1rem;
+  }
+  
+  .timelineItem:before {
+    content: '';
+    position: absolute;
+    left: -5px;
+    top: 4px;
+    height: 0.75rem;
+    width: 0.75rem;
+    border-radius: 9999px;
+    background-color: #9D5247;
+    border: 2px solid white;
+  }
+  
+  .timelineDate {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin-bottom: 0.25rem;
+  }
+  
+  .timelineContent {
+    font-size: 0.875rem;
+  }

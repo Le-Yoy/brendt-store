@@ -1,0 +1,94 @@
+.product-details {
+    padding: var(--spacing-8) 0;
+    border-top: 1px solid var(--color-light-gray);
+  }
+  
+  .product-details__tabs {
+    display: flex;
+    border-bottom: 1px solid var(--color-light-gray);
+    margin-bottom: var(--spacing-8);
+  }
+  
+  .product-details__tab {
+    padding: var(--spacing-4) var(--spacing-6);
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    font-family: var(--font-primary);
+    font-size: var(--font-size-md);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: var(--letter-spacing-wide);
+  }
+  
+  .product-details__tab:hover {
+    color: var(--text-primary);
+  }
+  
+  .product-details__tab--active {
+    color: var(--text-primary);
+    border-bottom-color: var(--color-dark);
+  }
+  
+  .product-details__content {
+    min-height: 200px;
+  }
+  
+  .product-details__panel {
+    animation: fadeIn 0.3s ease;
+  }
+  
+  .product-details__subtitle {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    margin-bottom: var(--spacing-4);
+    letter-spacing: var(--letter-spacing-wide);
+  }
+  
+  .product-details__list {
+    list-style-type: disc;
+    padding-left: var(--spacing-6);
+    margin-bottom: var(--spacing-6);
+  }
+  
+  .product-details__list-item {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-2);
+    line-height: var(--line-height-normal);
+  }
+  
+  .product-details__text {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+    margin-bottom: var(--spacing-6);
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .product-details__tabs {
+      flex-wrap: wrap;
+      gap: var(--spacing-2);
+    }
+    
+    .product-details__tab {
+      flex: 1;
+      padding: var(--spacing-3) var(--spacing-2);
+      font-size: var(--font-size-base);
+      text-align: center;
+    }
+  }

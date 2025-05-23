@@ -1,0 +1,133 @@
+.sidebar {
+    background-color: var(--color-white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-sm);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .profile {
+    display: flex;
+    align-items: center;
+    padding-bottom: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-light);
+  }
+  
+  .avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: var(--color-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    color: var(--color-accent);
+  }
+  
+  .details {
+    flex: 1;
+  }
+  
+  .welcome {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    margin: 0;
+  }
+  
+  .name {
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    margin: 0.25rem 0 0;
+  }
+  
+  .backLink {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 0;
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    transition: color 0.2s ease;
+    margin-bottom: 1.5rem;
+  }
+  
+  .backLink svg {
+    margin-right: 0.5rem;
+  }
+  
+  .backLink:hover {
+    color: var(--color-accent);
+  }
+  
+  .navigation {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .navItem {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-radius: var(--border-radius-sm);
+    color: var(--text-primary);
+    font-size: var(--font-size-sm);
+    transition: all 0.2s ease;
+  }
+  
+  .navItem svg {
+    margin-right: 0.75rem;
+    font-size: 1.25rem;
+  }
+  
+  .navItem:hover {
+    background-color: var(--color-secondary);
+    color: var(--color-accent);
+  }
+  
+  .navItem.active {
+    background-color: var(--color-accent);
+    color: var(--color-white);
+  }
+  
+  .logoutButton {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem;
+    background-color: transparent;
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent);
+    border-radius: var(--border-radius);
+    font-size: var(--font-size-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .logoutButton svg {
+    margin-right: 0.5rem;
+  }
+  
+  .logoutButton:hover {
+    background-color: var(--color-accent);
+    color: var(--color-white);
+  }
+  
+  @media (max-width: 1024px) {
+    .navigation {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .navItem {
+      flex: 1 0 auto;
+      min-width: 150px;
+      justify-content: center;
+    }
+  }

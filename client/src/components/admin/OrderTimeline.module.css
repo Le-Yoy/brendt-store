@@ -1,0 +1,158 @@
+.timelineContainer {
+    background-color: white;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+  
+  .timelineTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 1.5rem;
+  }
+  
+  .timeline {
+    position: relative;
+    margin-left: 1.5rem;
+  }
+  
+  .timeline:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 9px;
+    width: 2px;
+    background-color: #e5e7eb;
+    transform: translateX(-50%);
+  }
+  
+  .timelineItem {
+    position: relative;
+    padding-bottom: 1.5rem;
+  }
+  
+  .timelineItem:last-child {
+    padding-bottom: 0;
+  }
+  
+  .icon {
+    position: absolute;
+    left: -1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    background-color: white;
+    border-radius: 9999px;
+    border: 2px solid #e5e7eb;
+    color: #6b7280;
+    z-index: 1;
+  }
+  
+  .timelineItem.complete .icon {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+  
+  .timelineItem.inProgress .icon {
+    border-color: #60a5fa;
+    color: #60a5fa;
+  }
+  
+  .timelineItem.pending .icon {
+    border-color: #d1d5db;
+    color: #9ca3af;
+  }
+  
+  .timelineContent {
+    padding-left: 1rem;
+    position: relative;
+  }
+  
+  .timelineHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.25rem;
+  }
+  
+  .eventTitle {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #1f2937;
+    margin: 0;
+  }
+  
+  .eventDate {
+    font-size: 0.75rem;
+    color: #6b7280;
+    white-space: nowrap;
+    margin-left: 0.5rem;
+  }
+  
+  .eventDescription {
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin-top: 0.25rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .eventDetails {
+    background-color: #f9fafb;
+    border-radius: 0.375rem;
+    padding: 0.75rem;
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin-top: 0.5rem;
+  }
+  
+  .detailsList {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
+  
+  .detailsList li {
+    margin-bottom: 0.25rem;
+  }
+  
+  .detailsList li:last-child {
+    margin-bottom: 0;
+  }
+  
+  .detailLabel {
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+  
+  .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+  }
+  
+  .loadingSpinner {
+    width: 2rem;
+    height: 2rem;
+    border: 0.25rem solid #e5e7eb;
+    border-radius: 50%;
+    border-top-color: var(--color-accent);
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .emptyTimeline {
+    text-align: center;
+    padding: 2rem;
+    color: #6b7280;
+    font-style: italic;
+  }

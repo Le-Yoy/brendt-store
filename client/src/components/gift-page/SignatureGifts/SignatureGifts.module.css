@@ -1,0 +1,122 @@
+.signatureGiftsSection {
+    padding: var(--spacing-20) var(--side-padding);
+    background-color: var(--bg-primary);
+    width: 100%;
+  }
+  
+  .contentContainer {
+    max-width: var(--container-xl);
+    margin: 0 auto;
+  }
+  
+  .sectionHeader {
+    text-align: center;
+    margin-bottom: var(--spacing-16);
+  }
+  
+  .sectionHeader h2 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-light);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-4);
+    letter-spacing: var(--letter-spacing-wide);
+  }
+  
+  .sectionHeader p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-md);
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .giftsShowcase {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--spacing-8);
+  }
+  
+  .loadingContainer, .errorContainer, .noResultsContainer {
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .loadingIndicator {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-4);
+  }
+  
+  .loadingIndicator::before {
+    content: '';
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--color-light-gray);
+    border-top-color: var(--color-accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  .loadingIndicator span {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-md);
+    color: var(--text-secondary);
+  }
+  
+  .errorContainer p, .noResultsContainer p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-md);
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-4);
+  }
+  
+  /* Media Queries */
+  @media (max-width: 1024px) {
+    .sectionHeader h2 {
+        font-size: var(--font-size-2xl);
+      }
+      
+      .sectionHeader p {
+        font-size: var(--font-size-base);
+      }
+      
+      .giftsShowcase {
+        gap: var(--spacing-6);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .signatureGiftsSection {
+        padding: var(--spacing-16) var(--side-padding);
+      }
+      
+      .sectionHeader {
+        margin-bottom: var(--spacing-10);
+      }
+      
+      .sectionHeader h2 {
+        font-size: var(--font-size-xl);
+      }
+      
+      .giftsShowcase {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: var(--spacing-4);
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .giftsShowcase {
+        grid-template-columns: 1fr;
+      }
+    }

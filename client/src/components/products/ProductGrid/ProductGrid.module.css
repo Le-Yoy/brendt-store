@@ -1,0 +1,91 @@
+/* ProductGrid.module.css */
+.productGrid {
+  display: grid;
+  gap: var(--spacing-4);
+  width: 100%;
+}
+
+/* Default responsive behavior */
+.responsive {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* Fixed column configurations */
+.columns1 {
+  grid-template-columns: 1fr;
+}
+
+.columns2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.columns3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.columns4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* Skeleton loading styles */
+.skeletonCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.skeletonImage {
+  width: 100%;
+  aspect-ratio: 232/324;
+  background-color: var(--color-light-gray);
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+.skeletonTitle {
+  height: 14px;
+  width: 80%;
+  background-color: var(--color-light-gray);
+  animation: pulse 1.5s infinite ease-in-out;
+  animation-delay: 0.2s;
+}
+
+.skeletonPrice {
+  height: 12px;
+  width: 40%;
+  background-color: var(--color-light-gray);
+  animation: pulse 1.5s infinite ease-in-out;
+  animation-delay: 0.4s;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+/* Empty state styles */
+.emptyState {
+  width: 100%;
+  padding: var(--spacing-8);
+  text-align: center;
+  color: var(--color-mid-gray);
+}
+
+/* Responsive configurations */
+@media (min-width: 768px) {
+  .responsive {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .responsive {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .productGrid {
+    gap: var(--spacing-3);
+  }
+}

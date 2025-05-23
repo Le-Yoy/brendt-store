@@ -1,0 +1,415 @@
+/* src/components/layout/Header/MobileMenu.css */
+.mobile-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 100%);
+  background-color: var(--color-background);
+  z-index: 1000;
+  overflow-y: auto;
+  animation: mobileMenuSlideIn 0.3s ease;
+  overscroll-behavior: contain; /* Prevents scrolling outside when at the edge */
+}
+
+.mobile-menu__container {
+  padding: var(--spacing-4) var(--side-padding);
+}
+
+/* Main sections (Homme/Femme) */
+.mobile-menu__sections {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mobile-menu__section {
+  margin-bottom: var(--spacing-4);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding-bottom: var(--spacing-4);
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.mobile-menu__section.animate-in {
+  animation: fadeInDown 0.4s forwards;
+}
+
+.mobile-menu__section-btn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: var(--spacing-2) 0;
+  font-family: var(--font-primary);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-light);
+  color: var(--color-dark);
+  text-align: left;
+  cursor: pointer;
+}
+
+.mobile-menu__section-btn--active {
+  color: var(--color-accent);
+}
+
+/* Direct link styling for Savoir-Faire and BRENDT Textile */
+.mobile-menu__direct-link {
+  display: block;
+  width: 100%;
+  text-align: left;
+  text-decoration: none;
+  padding: var(--spacing-2) 0;
+  font-family: var(--font-primary);
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-light);
+  color: var(--color-dark);
+  cursor: pointer;
+}
+
+.mobile-menu__direct-link:hover {
+  color: var(--color-accent);
+}
+
+/* Categories */
+.mobile-menu__categories {
+  list-style: none;
+  padding: 0;
+  margin: var(--spacing-2) 0 0;
+  animation: fadeIn 0.3s ease;
+}
+
+.mobile-menu__category {
+  margin-bottom: var(--spacing-2);
+  opacity: 0;
+  animation: fadeInRight 0.4s forwards;
+}
+
+.mobile-menu__category-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: var(--spacing-2) var(--spacing-3);
+}
+
+.mobile-menu__category-link {
+  flex: 1;
+  font-family: var(--font-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-light);
+  color: var(--color-dark);
+  text-decoration: none;
+}
+
+.mobile-menu__category-link:hover {
+  color: var(--color-accent);
+}
+
+.mobile-menu__category-btn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: var(--spacing-2) var(--spacing-3);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-light);
+  color: var(--color-dark);
+  text-align: left;
+  cursor: pointer;
+}
+
+.mobile-menu__category-btn--active {
+  color: var(--color-accent);
+}
+
+/* Toggle buttons */
+.mobile-menu__toggle-btn {
+  background: none;
+  border: none;
+  padding: var(--spacing-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--color-dark);
+}
+
+.mobile-menu__toggle-btn:hover {
+  color: var(--color-accent);
+}
+
+.mobile-menu__toggle-btn--small {
+  padding: var(--spacing-1) var(--spacing-1);
+}
+
+/* Subcategories */
+.mobile-menu__subcategories {
+  list-style: none;
+  padding: 0;
+  margin: var(--spacing-1) 0 0 var(--spacing-4);
+  animation: fadeIn 0.3s ease;
+}
+
+.mobile-menu__subcategory {
+  margin-bottom: var(--spacing-1);
+  opacity: 0;
+  animation: fadeInRight 0.4s forwards;
+}
+
+.mobile-menu__subcategory-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: var(--spacing-1) var(--spacing-2);
+}
+
+.mobile-menu__subcategory-link {
+  flex: 1;
+  font-family: var(--font-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-light);
+  color: var(--color-dark);
+  text-decoration: none;
+}
+
+.mobile-menu__subcategory-link:hover {
+  color: var(--color-accent);
+}
+
+.mobile-menu__subcategory-btn {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: var(--spacing-1) var(--spacing-2);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-light);
+  color: var(--color-dark);
+  text-align: left;
+  cursor: pointer;
+}
+
+.mobile-menu__subcategory-btn--active {
+  color: var(--color-accent);
+}
+
+/* Items */
+.mobile-menu__items {
+  list-style: none;
+  padding: 0;
+  margin: var(--spacing-1) 0 0 var(--spacing-4);
+  animation: fadeIn 0.3s ease;
+}
+
+.mobile-menu__item {
+  margin-bottom: var(--spacing-1);
+  opacity: 0;
+  animation: fadeInRight 0.3s forwards;
+}
+
+.mobile-menu__item-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-1) var(--spacing-2);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-light);
+  color: var(--color-dark);
+  text-decoration: none;
+}
+
+.mobile-menu__item-link:hover {
+  color: var(--color-accent);
+}
+
+/* Image grid for Cadeaux, Savoir-Faire and Art de vivre sections */
+.mobile-menu__image-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-3);
+  animation: fadeIn 0.4s ease;
+}
+
+.mobile-menu__image-item {
+  opacity: 0;
+  animation: fadeInUp 0.5s forwards;
+  animation-delay: 0.2s;
+}
+
+.mobile-menu__image-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+  height: 300px;
+}
+
+.mobile-menu__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mobile-menu__image-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: var(--spacing-3);
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+}
+
+.mobile-menu__image-title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-dark);
+  margin: 0 0 var(--spacing-2) 0;
+}
+
+.mobile-menu__image-btn {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-light);
+  color: var(--color-accent);
+  text-decoration: none;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.mobile-menu__image-btn::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-accent);
+  transition: background-color 0.2s ease;
+}
+
+.mobile-menu__image-btn:hover {
+  color: var(--color-accent-dark);
+}
+
+.mobile-menu__image-btn:hover::after {
+  background-color: var(--color-accent-dark);
+}
+
+/* Additional links */
+.mobile-menu__additional {
+  margin-top: var(--spacing-6);
+  padding-top: var(--spacing-4);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  opacity: 0;
+}
+
+.mobile-menu__additional.animate-in {
+  animation: fadeInUp 0.4s forwards;
+}
+
+.mobile-menu__additional-link {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-light);
+  color: var(--color-dark);
+  text-decoration: none;
+  padding: var(--spacing-1) 0;
+}
+
+.mobile-menu__additional-link:hover {
+  color: var(--color-accent);
+}
+
+/* Footer links */
+.mobile-menu__footer {
+  margin-top: var(--spacing-6);
+  padding-top: var(--spacing-4);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.mobile-menu__footer-link {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-light);
+  color: var(--color-dark);
+  text-decoration: none;
+  padding: var(--spacing-1) 0;
+}
+
+.mobile-menu__footer-link:hover {
+  color: var(--color-accent);
+}
+
+/* Coming soon message for Femme section */
+.mobile-menu__coming-soon {
+  padding: var(--spacing-4);
+  text-align: center;
+  animation: fadeIn 0.4s ease;
+}
+
+.mobile-menu__coming-soon p {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-light);
+  font-style: italic;
+  color: var(--color-dark);
+  line-height: 1.8;
+  margin-bottom: var(--spacing-2);
+}
+
+/* Animations */
+@keyframes mobileMenuSlideIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(-10px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Media queries */
+@media (max-width: 640px) {
+  .mobile-menu__image-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .mobile-menu__image-wrapper {
+    height: 250px;
+  }
+}

@@ -1,0 +1,507 @@
+/* CategoryPage.module.css */
+/* Refined and harmonized styling for luxury e-commerce */
+
+/* Main container */
+.categoryPage {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  min-height: 80vh;
+}
+
+/* Category Header - increased top margin */
+.categoryHeader {
+  text-align: center;
+  margin: 6rem 0 2.5rem; /* Significantly increased top margin to prevent header overlap */
+}
+
+.categoryTitle {
+  font-family: var(--font-primary);
+  font-weight: var(--font-weight-light);
+  letter-spacing: var(--letter-spacing-wide);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  font-size: 1.75rem;
+}
+
+/* Subcategories Navigation - Refined for both mobile and desktop */
+.subcategoriesBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  position: relative;
+  width: 100%;
+  height: 40px; /* Fixed height for consistency */
+}
+
+.subcategoriesScroll {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory; /* Added snap scrolling */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  padding: 0.375rem 0;
+  margin: 0 2rem; /* Increased margin for arrow buttons */
+  flex: 1;
+  white-space: nowrap;
+  justify-content: center; /* Center the subcategories */
+  height: 100%;
+  position: relative;
+}
+
+.subcategoriesScroll::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+.subcategoryButton {
+  font-family: var(--font-primary);
+  font-size: 0.6875rem; /* Smaller text */
+  padding: 0.375rem 0.75rem;
+  margin-right: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--border-light);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease-out;
+  letter-spacing: var(--letter-spacing-wider);
+  white-space: nowrap;
+  border-radius: var(--radius-sm);
+  scroll-snap-align: center; /* Added for snap scrolling */
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px; /* Ensures buttons have minimal width */
+}
+
+.subcategoryButton:hover {
+  background-color: var(--bg-secondary);
+}
+
+.subcategoryButton.active {
+  background-color: var(--bg-accent);
+  color: var(--text-light);
+  border-color: var(--border-accent);
+}
+
+.scrollButton {
+  background-color: var(--bg-primary);
+  border: none;
+  color: var(--color-accent);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 1.75rem;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  position: absolute;
+  z-index: 2;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.scrollButton:first-child {
+  left: 0;
+}
+
+.scrollButton:last-child {
+  right: 0;
+}
+
+.scrollButton::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 1px;
+  background-color: var(--color-accent);
+  top: 50%;
+}
+
+.scrollButton:first-child::after {
+  left: 55%;
+}
+
+.scrollButton:last-child::after {
+  right: 55%;
+}
+
+.scrollButton:hover {
+  color: var(--color-accent-dark);
+  background-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Dividers */
+.divider {
+  height: 1px;
+  width: 100%;
+  background-color: var(--border-light);
+  margin: 1rem 0;
+  opacity: 0.5;
+}
+
+/* Layout Toggle - now centered */
+.layoutToggleContainer {
+  display: flex;
+  justify-content: center;
+  padding: 0.5rem 0;
+  width: 100%;
+  margin: 0.75rem 0;
+}
+
+.layoutToggle {
+  display: flex;
+  align-items: center;
+}
+
+.layoutButton {
+  background: transparent;
+  border: none;
+  padding: 0.25rem;
+  margin: 0 0.3125rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.4s ease-out; /* Slower, more deliberate transitions */
+}
+
+.layoutButton:hover {
+  color: var(--text-primary);
+  transform: scale(1.02); /* Subtle scale transformation */
+}
+
+.layoutButton.activeLayout {
+  color: var(--text-accent);
+}
+
+/* Products Container */
+.productsContainer {
+  margin: 2rem 0 3rem;
+}
+
+/* Standard Grid Layout - 2 columns on mobile */
+.productStandardGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 1rem;
+}
+
+/* Responsive design for standard grid */
+@media (min-width: 769px) {
+  .productStandardGrid {
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 1.5rem;
+  }
+}
+
+@media (min-width: 1100px) {
+  .productStandardGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1400px) {
+  .productStandardGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Product loading and error states */
+.loadingContainer, .errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 3rem 0;
+  text-align: center;
+}
+
+.loader {
+  border: 3px solid var(--border-light);
+  border-top: 3px solid var(--border-accent);
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.returnLink {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  color: var(--text-light);
+  background-color: var(--bg-accent);
+  border-radius: var(--radius-sm);
+  transition: background-color 0.4s ease-out;
+}
+
+.returnLink:hover {
+  background-color: var(--color-accent-dark);
+}
+
+/* Pagination */
+.paginationContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 2.5rem;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+}
+
+.pageButton, .pageNavButton {
+  min-width: 2rem;
+  height: 2rem;
+  margin: 0 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-light);
+  background-color: transparent;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-primary);
+  border-radius: var(--radius-sm);
+}
+
+.pageButton:hover, .pageNavButton:hover {
+  border-color: var(--border-dark);
+}
+
+.pageButton.activePage {
+  background-color: var(--bg-accent);
+  color: var(--text-light);
+  border-color: var(--border-accent);
+}
+
+.ellipsis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0.25rem;
+}
+
+.noProducts {
+  text-align: center;
+  margin: 3rem 0;
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+/* Mixed layouts - Base styling - 2 columns on mobile for all layouts */
+.productGridMixedA, .productGridMixedB {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 0.75rem;
+}
+
+/* Common layout styling for mixed layouts */
+.topSection, .bottomSection {
+  display: grid;
+  grid-gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+/* Mobile styling: Featured product appears first, followed by 2-column grid of smaller products */
+.topSection {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.bottomSection {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.smallProductWrapper, 
+.featuredProduct, 
+.regularProductWrapper {
+  overflow: hidden;
+  position: relative;
+  border-radius: var(--radius-sm);
+  transition: transform 0.4s ease-out, box-shadow 0.4s ease-out;
+}
+
+.smallProductWrapper:hover, 
+.featuredProduct:hover, 
+.regularProductWrapper:hover {
+  transform: scale(1.02);
+  box-shadow: var(--shadow-md);
+}
+
+/* Mobile styles for mixed layout A */
+.productGridMixedA .featuredProduct {
+  grid-column: 1 / -1;
+  order: -1;
+  margin-bottom: 0.5rem;
+  background-color: var(--bg-secondary);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.07);
+}
+
+.productGridMixedA .smallProductsLeft {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 0.75rem;
+}
+
+/* Mobile styles for mixed layout B */
+.productGridMixedB .featuredProduct {
+  grid-column: 1 / -1;
+  order: -1;
+  margin-bottom: 0.5rem;
+  background-color: var(--bg-secondary);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.07);
+}
+
+.productGridMixedB .smallProductsRight {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 0.75rem;
+}
+
+/* Responsive design - Medium screens and up */
+@media (min-width: 769px) {
+  .categoryTitle {
+    font-size: 2.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .categoryPage {
+    padding: 0 3rem;
+  }
+
+  .scrollButton {
+    height: 2.5rem;
+    width: 2.5rem;
+  }
+
+  .subcategoryButton {
+    font-size: 0.8125rem;
+    padding: 0.625rem 1.25rem;
+  }
+
+  /* Standard grid for medium screens and up */
+  .productStandardGrid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 1.5rem;
+  }
+
+  /* Product height standardization for all layouts */
+  .productStandardGrid > div {
+    height: 450px;
+  }
+
+  /* Mixed layout A - Medium screens and up */
+  .productGridMixedA {
+    grid-gap: 1.5rem;
+  }
+
+  .productGridMixedA .topSection {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .productGridMixedA .smallProductsLeft {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-gap: 1.5rem;
+  }
+
+  .productGridMixedA .smallProductWrapper {
+    height: 250px; /* Reduced from 275px */
+  }
+
+  .productGridMixedA .featuredProduct {
+    height: 520px; /* Reduced from 570px */
+  }
+
+  .productGridMixedA .bottomSection {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .productGridMixedA .regularProductWrapper {
+    height: 280px; /* Reduced from 300px */
+  }
+
+  /* Mixed layout B - Medium screens and up */
+  .productGridMixedB {
+    grid-gap: 1.5rem;
+  }
+
+  .productGridMixedB .topSection {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .productGridMixedB .smallProductsRight {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-gap: 1.5rem;
+  }
+
+  .productGridMixedB .smallProductWrapper {
+    height: 250px; /* Reduced from 275px */
+  }
+
+  .productGridMixedB .featuredProduct {
+    height: 520px; /* Reduced from 570px */
+  }
+
+  .productGridMixedB .bottomSection {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .productGridMixedB .regularProductWrapper {
+    height: 280px; /* Reduced from 300px */
+  }
+
+  /* Larger screen optimization - 3 columns */
+  @media (min-width: 1100px) {
+    .productStandardGrid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .productGridMixedA .productStandardGrid,
+    .productGridMixedB .productStandardGrid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  /* Extra large screen optimization - 4 columns */
+  @media (min-width: 1400px) {
+    .productStandardGrid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .productGridMixedA .productStandardGrid,
+    .productGridMixedB .productStandardGrid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+}

@@ -1,0 +1,645 @@
+.savoirFaire {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+  }
+  
+  /* Navigation Styles */
+  .craftNavigation {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--color-dark);
+    padding: var(--spacing-4) var(--side-padding);
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+  }
+  
+  .craftNavigation::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+  }
+  
+  .navWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: min-content;
+    gap: var(--spacing-6);
+  }
+  
+  .navItem {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wider);
+    color: var(--color-white);
+    white-space: nowrap;
+    cursor: pointer;
+    padding-bottom: var(--spacing-2);
+    position: relative;
+    transition: color 0.3s ease;
+  }
+  
+  .navItem.active {
+    color: var(--color-accent);
+  }
+  
+  .navItem.active::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background-color: var(--color-accent);
+  }
+  
+  /* Hero Section */
+  .heroSection {
+    position: relative;
+    height: 60dvh;
+    width: 100%;
+    overflow: hidden;
+    margin-top: 0;
+  }
+  
+  .heroImageContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .heroImage {
+    object-fit: cover;
+    transition: transform 2s cubic-bezier(0.25, 0.45, 0.45, 0.95);
+  }
+  
+  .visible .heroImage {
+    transform: scale(1.05);
+  }
+  
+  .heroOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%);
+  }
+  
+  .heroContent {
+    position: absolute;
+    bottom: 20%;
+    left: var(--side-padding);
+    z-index: 2;
+    max-width: 80%;
+  }
+  
+  .heroTitle {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-light);
+    color: var(--color-white);
+    margin-bottom: var(--spacing-4);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+  
+  .visible .heroTitle {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .heroSubtitle {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-md);
+    font-weight: var(--font-weight-light);
+    font-style: italic;
+    color: var(--color-white);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 1s ease 0.3s, transform 1s ease 0.3s;
+  }
+  
+  .visible .heroSubtitle {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .scrollIndicator {
+    position: absolute;
+    bottom: -50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 60px;
+  }
+  
+  .scrollIndicator span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-accent);
+    animation: scrollDown 2s ease-in-out infinite;
+  }
+  
+  @keyframes scrollDown {
+    0% {
+      transform: scaleY(0);
+      transform-origin: top center;
+      opacity: 0;
+    }
+    50% {
+      transform: scaleY(1);
+      transform-origin: top center;
+      opacity: 1;
+    }
+    51% {
+      transform-origin: bottom center;
+    }
+    100% {
+      transform: scaleY(0);
+      transform-origin: bottom center;
+      opacity: 0;
+    }
+  }
+  
+  /* Common Section Styles */
+  .materialsSection,
+  .techniquesSection,
+  .mastersEyeSection,
+  .heritageSection,
+  .environmentSection {
+    padding: var(--spacing-24) var(--side-padding);
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+  
+  .visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .sectionHeader {
+    text-align: center;
+    margin-bottom: var(--spacing-16);
+  }
+  
+  .sectionHeader h2 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-light);
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-4);
+  }
+  
+  .sectionHeader p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-md);
+    font-style: italic;
+    color: var(--text-secondary);
+  }
+  
+  /* Materials Section */
+  .materialsGallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--spacing-8);
+    margin-top: var(--spacing-10);
+  }
+  
+  .materialCard {
+    background-color: var(--color-secondary);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: transform 0.5s cubic-bezier(0.25, 0.45, 0.45, 0.95);
+  }
+  
+  .materialCard:hover {
+    transform: translateY(-5px);
+  }
+  
+  .materialImageContainer {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+  }
+  
+  .materialImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.25, 0.45, 0.45, 0.95);
+  }
+  
+  .materialCard:hover .materialImage {
+    transform: scale(1.05);
+  }
+  
+  .materialInfo {
+    padding: var(--spacing-6);
+  }
+  
+  .materialInfo h3 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-2);
+  }
+  
+  .materialInfo p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-4);
+  }
+  
+  .materialOrigin {
+    display: block;
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-xs);
+    font-style: italic;
+    color: var(--text-secondary);
+  }
+  
+  /* Techniques Section */
+  .techniqueDisplay {
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-10);
+    align-items: center;
+  }
+  
+  .techniqueImage {
+    flex: 0 0 50%;
+    position: relative;
+  }
+  
+  .techniqueMainImage {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  .techniqueDetails {
+    flex: 0 0 50%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-8);
+  }
+  
+  .techniqueItem h3 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-3);
+    color: var(--text-primary);
+  }
+  
+  .techniqueItem p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    color: var(--text-secondary);
+    line-height: var(--line-height-normal);
+  }
+  
+  .techniqueDiagram {
+    width: 100%;
+    height: 80px;
+    margin-top: var(--spacing-4);
+    border-top: 1px solid var(--color-light-gray);
+    position: relative;
+  }
+  
+  .techniqueDiagram::before {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: var(--color-accent);
+    border-radius: 50%;
+    top: -5px;
+    left: 0;
+  }
+  
+  .techniqueDiagram::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: var(--color-accent);
+    border-radius: 50%;
+    top: -5px;
+    right: 0;
+  }
+  
+  /* Master's Eye Section */
+  .mastersEyeContent {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-16);
+  }
+  
+  .craftingImageContainer {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+  }
+  
+  .craftingImage {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+  }
+  
+  .craftingHotspots {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .hotspot {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.3);
+    border: 2px solid var(--color-white);
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .hotspot::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    background-color: var(--color-accent);
+    border-radius: 50%;
+  }
+  
+  .hotspot:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+  
+  .craftingJournal {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-8);
+  }
+  
+  .journalEntry {
+    background-color: var(--color-secondary);
+    padding: var(--spacing-6);
+    border-radius: var(--radius-md);
+    border-left: 3px solid var(--color-accent);
+  }
+  
+  .journalEntry h3 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-3);
+  }
+  
+  .journalEntry p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+  }
+  
+  /* Heritage Section */
+  .heritageContent {
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-12);
+    align-items: center;
+  }
+  
+  .heritageMachine {
+    flex: 0 0 40%;
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+  }
+  
+  .heritageImage {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+  
+  .heritageText {
+    flex: 0 0 60%;
+  }
+  
+  .heritageCompare {
+    display: flex;
+    gap: var(--spacing-8);
+    margin-bottom: var(--spacing-10);
+  }
+  
+  .heritageThen, .heritageNow {
+    flex: 1;
+  }
+  
+  .heritageThen h3, .heritageNow h3 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-3);
+  }
+  
+  .heritageThen p, .heritageNow p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+  }
+  
+  .heritageQuote {
+    margin-top: var(--spacing-8);
+    padding: var(--spacing-6);
+    border-left: 2px solid var(--color-accent);
+  }
+  
+  .heritageQuote blockquote {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-lg);
+    font-style: italic;
+    margin-bottom: var(--spacing-4);
+    line-height: var(--line-height-snug);
+  }
+  
+  .heritageQuote cite {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+  }
+  
+  /* Environment Section */
+  .environmentContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-16);
+  }
+  
+  .environmentCircle {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-10);
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .circleSegment {
+    text-align: center;
+    padding: var(--spacing-6);
+    background-color: var(--color-secondary);
+    border-radius: var(--radius-md);
+    transition: transform 0.3s ease;
+  }
+  
+  .circleSegment:hover {
+    transform: translateY(-5px);
+  }
+  
+  .circleSegment h3 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-3);
+    color: var(--color-accent);
+  }
+  
+  .circleSegment p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-base);
+  }
+  
+  .environmentPledge {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: var(--spacing-8);
+    border-top: 1px solid var(--color-light-gray);
+    border-bottom: 1px solid var(--color-light-gray);
+  }
+  
+  .environmentPledge h3 {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-4);
+  }
+  
+  .environmentPledge p {
+    font-family: var(--font-secondary);
+    font-size: var(--font-size-md);
+    line-height: var(--line-height-relaxed);
+  }
+  
+  /* Media Queries */
+  @media (max-width: 1024px) {
+    .heroTitle {
+      font-size: var(--font-size-3xl);
+    }
+    
+    .heroSection {
+      height: 65dvh;
+      margin-top: 0;
+    }
+    
+    .techniqueDisplay,
+    .heritageContent {
+      flex-direction: column;
+    }
+    
+    .techniqueImage,
+    .techniqueDetails,
+    .heritageMachine,
+    .heritageText {
+      flex: 0 0 100%;
+      width: 100%;
+    }
+    
+    .techniqueImage {
+      margin-bottom: var(--spacing-8);
+    }
+    
+    .heritageMachine {
+      margin-bottom: var(--spacing-10);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .heroSection {
+      height: 85dvh;
+      margin-top: 0;
+    }
+    
+    .heroContent {
+      left: var(--side-padding);
+      max-width: 90%;
+    }
+    
+    .heroTitle {
+      font-size: var(--font-size-2xl);
+    }
+    
+    .sectionHeader h2 {
+      font-size: var(--font-size-2xl);
+    }
+    
+    .heritageCompare {
+      flex-direction: column;
+      gap: var(--spacing-6);
+    }
+    
+    .environmentCircle {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .heroTitle {
+      font-size: var(--font-size-xl);
+    }
+    
+    .heroSubtitle {
+      font-size: var(--font-size-base);
+    }
+    
+    .materialsSection,
+    .techniquesSection,
+    .mastersEyeSection,
+    .heritageSection,
+    .environmentSection {
+      padding: var(--spacing-16) var(--side-padding);
+    }
+    
+    .sectionHeader {
+      margin-bottom: var(--spacing-8);
+    }
+    
+    .materialCard {
+      min-width: 250px;
+    }
+    
+    .craftingJournal {
+      grid-template-columns: 1fr;
+    }
+  }

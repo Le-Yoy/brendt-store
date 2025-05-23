@@ -1,0 +1,244 @@
+/* admin-dashboard.module.css */
+/* Based on BRENDT luxury design system */
+
+.container {
+    padding: var(--spacing-6);
+  }
+  
+  .headerSection {
+    margin-bottom: var(--spacing-6);
+  }
+  
+  .pageTitle {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    font-family: var(--font-primary);
+    margin-bottom: var(--spacing-1);
+  }
+  
+  .pageSubtitle {
+    color: var(--text-secondary);
+    font-size: var(--font-size-base);
+    font-family: var(--font-secondary);
+  }
+  
+  .statsGrid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: var(--spacing-6);
+    margin-bottom: var(--spacing-8);
+  }
+  
+  @media (min-width: 640px) {
+    .statsGrid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .statsGrid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  
+  .graphGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-6);
+    margin-bottom: var(--spacing-8);
+  }
+  
+  @media (min-width: 1024px) {
+    .graphGrid {
+      grid-template-columns: 2fr 1fr;
+    }
+  }
+  
+  .graphCard {
+    background-color: var(--color-white);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    padding: var(--spacing-6);
+  }
+  
+  .graphTitle {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    font-family: var(--font-primary);
+    margin-bottom: var(--spacing-4);
+  }
+  
+  .chartContainer {
+    height: 20rem;
+  }
+  
+  .topProductsList {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+  
+  .topProductItem {
+    display: flex;
+    align-items: center;
+  }
+  
+  .productRank {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  margin-right: var(--spacing-3);
+  background-color: rgba(157, 82, 71, 0.1);
+  color: var(--color-accent);
+  font-weight: var(--font-weight-medium);
+  flex-shrink: 0;
+}
+
+.productInfo {
+  flex: 1;
+}
+
+.productName {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  margin-bottom: 0.125rem;
+}
+
+.productSales {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.productRevenue {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+.quickActionsCard {
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  padding: var(--spacing-6);
+  margin-bottom: var(--spacing-8);
+}
+
+.quickActionsTitle {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  font-family: var(--font-primary);
+  margin-bottom: var(--spacing-4);
+}
+
+.quickActionsGrid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: var(--spacing-4);
+}
+
+@media (min-width: 640px) {
+  .quickActionsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .quickActionsGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.quickActionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2) var(--spacing-4);
+  background-color: var(--color-white);
+  border: 1px solid #e5e7eb;
+  border-radius: var(--radius-md);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  color: var(--text-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.quickActionButton:hover {
+  background-color: #f9fafb;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+.quickActionIcon {
+  color: var(--text-secondary);
+  margin-right: var(--spacing-2);
+}
+
+.recentActivityCard {
+  background-color: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  padding: var(--spacing-6);
+}
+
+.recentActivityTitle {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+  font-family: var(--font-primary);
+  margin-bottom: var(--spacing-4);
+}
+
+.activityList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.activityItem {
+  border-left-width: 2px;
+  padding-left: var(--spacing-4);
+  padding-top: var(--spacing-1);
+  padding-bottom: var(--spacing-1);
+}
+
+.activityItemActive {
+  border-left-color: var(--color-accent);
+}
+
+.activityItemInactive {
+  border-left-color: #e5e7eb;
+}
+
+.activityTitle {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-primary);
+}
+
+.activityTime {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.viewAllLink {
+  display: block;
+  text-align: right;
+  margin-top: var(--spacing-4);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-accent);
+  transition: color 0.2s;
+}
+
+.viewAllLink:hover {
+  color: var(--color-accent-dark);
+}

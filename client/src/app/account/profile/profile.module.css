@@ -1,0 +1,292 @@
+.profilePage {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.pageHeader {
+  margin-bottom: 2rem;
+}
+
+.pageHeader h1 {
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-light);
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.pageSubtitle {
+  font-size: var(--font-size-md);
+  color: var(--text-secondary);
+  font-family: var(--font-primary);
+  font-style: italic;
+}
+
+.tabsContainer {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.tabButton {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  background-color: var(--color-white);
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius);
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.tabButton svg {
+  margin-right: 0.5rem;
+}
+
+.tabButton:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.activeTab {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-white);
+}
+
+.successMessage, .errorMessage {
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  margin-bottom: 1.5rem;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.successMessage {
+  background-color: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.errorMessage {
+  background-color: var(--color-error-light);
+  color: var(--color-error);
+}
+
+.formContainer {
+  margin-bottom: 2rem;
+}
+
+.formSection {
+  background-color: var(--color-white);
+  border-radius: var(--border-radius);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.formGroup {
+  margin-bottom: 1.5rem;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.formGroup label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.formGroup label svg {
+  margin-right: 0.5rem;
+}
+
+.inputField, .selectField {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-light);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-base);
+  transition: border-color 0.2s ease;
+}
+
+.inputField:focus, .selectField:focus {
+  outline: none;
+  border-color: var(--color-accent);
+ }
+ 
+ .emailField {
+  display: flex;
+  align-items: center;
+ }
+ 
+ .verifiedBadge {
+  display: inline-block;
+  margin-left: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  background-color: var(--color-success-light);
+  color: var(--color-success);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+ }
+ 
+ .verifyButton {
+  margin-left: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+ }
+ 
+ .verifyButton:hover {
+  background-color: var(--color-accent-dark);
+ }
+ 
+ .passwordStrength {
+  margin-top: 0.5rem;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+ }
+ 
+ .strengthTrack {
+  height: 4px;
+  background-color: var(--color-light-gray);
+  border-radius: var(--radius-full);
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+ }
+ 
+ .strengthFill {
+  height: 100%;
+  background: linear-gradient(to right, var(--color-error), var(--color-warning), var(--color-success));
+  transition: width 0.3s ease;
+ }
+ 
+ .preferenceGroup {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border-light);
+ }
+ 
+ .preferenceGroup:last-child {
+  border-bottom: none;
+ }
+ 
+ .preferenceToggle {
+  display: flex;
+  align-items: flex-start;
+ }
+ 
+ .toggleInput {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+ }
+ 
+ .toggleLabel {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+  background-color: var(--color-light-gray);
+  border-radius: 13px;
+  margin-right: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+ }
+ 
+ .toggleLabel::before {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  background-color: var(--color-white);
+  transition: transform 0.2s ease;
+ }
+ 
+ .toggleInput:checked + .toggleLabel {
+  background-color: var(--color-accent);
+ }
+ 
+ .toggleInput:checked + .toggleLabel::before {
+  transform: translateX(24px);
+ }
+ 
+ .preferenceInfo {
+  flex: 1;
+ }
+ 
+ .preferenceInfo h3 {
+  font-size: var(--font-size-sm);
+  margin-bottom: 0.25rem;
+  color: var(--text-primary);
+ }
+ 
+ .preferenceInfo p {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  margin: 0;
+ }
+ 
+ .formActions {
+  display: flex;
+  justify-content: flex-end;
+ }
+ 
+ .submitButton {
+  padding: 0.75rem 1.5rem;
+  background-color: var(--color-accent);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+ }
+ 
+ .submitButton:hover:not(:disabled) {
+  background-color: var(--color-accent-dark);
+ }
+ 
+ .submitButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+ }
+ 
+ @keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+ }
+ 
+ @media (max-width: 768px) {
+  .formRow {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .tabsContainer {
+    flex-direction: column;
+  }
+  
+  .emailField {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .verifiedBadge, .verifyButton {
+    margin: 0.5rem 0 0 0;
+  }
+ }

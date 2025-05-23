@@ -1,0 +1,7 @@
+
+version: 0.1
+runson: mac
+autosplit: false
+testSuites:
+  - name: "Basic Test"
+    testRunnerCommand: echo "Testing localhost:3000"
