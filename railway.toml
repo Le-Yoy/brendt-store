@@ -5,3 +5,6 @@ builder = "nixpacks"
 startCommand = "cd server && npm start"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 10
+
+[environments.production.build]
+buildCommand = "cd server && npm install"
