@@ -17,7 +17,7 @@ process.on('uncaughtException', err => {
 });
 
 // Load environment variables
-dotenv.config();
+if (process.env.NODE_ENV !== "production") { dotenv.config(); }
 
 // Environment variables check
 console.log('Environment check:', { 
