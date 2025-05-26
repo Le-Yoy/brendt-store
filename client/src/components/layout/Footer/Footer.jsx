@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import './Footer.css';
 
 const Footer = () => {
   const [email, setEmail] = useState('');
