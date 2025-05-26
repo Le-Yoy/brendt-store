@@ -1,4 +1,5 @@
 "use client";
+import { Suspense } from 'react';
 import { useEffect, useState, useContext } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -9,7 +10,7 @@ import RecommendedProducts from './RecommendedProducts';
 import CartContext from '@/contexts/CartContext';
 import useCart from '@/hooks/useCart';
 
-export default function ThankYouPage() {
+function ThankYouPageContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
   const canceled = searchParams.get('canceled');
@@ -365,5 +366,12 @@ export default function ThankYouPage() {
         </div>
       </div>
     </div>
+  );
+}
+export default function ThankYouPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ThankYouPageContent />
+    </Suspense>
   );
 }

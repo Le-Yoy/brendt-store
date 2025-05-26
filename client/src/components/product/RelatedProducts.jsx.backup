@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import mockData from '@/utils/mockData';
+import { getMockProducts } from '@/utils/mockData';
 import productService from '@/services/productService';
 import styles from './RelatedProducts.module.css';
 
@@ -32,7 +32,7 @@ const RelatedProducts = ({ category, currentProductId, usingApi = false }) => {
         // If usingApi failed or was false, try mock data
         if (products.length === 0) {
           try {
-            products = mockData.getRelatedProducts(currentProductId, category, 4) || [];
+            products = await getMockProducts({ category }) || [];
           } catch (mockError) {
             console.error('Mock data error:', mockError);
             products = [];

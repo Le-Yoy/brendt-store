@@ -1,4 +1,5 @@
 'use client';
+import { Suspense } from 'react';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -14,7 +15,7 @@ import { useContext } from 'react';
 
 const CART_STORAGE_KEY = 'brendt-cart';
 
-export default function CheckoutPage() {
+function CheckoutPageContent() {
   const router = useRouter();
   const { user, isAuthenticated } = useAuth();
   const cartContext = useContext(CartContext);
@@ -1161,5 +1162,12 @@ localStorage.setItem('thank-you-data', JSON.stringify(createdOrder));
         </div>
       )}
     </div>
+  );
+}
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CheckoutPageContent />
+    </Suspense>
   );
 }

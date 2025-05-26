@@ -1,13 +1,13 @@
 // src/app/login/page.jsx
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import useAuth from '@/hooks/useAuth'; // Updated import
 import styles from './login.module.css';
 
-export default function LoginPage() {
+function LoginPageContent() {
   const { login, loading: authLoading, error: authError } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -101,5 +101,12 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginPageContent />
+    </Suspense>
   );
 }
