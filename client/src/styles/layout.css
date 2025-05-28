@@ -1,20 +1,16 @@
 /* src/styles/layout.css */
 .layout {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-  
-  .main-content {
-    flex: 1;
-    padding-top: 120px; /* Adjust based on your header height */
-    padding-bottom: 60px; /* Add space before footer */
-  }
-  
-  /* For pages with sidebar navigation like account */
-  .account-main {
-    background-color: var(--bg-primary);
-  }
-  
-  /* Add this import to globals.css */
-  /* @import './layout.css'; */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  padding-top: 120px;
+  padding-bottom: 60px;
+}
+
+.account-main {
+  background-color: var(--bg-primary);
+}

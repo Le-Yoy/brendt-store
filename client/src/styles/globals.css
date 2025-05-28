@@ -4,6 +4,7 @@
 @import './foundation/spacing.css';
 @import './foundation/breakpoints.css';
 @import './utilities.css';
+@import './layout.css';
 
 /* Base Styles */
 * {
