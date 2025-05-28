@@ -1,4 +1,5 @@
 import './Footer.css';
+import './Footer.css';
 // src/components/layout/Footer/Footer.jsx
 import React, { useState } from 'react';
 import Link from 'next/link';
