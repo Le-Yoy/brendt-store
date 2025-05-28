@@ -65,19 +65,20 @@ app.use((req, res, next) => {
 
 // 4. Enable CORS - MUST be before routes - FIXED TO INCLUDE VERCEL DOMAINS
 app.use(cors({
- origin: [
-   'http://localhost:3000', 
-   'http://localhost:3001', 
-   'http://127.0.0.1:3000',
-   'https://brendt-store.vercel.app',
-   'https://brendt-store-git-main-le-yoys-projects.vercel.app',
-   'https://brendt.store',
-   'https://www.brendt.store'
- ],
- methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
- allowedHeaders: ['Content-Type', 'Authorization'],
- credentials: true
-}));
+  origin: [
+    'http://localhost:3000', 
+    'http://localhost:3001', 
+    'http://127.0.0.1:3000',
+    'https://brendt-store.vercel.app',
+    'https://brendt-store-git-main-almostaphasmart.vercel.app',  // ← FIXED USERNAME
+    'https://brendt-store-almostaphasmart.vercel.app',          // ← ADDED THIS ONE TOO
+    'https://brendt.store',
+    'https://www.brendt.store'
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+ }));
 
 // Add explicit handler for OPTIONS requests
 app.options('*', cors());
