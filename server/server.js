@@ -70,8 +70,9 @@ app.use(cors({
     'http://localhost:3001', 
     'http://127.0.0.1:3000',
     'https://brendt-store.vercel.app',
-    'https://brendt-store-git-main-almostaphasmart.vercel.app',  // ← FIXED USERNAME
-    'https://brendt-store-almostaphasmart.vercel.app',          // ← ADDED THIS ONE TOO
+    'https://brendt-store-git-main-almostaphasmart.vercel.app',  
+    'https://brendt-store-almostaphasmart.vercel.app',
+    /https:\/\/brendt-store.*\.vercel\.app$/,  // This catches ALL your Vercel deployments
     'https://brendt.store',
     'https://www.brendt.store'
   ],
