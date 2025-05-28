@@ -1,7 +1,7 @@
 // src/utils/api/apiUtils.js
 // Core API utility for HTTP requests and error handling
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
 
 // Request throttling variables
 const requestTimestamps = {};
