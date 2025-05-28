@@ -11,9 +11,9 @@ const hpp = require('hpp');
 const mongoSanitize = require('express-mongo-sanitize');
 
 process.on('uncaughtException', err => {
-  console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
-  console.log(err.name, err.message);
-  process.exit(1);
+ console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
+ console.log(err.name, err.message);
+ process.exit(1);
 });
 
 // Load environment variables
@@ -21,9 +21,9 @@ if (process.env.NODE_ENV !== "production") { dotenv.config(); }
 
 // Environment variables check
 console.log('Environment check:', { 
-  NODE_ENV: process.env.NODE_ENV,
-  JWT_SECRET: process.env.JWT_SECRET ? 'Set (length: ' + process.env.JWT_SECRET.length + ')' : 'NOT SET',
-  MONGO_URI: process.env.MONGO_URI ? 'Set' : 'NOT SET'
+ NODE_ENV: process.env.NODE_ENV,
+ JWT_SECRET: process.env.JWT_SECRET ? 'Set (length: ' + process.env.JWT_SECRET.length + ')' : 'NOT SET',
+ MONGO_URI: process.env.MONGO_URI ? 'Set' : 'NOT SET'
 });
 
 // Initialize app
@@ -54,21 +54,29 @@ app.use(helmet());
 
 // 2. Development logging
 if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'));
+ app.use(morgan('dev'));
 }
 
 // 3. Request logging for debugging
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.originalUrl}`);
-  next();
+ console.log(`${req.method} ${req.originalUrl}`);
+ next();
 });
 
-// 4. Enable CORS - MUST be before routes
+// 4. Enable CORS - MUST be before routes - FIXED TO INCLUDE VERCEL DOMAINS
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+ origin: [
+   'http://localhost:3000', 
+   'http://localhost:3001', 
+   'http://127.0.0.1:3000',
+   'https://brendt-store.vercel.app',
+   'https://brendt-store-git-main-le-yoys-projects.vercel.app',
+   'https://brendt.store',
+   'https://www.brendt.store'
+ ],
+ methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+ allowedHeaders: ['Content-Type', 'Authorization'],
+ credentials: true
 }));
 
 // Add explicit handler for OPTIONS requests
@@ -80,9 +88,9 @@ app.use(express.json({ limit: '10kb' }));
 
 // 6. Rate limiting
 const limiter = rateLimit({
-  max: 100,
-  windowMs: 60 * 60 * 1000,
-  message: 'Too many requests from this IP, please try again in an hour!'
+ max: 100,
+ windowMs: 60 * 60 * 1000,
+ message: 'Too many requests from this IP, please try again in an hour!'
 });
 app.use('/api', limiter);
 
@@ -92,16 +100,16 @@ app.use(xss()); // Against XSS
 
 // 8. Prevent parameter pollution
 app.use(hpp({
-  whitelist: [
-    'duration',
-    'ratingsQuantity',
-    'ratingsAverage',
-    'maxGroupSize',
-    'difficulty',
-    'price',
-    'category',
-    'subcategory'
-  ]
+ whitelist: [
+   'duration',
+   'ratingsQuantity',
+   'ratingsAverage',
+   'maxGroupSize',
+   'difficulty',
+   'price',
+   'category',
+   'subcategory'
+ ]
 }));
 
 // Connect to MongoDB
@@ -109,18 +117,18 @@ connectDB();
 
 // Initialize Order Counter when MongoDB connects
 mongoose.connection.once('open', async () => {
-  try {
-    // Initialize the order counter if it doesn't exist
-    const counterExists = await Counter.findById('order_number');
-    if (!counterExists) {
-      await Counter.create({ _id: 'order_number', sequence_value: 0 });
-      console.log('Order counter initialized to start from 00001');
-    } else {
-      console.log('Order counter already exists:', counterExists);
-    }
-  } catch (error) {
-    console.error('Failed to initialize order counter:', error);
-  }
+ try {
+   // Initialize the order counter if it doesn't exist
+   const counterExists = await Counter.findById('order_number');
+   if (!counterExists) {
+     await Counter.create({ _id: 'order_number', sequence_value: 0 });
+     console.log('Order counter initialized to start from 00001');
+   } else {
+     console.log('Order counter already exists:', counterExists);
+   }
+ } catch (error) {
+   console.error('Failed to initialize order counter:', error);
+ }
 });
 
 // Initialize Stripe using environment variable
@@ -133,7 +141,7 @@ const paymentRoutes = require('./routes/paymentRoutes');
 // ==================================
 // Add a simple test endpoint
 app.get('/api/test', (req, res) => {
-  res.json({ message: 'API is working' });
+ res.json({ message: 'API is working' });
 });
 
 // Mount routers
@@ -146,12 +154,12 @@ app.use('/api/admin', adminRoutes);
 
 // Add detailed request logging middleware
 app.use((req, res, next) => {
-  console.log('REQUEST RECEIVED:', req.method, req.originalUrl, 'Body:', req.body ? '(exists)' : '(empty)');
-  next();
+ console.log('REQUEST RECEIVED:', req.method, req.originalUrl, 'Body:', req.body ? '(exists)' : '(empty)');
+ next();
 });
 // 404 handling - for undefined routes
 app.all('*', (req, res, next) => {
-  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+ next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
 // Global error handling middleware
@@ -161,14 +169,14 @@ app.use(globalErrorHandler);
 // =============
 const PORT = process.env.PORT || 5001;
 const server = app.listen(PORT, () => {
-  console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+ console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });
 
 // Handle unhandled promise rejections
 process.on('unhandledRejection', err => {
-  console.log('UNHANDLED REJECTION! 💥 Shutting down...');
-  console.log(err.name, err.message);
-  server.close(() => {
-    process.exit(1);
-  });
+ console.log('UNHANDLED REJECTION! 💥 Shutting down...');
+ console.log(err.name, err.message);
+ server.close(() => {
+   process.exit(1);
+ });
 });
