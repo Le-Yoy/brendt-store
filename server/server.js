@@ -70,16 +70,16 @@ app.use(cors({
     'http://localhost:3001', 
     'http://127.0.0.1:3000',
     'https://brendt-store.vercel.app',
-    'https://brendt-store-git-main-almostaphasmart.vercel.app',  
-    'https://brendt-store-almostaphasmart.vercel.app',
-    /https:\/\/brendt-store.*\.vercel\.app$/,  // This catches ALL your Vercel deployments
-    'https://brendt.store',
-    'https://www.brendt.store'
+    /https:\/\/brendt-store.*\.vercel\.app$/
   ],
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
- }));
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  optionsSuccessStatus: 200
+}));
+
+// Add explicit preflight handling
+app.options('*', cors());
 
 // Add explicit handler for OPTIONS requests
 app.options('*', cors());
