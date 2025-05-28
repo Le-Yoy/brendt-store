@@ -59,30 +59,57 @@ if (process.env.NODE_ENV === 'development') {
 
 // 3. Request logging for debugging
 app.use((req, res, next) => {
- console.log(`${req.method} ${req.originalUrl}`);
+ console.log(`${req.method} ${req.originalUrl} - Origin: ${req.headers.origin}`);
  next();
 });
 
-// 4. Enable CORS - MUST be before routes - FIXED TO INCLUDE VERCEL DOMAINS
-app.use(cors({
-  origin: [
-    'http://localhost:3000', 
-    'http://localhost:3001', 
-    'http://127.0.0.1:3000',
-    'https://brendt-store.vercel.app',
-    /https:\/\/brendt-store.*\.vercel\.app$/
-  ],
+// 4. CORS Configuration - COMPLETE FIX
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://localhost:3001', 
+      'http://127.0.0.1:3000',
+      'https://brendt-store.vercel.app',
+      'https://brendt-store-git-main-almostaphasmart.vercel.app',
+      'https://brendt-store-almostaphasmart.vercel.app'
+    ];
+    
+    // Check if origin is in allowed list OR matches Vercel pattern
+    const isAllowed = allowedOrigins.includes(origin) || 
+                     /^https:\/\/brendt-store.*\.vercel\.app$/.test(origin);
+    
+    if (isAllowed) {
+      console.log('CORS allowed origin:', origin);
+      callback(null, true);
+    } else {
+      console.log('CORS blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  optionsSuccessStatus: 200
-}));
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: [
+    'Origin',
+    'X-Requested-With',
+    'Content-Type',
+    'Accept',
+    'Authorization',
+    'Cache-Control'
+  ],
+  exposedHeaders: ['Authorization'],
+  optionsSuccessStatus: 200,
+  preflightContinue: false
+};
 
-// Add explicit preflight handling
-app.options('*', cors());
+// Apply CORS middleware
+app.use(cors(corsOptions));
 
-// Add explicit handler for OPTIONS requests
-app.options('*', cors());
+// Handle preflight requests explicitly
+app.options('*', cors(corsOptions));
 
 // 5. Body parser - IMPORTANT: This must come BEFORE route handlers
 // EXCEPT FOR WEBHOOK ROUTE which needs raw body
@@ -154,11 +181,6 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Add detailed request logging middleware
-app.use((req, res, next) => {
- console.log('REQUEST RECEIVED:', req.method, req.originalUrl, 'Body:', req.body ? '(exists)' : '(empty)');
- next();
-});
 // 404 handling - for undefined routes
 app.all('*', (req, res, next) => {
  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
