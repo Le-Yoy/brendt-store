@@ -1,7 +1,10 @@
 // src/utils/api/apiUtils.js
 // Core API utility for HTTP requests and error handling
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 
+  (typeof window !== 'undefined' && window.location.hostname !== 'localhost' 
+    ? 'https://brendt-store-production.up.railway.app/api' 
+    : 'http://localhost:5001/api');
 
 // Request throttling variables
 const requestTimestamps = {};
