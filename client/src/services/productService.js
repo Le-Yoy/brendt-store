@@ -2,7 +2,7 @@
 
 import mockData from '@/utils/mockData';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://brendt-store-production-d6ef.up.railway.app/api';
 
 /**
  * Service for handling product-related API calls with fallback to mock data

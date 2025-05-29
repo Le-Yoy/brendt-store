@@ -32,7 +32,7 @@ export function AuthProvider({ children }) {
         console.log('[AUTH] Token found, fetching user profile');
         
         // Fetch user profile from API
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api'}/users/profile`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://brendt-store-production-d6ef.up.railway.app/api'}/users/profile`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -82,7 +82,7 @@ const login = async (email, password) => {
     setError(null);
     
     // Try a direct URL without relying on environment variables
-    const apiUrl = 'http://localhost:5001';
+    const apiUrl = 'https://brendt-store-production-d6ef.up.railway.app';
     console.log('[AUTH] Using direct API URL:', apiUrl);
     
     // Log the exact URL being accessed
@@ -183,7 +183,7 @@ const login = async (email, password) => {
       setError(null);
       
       // Use direct URL approach
-      const apiUrl = 'http://localhost:5001';
+      const apiUrl = 'https://brendt-store-production-d6ef.up.railway.app';
       const registerUrl = `${apiUrl}/api/users/register`;
       
       console.log('[AUTH] Attempting registration at:', registerUrl);
@@ -259,7 +259,7 @@ const login = async (email, password) => {
         throw new Error('Authentication required');
       }
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api'}/users/profile`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://brendt-store-production-d6ef.up.railway.app/api'}/users/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -310,7 +310,7 @@ const login = async (email, password) => {
         newPassword: passwordData.newPassword
       };
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api'}/users/password`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://brendt-store-production-d6ef.up.railway.app/api'}/users/password`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -348,7 +348,7 @@ const login = async (email, password) => {
         throw new Error('Authentication required');
       }
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api'}/users/profile`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://brendt-store-production-d6ef.up.railway.app/api'}/users/profile`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

@@ -392,7 +392,7 @@ function CheckoutPageContent() {
         const orderToken = localStorage.getItem('userToken') || localStorage.getItem('auth-token');
         
         // Try direct fetch first as a fallback if orderService fails
-        const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
+        const apiBase = process.env.NEXT_PUBLIC_API_URL || 'https://brendt-store-production-d6ef.up.railway.app/api';
         console.log('[CHECKOUT] Using API base URL for order:', apiBase);
   
         // Clean the phone number before submission
@@ -630,7 +630,7 @@ function CheckoutPageContent() {
         }
         
         // Try direct fetch first as a fallback if orderService fails
-        const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
+        const apiBase = process.env.NEXT_PUBLIC_API_URL || 'https://brendt-store-production-d6ef.up.railway.app/api';
         console.log('[CHECKOUT] Using API base URL:', apiBase);
         
         // Get token if available

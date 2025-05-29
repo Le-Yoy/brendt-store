@@ -176,7 +176,7 @@ function ThankYouPageContent() {
       if (sessionId) {
         try {
           // Try to verify the session directly
-          const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
+          const apiBase = process.env.NEXT_PUBLIC_API_URL || 'https://brendt-store-production-d6ef.up.railway.app/api';
           const response = await fetch(`${apiBase}/payments/verify-session?session_id=${sessionId}`);
           
           if (response.ok) {

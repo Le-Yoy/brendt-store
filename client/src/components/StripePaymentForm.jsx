@@ -42,7 +42,7 @@ const StripePaymentForm = ({ clientSecret, paymentIntentId, onSuccess, onError }
     
     setCheckingStatus(true);
     try {
-      const response = await fetch(`http://localhost:5001/api/payment-status/${id}`);
+      const response = await fetch(`https://brendt-store-production-d6ef.up.railway.app/api/payment-status/${id}`);
       
       if (!response.ok) {
         throw new Error('Failed to check payment status');

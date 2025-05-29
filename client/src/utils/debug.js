@@ -10,7 +10,7 @@ export const checkApiEndpoints = () => {
   // Only run in development
   if (process.env.NODE_ENV !== 'development') return;
   
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
+  const apiBase = process.env.NEXT_PUBLIC_API_URL || 'https://brendt-store-production-d6ef.up.railway.app/api';
   console.log('[DEBUG] API Base URL:', apiBase);
   
   // List expected endpoints
@@ -111,7 +111,7 @@ export const debugOrderSubmission = (orderData) => {
   console.log(' - Has total price:', orderData && typeof orderData.totalPrice === 'number');
   
   // Try a preflight request to the orders endpoint
-  const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
+  const apiBase = process.env.NEXT_PUBLIC_API_URL || 'https://brendt-store-production-d6ef.up.railway.app/api';
   fetch(`${apiBase}/orders`, {
     method: 'OPTIONS',
     headers: {

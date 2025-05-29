@@ -2,7 +2,7 @@
 export const checkServerStatus = async () => {
     try {
       console.log('[SERVER CHECK] Attempting to connect to API...');
-      const response = await fetch('http://localhost:5001/api/test');
+      const response = await fetch('https://brendt-store-production-d6ef.up.railway.app/api/test');
       
       // Log detailed information about the response
       console.log('[SERVER CHECK] Response status:', response.status, response.statusText);
@@ -39,7 +39,7 @@ export const checkServerStatus = async () => {
     } catch (error) {
       // Detailed error logging
       console.error('[SERVER CHECK] Server connection failed:', error.message);
-      console.error('[SERVER CHECK] Is the server running at http://localhost:5001?');
+      console.error('[SERVER CHECK] Is the server running at https://brendt-store-production-d6ef.up.railway.app?');
       
       // Update UI status indicator
       const statusEl = document.getElementById('server-status');

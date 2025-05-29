@@ -21,7 +21,7 @@ const addressService = {
       }
       
       // Make a direct fetch call with explicit headers
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api'}/users/profile`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://brendt-store-production-d6ef.up.railway.app/api'}/users/profile`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ const addressService = {
         throw new Error('Authentication required');
       }
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api'}/users/address`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://brendt-store-production-d6ef.up.railway.app/api'}/users/address`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -148,7 +148,7 @@ const addressService = {
         throw new Error('Authentication required');
       }
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api'}/users/address/${addressId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://brendt-store-production-d6ef.up.railway.app/api'}/users/address/${addressId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -198,7 +198,7 @@ const addressService = {
         throw new Error('Authentication required');
       }
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api'}/users/address/${addressId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://brendt-store-production-d6ef.up.railway.app/api'}/users/address/${addressId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -247,7 +247,7 @@ const addressService = {
         throw new Error('Authentication required');
       }
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api'}/users/address/${addressId}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://brendt-store-production-d6ef.up.railway.app/api'}/users/address/${addressId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

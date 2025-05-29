@@ -28,7 +28,7 @@ const orderService = {
       }
       
       // Try using the full path to ensure we're hitting the right endpoint
-      const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || 'https://brendt-store-production-d6ef.up.railway.app/api';
       const response = await fetch(`${apiBase}/orders`, {
         method: 'POST',
         headers: {
@@ -317,7 +317,7 @@ const orderService = {
       console.log('[ORDER] Verifying Stripe session:', sessionId);
       
       // Call our own API endpoint that verifies the session with Stripe
-      const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || 'https://brendt-store-production-d6ef.up.railway.app/api';
       const response = await fetch(`${apiBase}/payments/verify-session?session_id=${sessionId}`);
       
       if (!response.ok) {
