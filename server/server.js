@@ -63,30 +63,38 @@ app.use((req, res, next) => {
  next();
 });
 
-// 4. CORS Configuration - COMPLETE FIX
+// Replace your CORS section in server.js with this:
+
+// 4. CORS Configuration - FINAL WORKING VERSION
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
+    console.log('CORS Origin Check:', origin);
+    
+    // Allow requests with no origin (mobile apps, Postman, etc.)
+    if (!origin) {
+      console.log('CORS: Allowing request with no origin');
+      return callback(null, true);
+    }
     
     const allowedOrigins = [
       'http://localhost:3000',
       'http://localhost:3001', 
       'http://127.0.0.1:3000',
-      'https://brendt-store.vercel.app',
-      'https://brendt-store-git-main-almostaphasmart.vercel.app',
-      'https://brendt-store-almostaphasmart.vercel.app'
+      'https://brendt-store.vercel.app'
     ];
     
-    // Check if origin is in allowed list OR matches Vercel pattern
-    const isAllowed = allowedOrigins.includes(origin) || 
-                     /^https:\/\/brendt-store.*\.vercel\.app$/.test(origin);
-    
-    if (isAllowed) {
-      console.log('CORS allowed origin:', origin);
+    // Check exact match first
+    if (allowedOrigins.includes(origin)) {
+      console.log('CORS: Origin allowed (exact match):', origin);
       callback(null, true);
-    } else {
-      console.log('CORS blocked origin:', origin);
+    }
+    // Check Vercel pattern
+    else if (/^https:\/\/brendt-store.*\.vercel\.app$/.test(origin)) {
+      console.log('CORS: Origin allowed (Vercel pattern):', origin);
+      callback(null, true);
+    }
+    else {
+      console.log('CORS: Origin BLOCKED:', origin);
       callback(new Error('Not allowed by CORS'));
     }
   },
@@ -110,6 +118,7 @@ app.use(cors(corsOptions));
 
 // Handle preflight requests explicitly
 app.options('*', cors(corsOptions));
+
 
 // 5. Body parser - IMPORTANT: This must come BEFORE route handlers
 // EXCEPT FOR WEBHOOK ROUTE which needs raw body
