@@ -16,8 +16,8 @@ process.on('uncaughtException', err => {
  process.exit(1);
 });
 
-// Load environment variables
-if (process.env.NODE_ENV !== "production") { dotenv.config(); }
+// Always load dotenv for local development, Railway handles production env vars
+dotenv.config();
 
 // Environment variables check
 console.log('Environment check:', { 
@@ -28,6 +28,9 @@ console.log('Environment check:', {
 
 // Initialize app
 const app = express();
+
+// Trust Railway proxy for rate limiting
+app.set('trust proxy', true);
 
 // Import routes - AFTER initializing app
 const connectDB = require('./config/db');
