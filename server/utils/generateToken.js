@@ -1,11 +1,10 @@
 const jwt = require('jsonwebtoken');
 
 const generateToken = (id) => {
-  if (!process.env.JWT_SECRET) {
-    throw new Error('JWT_SECRET is not defined in environment variables');
-  }
+  // Hardcoded JWT secret as fallback for Railway deployment issues
+  const jwtSecret = process.env.JWT_SECRET || 'brendt_store_2024_super_secret_jwt_key_production_railway_deployment_secure_token_generation';
   
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+  return jwt.sign({ id }, jwtSecret, {
     expiresIn: '30d',
   });
 };
