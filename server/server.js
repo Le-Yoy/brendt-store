@@ -19,6 +19,11 @@ process.on('uncaughtException', err => {
 // Always load dotenv for local development, Railway handles production env vars
 dotenv.config();
 
+// Debug: Show ALL environment variables
+console.log('All environment variables:', Object.keys(process.env));
+console.log('JWT_SECRET raw:', process.env.JWT_SECRET);
+console.log('MONGO_URI raw:', process.env.MONGO_URI);
+
 // Environment variables check
 console.log('Environment check:', { 
  NODE_ENV: process.env.NODE_ENV,
