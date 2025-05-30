@@ -12,27 +12,29 @@ const registerUser = catchAsync(async (req, res, next) => {
     console.log('[SERVER] Registration attempt:', { 
       name, 
       email, 
-      passwordProvided: !!password,
-      requestBody: req.body 
+      passwordProvided: !!password 
     });
     
     if (!name || !email || !password) {
       console.error('[SERVER] Missing required fields for registration');
-      return next(new AppError('Please provide name, email and password', 400));
+      return res.status(400).json({
+        success: false,
+        error: 'Please provide name, email and password',
+        token: '[MISSING]'
+      });
     }
     
     const userExists = await User.findOne({ email });
     if (userExists) {
       console.log('[SERVER] Registration failed: User already exists with email:', email);
-      return next(new AppError('User already exists', 400));
+      return res.status(400).json({
+        success: false,
+        error: 'User already exists',
+        token: '[MISSING]'
+      });
     }
     
-    // Only allow setting role to admin if the request is made by an admin
     const userRole = req.user && req.user.role === 'admin' && role === 'admin' ? 'admin' : 'user';
-    
-    // Create verification token (for email verification if implemented)
-    const verificationToken = crypto.randomBytes(32).toString('hex');
-    const verificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
     
     console.log('[SERVER] Creating user with data:', { name, email, role: userRole });
     
@@ -40,47 +42,81 @@ const registerUser = catchAsync(async (req, res, next) => {
       name,
       email,
       password,
-      role: userRole,
-      verificationToken,
-      verificationTokenExpires
+      role: userRole
     });
     
     console.log('[SERVER] User created successfully:', { id: user._id, email: user.email });
     
+    // Generate token
+    const token = generateToken(user._id);
+    
     res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      token: generateToken(user._id),
+      success: true,
+      data: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      },
+      token: token
     });
   } catch (err) {
     console.error('[SERVER] Registration error:', err);
-    if (err.name === 'ValidationError') {
-      // Handle Mongoose validation errors
-      const messages = Object.values(err.errors).map(val => val.message);
-      return next(new AppError(`Validation Error: ${messages.join(', ')}`, 400));
-    }
-    return next(new AppError('Error creating user: ' + err.message, 400));
+    return res.status(400).json({
+      success: false,
+      error: 'JWT configuration error',
+      token: '[MISSING]'
+    });
   }
 });
 
 const loginUser = catchAsync(async (req, res, next) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
+    
+    console.log('[SERVER] Login attempt for email:', email);
 
-  const user = await User.findOne({ email }).select('+password');
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        error: 'Please provide email and password',
+        token: '[MISSING]'
+      });
+    }
 
-  if (!user || !(await user.matchPassword(password))) {
-    return next(new AppError('Invalid email or password', 401));
+    const user = await User.findOne({ email }).select('+password');
+
+    if (!user || !(await user.matchPassword(password))) {
+      return res.status(401).json({
+        success: false,
+        error: 'Invalid email or password',
+        token: '[MISSING]'
+      });
+    }
+
+    // Generate token
+    const token = generateToken(user._id);
+    
+    console.log('[SERVER] Login successful for user:', user._id);
+
+    res.status(200).json({
+      success: true,
+      data: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      },
+      token: token
+    });
+  } catch (err) {
+    console.error('[SERVER] Login error:', err);
+    return res.status(500).json({
+      success: false,
+      error: 'JWT configuration error',
+      token: '[MISSING]'
+    });
   }
-
-  res.json({
-    _id: user._id,
-    name: user.name,
-    email: user.email,
-    role: user.role,
-    token: generateToken(user._id),
-  });
 });
 
 const getUserProfile = catchAsync(async (req, res, next) => {
