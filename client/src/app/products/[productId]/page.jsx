@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import styles from './ProductPage.module.css';
 
 import ProductGallery from '@/components/product/ProductGallery';
@@ -14,6 +14,7 @@ import productService from '@/services/productService';
 
 export default function ProductPage({ params }) {
   const { productId } = useParams();
+  const searchParams = useSearchParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState(null);
@@ -26,12 +27,38 @@ export default function ProductPage({ params }) {
         // First try to get the product from the API
         const productData = await productService.getProduct(productId);
         // Handle both formats of API response (data property or direct)
-        setProduct(productData.data || productData);
+        const resolvedProduct = productData.data || productData;
+        setProduct(resolvedProduct);
         setUsingMockData(false);
         
-        // Set default selected color to first available
-        if (productData.colors && productData.colors.length > 0) {
-          setSelectedColor(productData.colors[0]);
+        // Check URL parameters for color selection
+        const colorIndexParam = searchParams.get('colorIndex');
+        const colorParam = searchParams.get('color');
+        
+        if (resolvedProduct.colors && resolvedProduct.colors.length > 0) {
+          let targetColor = null;
+          
+          // Priority 1: Try to match by colorIndex from URL
+          if (colorIndexParam !== null) {
+            const colorIndex = parseInt(colorIndexParam);
+            if (colorIndex >= 0 && colorIndex < resolvedProduct.colors.length) {
+              targetColor = resolvedProduct.colors[colorIndex];
+            }
+          }
+          
+          // Priority 2: Try to match by color name from URL if colorIndex didn't work
+          if (!targetColor && colorParam) {
+            targetColor = resolvedProduct.colors.find(color => 
+              color.name?.toLowerCase() === colorParam.toLowerCase()
+            );
+          }
+          
+          // Priority 3: Fall back to first color
+          if (!targetColor) {
+            targetColor = resolvedProduct.colors[0];
+          }
+          
+          setSelectedColor(targetColor);
         }
         
         setLoading(false);
@@ -44,9 +71,34 @@ export default function ProductPage({ params }) {
           setProduct(mockData);
           setUsingMockData(true);
           
-          // Set default selected color to first available
+          // Check URL parameters for color selection
+          const colorIndexParam = searchParams.get('colorIndex');
+          const colorParam = searchParams.get('color');
+          
           if (mockData.colors && mockData.colors.length > 0) {
-            setSelectedColor(mockData.colors[0]);
+            let targetColor = null;
+            
+            // Priority 1: Try to match by colorIndex from URL
+            if (colorIndexParam !== null) {
+              const colorIndex = parseInt(colorIndexParam);
+              if (colorIndex >= 0 && colorIndex < mockData.colors.length) {
+                targetColor = mockData.colors[colorIndex];
+              }
+            }
+            
+            // Priority 2: Try to match by color name from URL if colorIndex didn't work
+            if (!targetColor && colorParam) {
+              targetColor = mockData.colors.find(color => 
+                color.name?.toLowerCase() === colorParam.toLowerCase()
+              );
+            }
+            
+            // Priority 3: Fall back to first color
+            if (!targetColor) {
+              targetColor = mockData.colors[0];
+            }
+            
+            setSelectedColor(targetColor);
           }
           
           setLoading(false);
@@ -60,7 +112,7 @@ export default function ProductPage({ params }) {
     fetchProduct();
     // Reset scroll position when product changes
     window.scrollTo(0, 0);
-  }, [productId]);
+  }, [productId, searchParams]);
 
   if (loading) {
     return (
