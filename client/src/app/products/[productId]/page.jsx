@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import styles from './ProductPage.module.css';
 
 import ProductGallery from '@/components/product/ProductGallery';
@@ -15,11 +15,34 @@ import productService from '@/services/productService';
 export default function ProductPage({ params }) {
   const { productId } = useParams();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [usingMockData, setUsingMockData] = useState(false);
+
+  // Function to update URL when color changes
+  const updateURL = (color, colorIndex) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('color', color.name || color);
+    params.set('colorIndex', colorIndex.toString());
+    
+    // Replace current URL without adding to history
+    const newURL = `${window.location.pathname}?${params.toString()}`;
+    router.replace(newURL, { scroll: false });
+  };
+
+  // Enhanced setSelectedColor that also updates URL
+  const handleColorChange = (color) => {
+    if (product && product.colors) {
+      const colorIndex = product.colors.findIndex(c => c.name === color.name);
+      if (colorIndex !== -1) {
+        setSelectedColor(color);
+        updateURL(color, colorIndex);
+      }
+    }
+  };
 
   useEffect(() => {
     async function fetchProduct() {
@@ -153,7 +176,7 @@ export default function ProductPage({ params }) {
           <ProductInfo 
             product={product}
             selectedColor={selectedColor}
-            setSelectedColor={setSelectedColor}
+            setSelectedColor={handleColorChange}
             selectedSize={selectedSize}
             setSelectedSize={setSelectedSize}
           />
