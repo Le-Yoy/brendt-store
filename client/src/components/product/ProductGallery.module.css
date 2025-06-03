@@ -3,6 +3,9 @@
   width: 100%;
   height: auto;
   padding-right: var(--spacing-2);
+  /* Enhanced touch behavior */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .imageGrid {
@@ -17,6 +20,9 @@
   position: relative;
   overflow: hidden;
   margin-bottom: var(--spacing-3);
+  /* Touch optimization */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .imageWrapper {
@@ -25,11 +31,28 @@
   height: 100%;
   background-color: var(--color-secondary);
   cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='18' fill='%23B07A72' opacity='0.8'/%3E%3Cpath d='M20 10 L20 30 M10 20 L30 20' stroke='%23000000' stroke-width='2'/%3E%3C/svg%3E"), pointer;
+  /* Perfect touch optimization */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .productImage {
   object-fit: cover;
   object-position: center;
+  /* Ultra-smooth touch */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  pointer-events: none;
+  /* Hardware acceleration */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: transform;
 }
 
 /* Wishlist button */
@@ -48,6 +71,11 @@
   cursor: pointer;
   z-index: 10;
   transition: all 0.3s ease;
+  /* Enhanced touch */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  min-width: 44px;
+  min-height: 44px;
 }
 
 .wishlistIcon {
@@ -68,6 +96,9 @@
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(5px);
+  /* Smooth touch */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .zoomContent {
@@ -97,6 +128,11 @@
   justify-content: center;
   transition: all 0.3s ease;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  /* Touch-friendly */
+  min-width: 50px;
+  min-height: 50px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .closeZoom:hover {
@@ -114,6 +150,10 @@
 
 .zoomedImage {
   object-fit: contain;
+  /* Prevent interactions */
+  pointer-events: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Mobile styles */
@@ -121,13 +161,22 @@
   width: 100%;
   position: relative;
   overflow: hidden;
-  touch-action: pan-x;
+  /* Enhanced touch behavior for mobile */
+  touch-action: pan-y pinch-zoom;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .mobileCarousel {
   display: flex;
-  transition: transform 0.4s ease;
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   width: 100%;
+  will-change: transform;
+  /* Hardware acceleration */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 .mobileCarouselItem {
@@ -135,6 +184,9 @@
   width: 100%;
   aspect-ratio: 3/4;
   height: 65dvh;
+  /* Smooth touch */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .mobileIndicator {
@@ -154,9 +206,27 @@
   background: transparent;
   padding: 0;
   cursor: pointer;
+  /* Touch-friendly size */
+  min-width: 24px;
+  min-height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.activeDot {
+.indicatorDot::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid var(--color-accent);
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.activeDot::before {
   background-color: var(--color-accent);
 }
 
@@ -173,9 +243,35 @@
     right: 10px;
     width: 36px;
     height: 36px;
+    /* Enhanced mobile touch */
+    min-width: 44px;
+    min-height: 44px;
   }
   
   .wishlistIcon {
     font-size: 20px;
+  }
+  
+  /* Mobile-specific touch optimizations */
+  .mobileGallery {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .imageWrapper {
+    /* Improve mobile touch response */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+}
+
+/* iOS Safari specific optimizations */
+@supports (-webkit-touch-callout: none) {
+  .mobileGallery,
+  .imageWrapper,
+  .productImage,
+  .zoomOverlay {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
   }
 }

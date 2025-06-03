@@ -1,4 +1,3 @@
-// src/components/product/ProductGallery.jsx
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
@@ -13,6 +12,12 @@ export default function ProductGallery({ images, productName }) {
   const [wishlist, setWishlist] = useState(false);
   const galleryRef = useRef(null);
   
+  // Enhanced touch handling with stricter thresholds
+  const touchStartRef = useRef({ x: 0, y: 0, time: 0 });
+  const touchMoveRef = useRef({ x: 0, y: 0 });
+  const isSwipeInProgress = useRef(false);
+  const swipeDirection = useRef(null); // 'horizontal', 'vertical', or null
+  
   // Ensure we have at least 6 images (duplicate if needed)
   const normalizedImages = images && images.length > 0 
     ? [...images, ...Array(Math.max(0, 6 - images.length)).fill(images[0])]
@@ -23,64 +28,124 @@ export default function ProductGallery({ images, productName }) {
       setIsMobile(window.innerWidth <= 768);
     };
     
-    // Check on initial load
     checkIsMobile();
-    
-    // Add event listener for resize
     window.addEventListener('resize', checkIsMobile);
     
-    // Clean up
     return () => window.removeEventListener('resize', checkIsMobile);
   }, []);
   
-  // Handle mobile carousel swipe
-  const handleTouchStart = useRef({ x: 0 });
-  
+  // Perfect touch handlers for mobile carousel
   const onTouchStart = (e) => {
-    handleTouchStart.current.x = e.touches[0].clientX;
+    const touch = e.touches[0];
+    touchStartRef.current = {
+      x: touch.clientX,
+      y: touch.clientY,
+      time: Date.now()
+    };
+    touchMoveRef.current = {
+      x: touch.clientX,
+      y: touch.clientY
+    };
+    isSwipeInProgress.current = false;
+    swipeDirection.current = null;
   };
   
-  const onTouchEnd = (e) => {
-    const touchEndX = e.changedTouches[0].clientX;
-    const diff = handleTouchStart.current.x - touchEndX;
+  const onTouchMove = (e) => {
+    if (!touchStartRef.current) return;
     
-    // Detect swipe direction (threshold of 50px)
-    if (diff > 50) {
-      // Swipe left - show next image
-      setCurrentImageIndex(prev => 
-        prev < normalizedImages.length - 1 ? prev + 1 : 0
-      );
-    } else if (diff < -50) {
-      // Swipe right - show previous image
-      setCurrentImageIndex(prev => 
-        prev > 0 ? prev - 1 : normalizedImages.length - 1
-      );
+    const touch = e.touches[0];
+    touchMoveRef.current = {
+      x: touch.clientX,
+      y: touch.clientY
+    };
+    
+    const deltaX = Math.abs(touch.clientX - touchStartRef.current.x);
+    const deltaY = Math.abs(touch.clientY - touchStartRef.current.y);
+    
+    // Determine swipe direction only once with strict thresholds
+    if (!swipeDirection.current && (deltaX > 15 || deltaY > 15)) {
+      if (deltaX > deltaY && deltaX > 20) {
+        // Clear horizontal swipe detected
+        swipeDirection.current = 'horizontal';
+        isSwipeInProgress.current = true;
+        // Only prevent default for horizontal swipes
+        e.preventDefault();
+      } else if (deltaY > deltaX && deltaY > 15) {
+        // Vertical scroll detected
+        swipeDirection.current = 'vertical';
+        isSwipeInProgress.current = false;
+        // Allow natural scroll - don't prevent default
+      }
+    }
+    
+    // Continue preventing default only for horizontal swipes
+    if (swipeDirection.current === 'horizontal') {
+      e.preventDefault();
     }
   };
   
-  // Zoom image functionality - fixed to handle click events correctly
-  const openZoom = (src) => {
+  const onTouchEnd = (e) => {
+    if (!touchStartRef.current || !touchMoveRef.current) return;
+    
+    const deltaX = touchStartRef.current.x - touchMoveRef.current.x;
+    const deltaY = Math.abs(touchStartRef.current.y - touchMoveRef.current.y);
+    const swipeTime = Date.now() - touchStartRef.current.time;
+    
+    // STRICTER CRITERIA - Only process horizontal swipes with higher threshold
+    if (swipeDirection.current === 'horizontal' && 
+        Math.abs(deltaX) > 100 && 
+        deltaY < 25 && 
+        swipeTime < 350) {
+      
+      e.preventDefault();
+      
+      if (deltaX > 0) {
+        // Swipe left - next image
+        setCurrentImageIndex(prev => 
+          prev < normalizedImages.length - 1 ? prev + 1 : 0
+        );
+      } else {
+        // Swipe right - previous image  
+        setCurrentImageIndex(prev => 
+          prev > 0 ? prev - 1 : normalizedImages.length - 1
+        );
+      }
+    }
+    
+    // Reset all touch tracking
+    touchStartRef.current = null;
+    touchMoveRef.current = null;
+    isSwipeInProgress.current = false;
+    swipeDirection.current = null;
+  };
+  
+  // Zoom functionality with swipe protection
+  const openZoom = (src, e) => {
+    // Don't zoom if user was swiping
+    if (isSwipeInProgress.current || swipeDirection.current === 'horizontal') {
+      return;
+    }
+    
+    if (e) e.preventDefault();
     setZoomedImage(src);
-    document.body.style.overflow = 'hidden'; // Prevent scrolling when zoom is active
+    document.body.style.overflow = 'hidden';
   };
   
   const closeZoom = () => {
     setZoomedImage(null);
-    document.body.style.overflow = 'auto'; // Re-enable scrolling
+    document.body.style.overflow = 'auto';
   };
   
   // Wishlist functionality
   const toggleWishlist = (e) => {
-    e.stopPropagation(); // Prevent triggering the zoom
+    e.stopPropagation();
+    e.preventDefault();
     setWishlist(!wishlist);
     
-    // Mock implementation of adding/removing from wishlist
     if (!wishlist) {
       console.log('Added to wishlist:', productName);
-      // Here you would call an API to add to wishlist
     } else {
       console.log('Removed from wishlist:', productName);
-      // Here you would call an API to remove from wishlist
     }
   };
   
@@ -89,15 +154,22 @@ export default function ProductGallery({ images, productName }) {
       <div 
         className={styles.mobileGallery}
         onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
       >
         <div 
           className={styles.mobileCarousel}
-          style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
+          style={{ 
+            transform: `translateX(-${currentImageIndex * 100}%)`,
+            transition: isSwipeInProgress.current ? 'none' : 'transform 0.25s ease-out'
+          }}
         >
           {normalizedImages.map((src, index) => (
             <div className={styles.mobileCarouselItem} key={`mobile-img-${index}`}>
-              <div className={styles.imageWrapper} onClick={() => openZoom(src)}>
+              <div 
+                className={styles.imageWrapper} 
+                onClick={(e) => openZoom(src, e)}
+              >
                 <Image 
                   src={src}
                   alt={`${productName} - Image ${index + 1}`}
@@ -105,6 +177,7 @@ export default function ProductGallery({ images, productName }) {
                   sizes="100vw"
                   priority={index === 0}
                   className={styles.productImage}
+                  draggable={false}
                 />
                 {index === 0 && (
                   <button 
@@ -148,7 +221,7 @@ export default function ProductGallery({ images, productName }) {
             >
               <div 
                 className={styles.imageWrapper}
-                onClick={() => openZoom(src)}
+                onClick={(e) => openZoom(src, e)}
               >
                 <Image
                   src={src}
@@ -157,6 +230,7 @@ export default function ProductGallery({ images, productName }) {
                   sizes="(max-width: 768px) 100vw, 32.5vw"
                   priority={index < 2}
                   className={styles.productImage}
+                  draggable={false}
                 />
                 {index === 0 && (
                   <button 
@@ -189,6 +263,7 @@ export default function ProductGallery({ images, productName }) {
                 sizes="100vw"
                 className={styles.zoomedImage}
                 priority
+                draggable={false}
               />
             </div>
           </div>
