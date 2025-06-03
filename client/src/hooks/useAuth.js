@@ -31,8 +31,8 @@ export function AuthProvider({ children }) {
         
         console.log('[AUTH] Token found, fetching user profile');
         
-        // Fetch user profile from API
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://brendt-store-production-d6ef.up.railway.app/api'}/users/profile`, {
+        // Fetch user profile from API - FIXED: Use hardcoded URL
+        const response = await fetch(`https://brendt-store-production-d6ef.up.railway.app/api/users/profile`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -259,7 +259,8 @@ const login = async (email, password) => {
         throw new Error('Authentication required');
       }
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://brendt-store-production-d6ef.up.railway.app/api'}/users/profile`, {
+      // FIXED: Use hardcoded URL instead of environment variable
+      const response = await fetch(`https://brendt-store-production-d6ef.up.railway.app/api/users/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -310,7 +311,8 @@ const login = async (email, password) => {
         newPassword: passwordData.newPassword
       };
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://brendt-store-production-d6ef.up.railway.app/api'}/users/password`, {
+      // FIXED: Use hardcoded URL instead of environment variable
+      const response = await fetch(`https://brendt-store-production-d6ef.up.railway.app/api/users/password`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -348,7 +350,8 @@ const login = async (email, password) => {
         throw new Error('Authentication required');
       }
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://brendt-store-production-d6ef.up.railway.app/api'}/users/profile`, {
+      // FIXED: Use hardcoded URL instead of environment variable
+      const response = await fetch(`https://brendt-store-production-d6ef.up.railway.app/api/users/profile`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

@@ -5,6 +5,8 @@ import Button from '../../common/Button/Button';
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [touchStart, setTouchStart] = useState(0);
+  const [touchEnd, setTouchEnd] = useState(0);
   const intervalRef = useRef(null);
   
   const images = [
@@ -25,6 +27,7 @@ const Hero = () => {
   }, [currentSlide]);
 
   const goToNextSlide = () => {
+    if (isAnimating) return; // Prevent rapid transitions
     setIsAnimating(true);
     setTimeout(() => {
       setCurrentSlide((prev) => (prev + 1) % images.length);
@@ -33,6 +36,7 @@ const Hero = () => {
   };
 
   const goToPrevSlide = () => {
+    if (isAnimating) return; // Prevent rapid transitions
     setIsAnimating(true);
     setTimeout(() => {
       setCurrentSlide((prev) => (prev === 0 ? images.length - 1 : prev - 1));
@@ -41,7 +45,7 @@ const Hero = () => {
   };
 
   const goToSlide = (index) => {
-    if (index === currentSlide) return;
+    if (index === currentSlide || isAnimating) return;
     setIsAnimating(true);
     setTimeout(() => {
       setCurrentSlide(index);
@@ -49,9 +53,60 @@ const Hero = () => {
     }, 500);
   };
 
+  // Touch event handlers
+  const handleTouchStart = (e) => {
+    setTouchEnd(0); // Reset touchEnd
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe && !isAnimating) {
+      // Clear auto-advance timer when user interacts
+      clearInterval(intervalRef.current);
+      goToNextSlide();
+      // Restart auto-advance after user interaction
+      setTimeout(() => {
+        intervalRef.current = setInterval(() => {
+          goToNextSlide();
+        }, 5000);
+      }, 3000);
+    }
+    
+    if (isRightSwipe && !isAnimating) {
+      // Clear auto-advance timer when user interacts
+      clearInterval(intervalRef.current);
+      goToPrevSlide();
+      // Restart auto-advance after user interaction
+      setTimeout(() => {
+        intervalRef.current = setInterval(() => {
+          goToNextSlide();
+        }, 5000);
+      }, 3000);
+    }
+
+    // Reset touch states
+    setTouchStart(0);
+    setTouchEnd(0);
+  };
+
   return (
     <section className={styles.hero}>
-      <div className={styles.carousel}>
+      <div 
+        className={styles.carousel}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
         {images.map((img, index) => (
           <div 
             key={index} 
@@ -65,6 +120,7 @@ const Hero = () => {
         <button 
           className={`${styles.arrow} ${styles.arrowLeft}`} 
           onClick={goToPrevSlide}
+          disabled={isAnimating}
           aria-label="Previous slide"
         >
           &larr;
@@ -72,6 +128,7 @@ const Hero = () => {
         <button 
           className={`${styles.arrow} ${styles.arrowRight}`} 
           onClick={goToNextSlide}
+          disabled={isAnimating}
           aria-label="Next slide"
         >
           &rarr;
@@ -94,6 +151,7 @@ const Hero = () => {
             key={index}
             className={`${styles.indicator} ${index === currentSlide ? styles.indicatorActive : ''}`}
             onClick={() => goToSlide(index)}
+            disabled={isAnimating}
             aria-label={`Go to slide ${index + 1}`}
           />
         ))}

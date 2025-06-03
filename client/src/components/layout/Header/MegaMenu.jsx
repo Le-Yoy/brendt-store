@@ -288,12 +288,12 @@ const MegaMenu = ({ activeMegaMenu }) => {
             <div className="mega-menu__featured-content">
               <div className="mega-menu__featured-image-wrapper">
               <Image 
-                src={`/assets/images/placeholder.jpg`}
-                alt={currentCategory.name || 'Category image'}
-                width={300}
-                height={400}
-                className="mega-menu__featured-image"
-              />
+  src={`/assets/images/products/brendt-new/${activeMegaMenu === 'homme' ? 'Homme' : 'Femme'}/chaussures/${activeMegaMenu === 'homme' ? (currentCategory.id === 'chaussures' ? 'mocassins/Agafay-Walk/Gris/1.webp' : 'mocassins/Agafay-Walk/Gris/1.webp') : 'babouches/Beige/1.jpg'}`}
+  alt={currentCategory.name || 'Category image'}
+  width={300}
+  height={400}
+  className="mega-menu__featured-image"
+/>
                 <div className="mega-menu__featured-overlay">
                   <h4 className="mega-menu__featured-title">{currentCategory.name}</h4>
                 </div>

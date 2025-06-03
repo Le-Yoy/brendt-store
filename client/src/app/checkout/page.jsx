@@ -416,15 +416,14 @@ function CheckoutPageContent() {
           const errorStatus = orderResponse.status;
           console.error(`[CHECKOUT] Order creation failed with status: ${errorStatus}`);
           
-          // Try to parse error response
           let errorText = '';
           try {
-            const errorData = await orderResponse.json();
-            errorText = errorData.message || '';
+            const orderText = await orderResponse.text();
+            const errorData = JSON.parse(orderText);
+            errorText = errorData.message || orderText;
             console.error('[CHECKOUT] Error details:', errorData);
           } catch (e) {
-            errorText = await orderResponse.text();
-            console.error('[CHECKOUT] Error response text:', errorText);
+            console.error('[CHECKOUT] Error parsing response:', e);
           }
           
           if (errorStatus === 401) {
@@ -435,7 +434,7 @@ function CheckoutPageContent() {
             throw new Error(`Erreur lors de la création de la commande (${errorStatus})${errorText ? ': ' + errorText : ''}`);
           }
         }
-  
+        
         const createdOrder = await orderResponse.json();
         console.log('Order created:', createdOrder);
 
@@ -658,12 +657,12 @@ function CheckoutPageContent() {
           // Try to parse error response
           let errorText = '';
           try {
-            const errorData = await response.json();
-            errorText = errorData.message || '';
+            errorText = await response.text();
+            const errorData = JSON.parse(errorText);
+            errorText = errorData.message || errorText;
             console.error('[CHECKOUT] Error details:', errorData);
           } catch (e) {
-            errorText = await response.text();
-            console.error('[CHECKOUT] Error response text:', errorText);
+            console.error('[CHECKOUT] Error parsing response:', e);
           }
           
           if (errorStatus === 401) {

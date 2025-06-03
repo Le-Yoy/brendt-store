@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import useCart from '../../hooks/useCart';
+import CartNotification from '../ui/CartNotification';
 import styles from './ProductInfo.module.css';
 
 const colorNamesInFrench = {
@@ -29,6 +30,9 @@ export default function ProductInfo({
   const [isMobileView, setIsMobileView] = useState(false);
   const [buttonMessage, setButtonMessage] = useState('');
   const [isAddedToCart, setIsAddedToCart] = useState(false);
+  
+  // ✨ NEW: Cart notification state
+  const [showNotification, setShowNotification] = useState(false);
   
   useEffect(() => {
     setIsMobileView(window.innerWidth <= 768);
@@ -121,30 +125,45 @@ export default function ProductInfo({
     return true;
   };
   
+  // ✨ UPDATED: Beautiful add to cart with notification
   const addToCart = () => {
     if (!validateSelection()) return;
     
-    const success = cart.addItem(product, selectedSize, selectedColor);
-    if (success) {
-      setButtonMessage('Produit ajouté au panier');
-      setIsAddedToCart(true);
-      
-      // Reset success message after 3 seconds
-      setTimeout(() => {
-        setButtonMessage('');
-        setIsAddedToCart(false);
-      }, 3000);
+    try {
+      const success = cart.addItem(product, selectedSize, selectedColor);
+      if (success) {
+        // Show beautiful notification instead of basic message
+        setShowNotification(true);
+        setIsAddedToCart(true);
+        
+        // Reset button state after 2 seconds
+        setTimeout(() => {
+          setIsAddedToCart(false);
+        }, 2000);
+      } else {
+        setButtonMessage('Erreur lors de l\'ajout au panier');
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      setButtonMessage('Erreur lors de l\'ajout au panier');
     }
   };
   
   const proceedToCheckout = () => {
     if (!validateSelection()) return;
     
-    const success = cart.addItem(product, selectedSize, selectedColor);
-    
-    if (success) {
-      // Redirect to checkout page
-      window.location.href = '/checkout';
+    try {
+      const success = cart.addItem(product, selectedSize, selectedColor);
+      
+      if (success) {
+        // Redirect to checkout page
+        window.location.href = '/checkout';
+      } else {
+        setButtonMessage('Erreur lors de l\'ajout au panier');
+      }
+    } catch (error) {
+      console.error('Error adding to cart for checkout:', error);
+      setButtonMessage('Erreur lors de l\'ajout au panier');
     }
   };
   
@@ -281,6 +300,16 @@ export default function ProductInfo({
           </button>
         </div>
       </div>
+
+      {/* ✨ NEW: Beautiful Cart Notification */}
+      <CartNotification
+        isVisible={showNotification}
+        onClose={() => setShowNotification(false)}
+        product={product}
+        selectedColor={selectedColor}
+        selectedSize={selectedSize}
+        cartItemCount={cart.itemCount || 0}
+      />
     </div>
   );
 }

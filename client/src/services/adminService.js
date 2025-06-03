@@ -13,7 +13,7 @@ const adminService = {
    */
   getUsers: async () => {
     try {
-      const response = await api.get('/api/admin/users');
+      const response = await api.get('/admin/users');
       return response;
     } catch (error) {
       console.error('[ADMIN] Get users error:', error);
@@ -28,7 +28,7 @@ const adminService = {
    */
   createUser: async (userData) => {
     try {
-      return await api.post('/api/admin/users', userData);
+      return await api.post('/admin/users', userData);
     } catch (error) {
       console.error('[ADMIN] Create user error:', error);
       throw error;
@@ -42,7 +42,7 @@ const adminService = {
    */
   getUserById: async (userId) => {
     try {
-      return await api.get(`/api/admin/users/${userId}`);
+      return await api.get(`/admin/users/${userId}`);
     } catch (error) {
       console.error('[ADMIN] Get user error:', error);
       throw error;
@@ -57,7 +57,7 @@ const adminService = {
    */
   updateUser: async (userId, userData) => {
     try {
-      return await api.put(`/api/admin/users/${userId}`, userData);
+      return await api.put(`/admin/users/${userId}`, userData);
     } catch (error) {
       console.error('[ADMIN] Update user error:', error);
       throw error;
@@ -71,7 +71,7 @@ const adminService = {
    */
   deleteUser: async (userId) => {
     try {
-      return await api.delete(`/api/admin/users/${userId}`);
+      return await api.delete(`/admin/users/${userId}`);
     } catch (error) {
       console.error('[ADMIN] Delete user error:', error);
       throw error;
@@ -84,7 +84,7 @@ const adminService = {
    */
   getProducts: async () => {
     try {
-      return await api.get('/api/admin/products');
+      return await api.get('/admin/products');
     } catch (error) {
       console.error('[ADMIN] Get products error:', error);
       throw error;
@@ -98,7 +98,7 @@ const adminService = {
    */
   createProduct: async (productData) => {
     try {
-      return await api.post('/api/admin/products', productData);
+      return await api.post('/admin/products', productData);
     } catch (error) {
       console.error('[ADMIN] Create product error:', error);
       throw error;
@@ -113,7 +113,7 @@ const adminService = {
    */
   updateProduct: async (productId, productData) => {
     try {
-      return await api.put(`/api/admin/products/${productId}`, productData);
+      return await api.put(`/admin/products/${productId}`, productData);
     } catch (error) {
       console.error('[ADMIN] Update product error:', error);
       throw error;
@@ -127,7 +127,7 @@ const adminService = {
    */
   deleteProduct: async (productId) => {
     try {
-      return await api.delete(`/api/admin/products/${productId}`);
+      return await api.delete(`/admin/products/${productId}`);
     } catch (error) {
       console.error('[ADMIN] Delete product error:', error);
       throw error;
@@ -140,7 +140,7 @@ const adminService = {
    */
   getCategories: async () => {
     try {
-      return await api.get('/api/admin/categories');
+      return await api.get('/admin/categories');
     } catch (error) {
       console.error('[ADMIN] Get categories error:', error);
       throw error;
@@ -153,7 +153,7 @@ const adminService = {
    */
   getOrders: async () => {
     try {
-      return await api.get('/api/admin/orders');
+      return await api.get('/admin/orders');
     } catch (error) {
       console.error('[ADMIN] Get orders error:', error);
       throw error;
@@ -167,7 +167,7 @@ const adminService = {
    */
   getAllOrders: async () => {
     try {
-      const response = await api.get('/api/orders');
+      const response = await api.get('/orders');
       return response.data.orders || [];
     } catch (error) {
       console.error('Get all orders error:', error);
@@ -184,7 +184,7 @@ const adminService = {
   updateOrderStatus: async (orderId, statusData) => {
     try {
       console.log(`[ADMIN] Updating order ${orderId} status:`, statusData);
-      const response = await api.put(`/api/admin/orders/${orderId}/status`, statusData);
+      const response = await api.put(`/admin/orders/${orderId}/status`, statusData);
       return response;
     } catch (error) {
       console.error('[ADMIN] Update order status error:', error);
@@ -199,7 +199,7 @@ const adminService = {
    */
   updateOrderToDelivered: async (orderId) => {
     try {
-      return await api.put(`/api/orders/${orderId}/deliver`, {});
+      return await api.put(`/orders/${orderId}/deliver`, {});
     } catch (error) {
       console.error('Update order to delivered error:', error);
       throw error;
@@ -213,7 +213,7 @@ const adminService = {
   getDashboardStats: async () => {
     try {
       console.log('[ADMIN] Fetching dashboard stats...');
-      const response = await api.get('/api/admin/stats');
+      const response = await api.get('/admin/stats');
       console.log('[ADMIN] Dashboard stats fetched:', response);
       return response;
     } catch (error) {
@@ -229,7 +229,7 @@ const adminService = {
    */
   getSalesAnalytics: async (period = 'monthly') => {
     try {
-      return await api.get(`/api/admin/analytics/sales?period=${period}`);
+      return await api.get(`/admin/analytics/sales?period=${period}`);
     } catch (error) {
       console.error('Get sales analytics error:', error);
       throw error;
@@ -242,7 +242,7 @@ const adminService = {
    */
   getCustomerAnalytics: async () => {
     try {
-      return await api.get('/api/admin/analytics/customers');
+      return await api.get('/admin/analytics/customers');
     } catch (error) {
       console.error('Get customer analytics error:', error);
       throw error;
@@ -255,7 +255,7 @@ const adminService = {
    */
   getProductAnalytics: async () => {
     try {
-      return await api.get('/api/admin/analytics/products');
+      return await api.get('/admin/analytics/products');
     } catch (error) {
       console.error('Get product analytics error:', error);
       throw error;
@@ -268,7 +268,7 @@ const adminService = {
    */
   getInventoryLogs: async () => {
     try {
-      return await api.get('/api/admin/inventory');
+      return await api.get('/admin/inventory');
     } catch (error) {
       console.error('Get inventory logs error:', error);
       throw error;
@@ -282,7 +282,7 @@ const adminService = {
    */
   createInventoryLog: async (logData) => {
     try {
-      return await api.post('/api/admin/inventory', logData);
+      return await api.post('/admin/inventory', logData);
     } catch (error) {
       console.error('[ADMIN] Create inventory log error:', error);
       throw error;
@@ -297,7 +297,7 @@ const adminService = {
    */
   approveInventoryLog: async (id, comment) => {
     try {
-      return await api.put(`/api/admin/inventory/${id}/approve`, { comment });
+      return await api.put(`/admin/inventory/${id}/approve`, { comment });
     } catch (error) {
       console.error('Approve inventory log error:', error);
       throw error;
@@ -312,7 +312,7 @@ const adminService = {
    */
   rejectInventoryLog: async (id, comment) => {
     try {
-      return await api.put(`/api/admin/inventory/${id}/reject`, { comment });
+      return await api.put(`/admin/inventory/${id}/reject`, { comment });
     } catch (error) {
       console.error('Reject inventory log error:', error);
       throw error;
@@ -325,7 +325,7 @@ const adminService = {
    */
   getNotifications: async () => {
     try {
-      return await api.get('/api/admin/notifications');
+      return await api.get('/admin/notifications');
     } catch (error) {
       console.error('Get notifications error:', error);
       throw error;
@@ -339,7 +339,7 @@ const adminService = {
    */
   markNotificationAsRead: async (id) => {
     try {
-      return await api.put(`/api/admin/notifications/${id}/read`);
+      return await api.put(`/admin/notifications/${id}/read`);
     } catch (error) {
       console.error('Mark notification as read error:', error);
       throw error;
@@ -352,7 +352,7 @@ const adminService = {
    */
   getForms: async () => {
     try {
-      return await api.get('/api/admin/forms');
+      return await api.get('/admin/forms');
     } catch (error) {
       console.error('Get forms error:', error);
       throw error;
@@ -367,7 +367,7 @@ const adminService = {
    */
   updateForm: async (id, data) => {
     try {
-      return await api.put(`/api/admin/forms/${id}`, data);
+      return await api.put(`/admin/forms/${id}`, data);
     } catch (error) {
       console.error('Update form error:', error);
       throw error;
@@ -381,7 +381,7 @@ const adminService = {
    */
   promoteToAdmin: async (id) => {
     try {
-      return await api.put(`/api/admin/promote/${id}`);
+      return await api.put(`/admin/promote/${id}`);
     } catch (error) {
       console.error('Promote to admin error:', error);
       throw error;
@@ -395,7 +395,7 @@ const adminService = {
    */
   getCustomerInteractions: async (customerId) => {
     try {
-      return await api.get(`/api/admin/customers/${customerId}/interactions`);
+      return await api.get(`/admin/customers/${customerId}/interactions`);
     } catch (error) {
       console.error('[ADMIN] Get customer interactions error:', error);
       throw error;
@@ -409,7 +409,7 @@ const adminService = {
    */
   getCustomerOrderHistory: async (customerId) => {
     try {
-      return await api.get(`/api/admin/customers/${customerId}/orders`);
+      return await api.get(`/admin/customers/${customerId}/orders`);
     } catch (error) {
       console.error('[ADMIN] Get customer order history error:', error);
       throw error;
@@ -423,7 +423,7 @@ const adminService = {
    */
   getCheckoutAnalytics: async (period = '30d') => {
     try {
-      return await api.get(`/api/admin/analytics/checkout?period=${period}`);
+      return await api.get(`/admin/analytics/checkout?period=${period}`);
     } catch (error) {
       console.error('[ADMIN] Get checkout analytics error:', error);
       throw error;
@@ -437,7 +437,7 @@ const adminService = {
    */
   getOrderTimeline: async (orderId) => {
     try {
-      return await api.get(`/api/admin/orders/${orderId}/timeline`);
+      return await api.get(`/admin/orders/${orderId}/timeline`);
     } catch (error) {
       console.error('[ADMIN] Get order timeline error:', error);
       throw error;
@@ -451,7 +451,7 @@ const adminService = {
    */
   getOrderWithDetails: async (orderId) => {
     try {
-      return await api.get(`/api/admin/orders/${orderId}/details`);
+      return await api.get(`/admin/orders/${orderId}/details`);
     } catch (error) {
       console.error('[ADMIN] Get order details error:', error);
       throw error;
@@ -467,7 +467,7 @@ const adminService = {
   getProductsWithColorDetails: async () => {
     try {
       console.log('[ADMIN] Fetching products with color details...');
-      const response = await api.get('/api/admin/products/colors');
+      const response = await api.get('/admin/products/colors');
       console.log('[ADMIN] Products with color details fetched:', response);
       return response;
     } catch (error) {
@@ -486,7 +486,7 @@ const adminService = {
   updateColorStock: async (productId, colorIndex, inStock) => {
     try {
       console.log(`[ADMIN] Updating color stock: Product ${productId}, Color ${colorIndex}, InStock: ${inStock}`);
-      const response = await api.put('/api/admin/products/color-stock', {
+      const response = await api.put('/admin/products/color-stock', {
         productId,
         colorIndex,
         inStock
@@ -509,7 +509,7 @@ const adminService = {
   updateColorPrice: async (productId, colorIndex, price) => {
     try {
       console.log(`[ADMIN] Updating color price: Product ${productId}, Color ${colorIndex}, Price: ${price}`);
-      const response = await api.put('/api/admin/products/color-price', {
+      const response = await api.put('/admin/products/color-price', {
         productId,
         colorIndex,
         price
@@ -532,7 +532,7 @@ const adminService = {
   updateColorStockNumber: async (productId, colorIndex, stock) => {
     try {
       console.log(`[ADMIN] Updating color stock number: Product ${productId}, Color ${colorIndex}, Stock: ${stock}`);
-      const response = await api.put('/api/admin/products/color-stock-number', {
+      const response = await api.put('/admin/products/color-stock-number', {
         productId,
         colorIndex,
         stock
@@ -553,7 +553,7 @@ const adminService = {
   batchUpdateColorStocks: async (updates) => {
     try {
       console.log('[ADMIN] Batch updating color stocks:', updates);
-      const response = await api.put('/api/admin/products/batch-color-stock', {
+      const response = await api.put('/admin/products/batch-color-stock', {
         updates
       });
       console.log('[ADMIN] Batch color stocks updated:', response);
@@ -574,8 +574,8 @@ const adminService = {
     try {
       console.log(`[ADMIN] Fetching stock history for product ${productId}`);
       const url = colorIndex !== null 
-        ? `/api/admin/products/${productId}/stock-history?colorIndex=${colorIndex}`
-        : `/api/admin/products/${productId}/stock-history`;
+        ? `/admin/products/${productId}/stock-history?colorIndex=${colorIndex}`
+        : `/admin/products/${productId}/stock-history`;
       const response = await api.get(url);
       console.log('[ADMIN] Stock history fetched:', response);
       return response;
@@ -593,7 +593,7 @@ const adminService = {
   getLowStockAlerts: async (threshold = 10) => {
     try {
       console.log(`[ADMIN] Fetching low stock alerts with threshold ${threshold}`);
-      const response = await api.get(`/api/admin/products/low-stock?threshold=${threshold}`);
+      const response = await api.get(`/admin/products/low-stock?threshold=${threshold}`);
       console.log('[ADMIN] Low stock alerts fetched:', response);
       return response;
     } catch (error) {
@@ -609,7 +609,7 @@ const adminService = {
   exportStockData: async () => {
     try {
       console.log('[ADMIN] Exporting stock data...');
-      const response = await api.get('/api/admin/products/export-stock');
+      const response = await api.get('/admin/products/export-stock');
       console.log('[ADMIN] Stock data exported:', response);
       return response;
     } catch (error) {
@@ -629,7 +629,7 @@ const adminService = {
     // Initial data fetch
     const fetchOrders = async () => {
       try {
-        const response = await api.get('/api/admin/orders');
+        const response = await api.get('/admin/orders');
         onUpdate(response.data || []);
       } catch (error) {
         console.error('[ADMIN] Real-time orders fetch error:', error);
