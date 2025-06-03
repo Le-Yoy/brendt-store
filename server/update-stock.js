@@ -7,7 +7,7 @@ const Product = require('./models/Product');
 dotenv.config();
 
 // MongoDB connection string
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/brendt';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://brendt-admin:m7Er0FjetgTKEpyW@ce-yoy.l3gz0br.mongodb.net/brendt';
 console.log('Using MongoDB URI:', MONGODB_URI);
 
 /**

@@ -17,25 +17,24 @@ exports.getProducts = async (req, res, next) => {
     } = req.query;
 
     // Build filter object
-    // Build filter object
-const filter = {};
-if (category) filter.category = category;
+    const filter = {};
+    if (category) filter.category = category;
 
-// Special handling for subcategory discrepancies between menu and database
-if (subcategory) {
-  if (gender === 'femme' && subcategory === 'mocassins') {
-    // For women's mocassins, adjust to look for 'mocassinos' in DB
-    filter.subcategory = 'mocassinos';
-  } else if (gender === 'femme' && subcategory === 'babouches') {
-    // For women's babouches, ensure correct filter
-    filter.subcategory = 'babouches';
-  } else {
-    // For all other cases, use the subcategory as provided
-    filter.subcategory = subcategory;
-  }
-}
+    // Special handling for subcategory discrepancies between menu and database
+    if (subcategory) {
+      if (gender === 'femme' && subcategory === 'mocassins') {
+        // For women's mocassins, adjust to look for 'mocassinos' in DB
+        filter.subcategory = 'mocassinos';
+      } else if (gender === 'femme' && subcategory === 'babouches') {
+        // For women's babouches, ensure correct filter
+        filter.subcategory = 'babouches';
+      } else {
+        // For all other cases, use the subcategory as provided
+        filter.subcategory = subcategory;
+      }
+    }
 
-if (gender) filter.gender = gender;
+    if (gender) filter.gender = gender;
     
     if (search) {
       filter.$or = [
@@ -48,24 +47,24 @@ if (gender) filter.gender = gender;
     console.log('Sort option:', sort);
     console.log('Page:', page, 'Limit:', limit);
 
-    // Build sort object
+    // Build sort object - ALWAYS put in-stock products first
     let sortOption = {};
     switch (sort) {
       case 'price-asc':
-        sortOption = { price: 1 };
+        sortOption = { inStock: -1, price: 1 };
         break;
       case 'price-desc':
-        sortOption = { price: -1 };
+        sortOption = { inStock: -1, price: -1 };
         break;
       case 'name-asc':
-        sortOption = { name: 1 };
+        sortOption = { inStock: -1, name: 1 };
         break;
       case 'name-desc':
-        sortOption = { name: -1 };
+        sortOption = { inStock: -1, name: -1 };
         break;
       case 'newest':
       default:
-        sortOption = { createdAt: -1 };
+        sortOption = { inStock: -1, createdAt: -1 };
         break;
     }
 
