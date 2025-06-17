@@ -26,9 +26,15 @@ exports.getProducts = async (req, res, next) => {
         // For women's mocassins, adjust to look for 'mocassinos' in DB
         filter.subcategory = 'mocassinos';
       } else if (gender === 'femme' && subcategory === 'babouches') {
-        // For women's babouches, ensure correct filter
-        filter.subcategory = 'babouches';
       } else if (gender === 'femme' && subcategory === 'sandales') {
+        // For women's sandales, ensure correct filter
+        filter.subcategory = 'sandales';        // For women's babouches, ensure correct filter
+      } else if (gender === 'femme' && subcategory === 'sandales') {
+        // For women's sandales, ensure correct filter
+        filter.subcategory = 'sandales';        filter.subcategory = 'babouches';
+      } else if (gender === 'femme' && subcategory === 'sandales') {
+        // For women's sandales, ensure correct filter
+        filter.subcategory = 'sandales';      } else if (gender === 'femme' && subcategory === 'sandales') {
         // For women's sandales, ensure correct filter
         filter.subcategory = 'sandales';
       } else {
