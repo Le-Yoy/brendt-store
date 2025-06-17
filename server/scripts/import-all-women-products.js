@@ -322,63 +322,53 @@ const allWomenProducts = [
     gender: "femme"
   },
 
-  // 4. SANDALES (MISSING PRODUCT - RECREATED)
+  // 4. SANDALES TARHAZOUT (REAL PRODUCT WITH CORRECT PATHS)
   {
-    name: "Summer Sandales",
-    price: 750,
-    previousPrice: 890,
-    discount: 16,
+    name: "Sandales Tarhazout",
+    price: 850,
+    previousPrice: 950,
+    discount: 11,
     category: "chaussures",
     categoryName: "Chaussures",
     subcategory: "sandales",
     subcategoryName: "Sandales",
-    description: "Sandales d'été élégantes en cuir véritable, parfaites pour les journées ensoleillées avec un style raffiné.",
+    description: "Sandales artisanales Tarhazout en raphia naturel, inspirées des traditions marocaines pour un style authentique et élégant.",
     details: [
-      "Cuir véritable haute qualité",
-      "Semelle confortable",
-      "Fermeture ajustable",
-      "Design élégant et moderne"
+      "Raphia naturel tressé à la main",
+      "Semelle confortable en cuir",
+      "Design artisanal traditionnel",
+      "Fabrication éthique au Maroc"
     ],
-    care: "Nettoyer avec un chiffon humide. Éviter l'exposition prolongée au soleil.",
+    care: "Nettoyer délicatement avec un chiffon sec. Éviter l'humidité excessive.",
     colors: [
       {
-        name: "Camel",
-        code: "#C19A6B",
+        name: "Raffia Blanc",
+        code: "#F5F5DC",
         images: [
-          "/assets/images/products/brendt-new/Femme/chaussures/sandales/Summer-Sandales/Camel/1.webp",
-          "/assets/images/products/brendt-new/Femme/chaussures/sandales/Summer-Sandales/Camel/2.webp",
-          "/assets/images/products/brendt-new/Femme/chaussures/sandales/Summer-Sandales/Camel/3.webp",
-          "/assets/images/products/brendt-new/Femme/chaussures/sandales/Summer-Sandales/Camel/4.webp"
-        ],
-        inStock: true,
-        stock: 15
-      },
-      {
-        name: "Blanc",
-        code: "#FFFFFF",
-        images: [
-          "/assets/images/products/brendt-new/Femme/chaussures/sandales/Summer-Sandales/Blanc/1.webp",
-          "/assets/images/products/brendt-new/Femme/chaussures/sandales/Summer-Sandales/Blanc/2.webp",
-          "/assets/images/products/brendt-new/Femme/chaussures/sandales/Summer-Sandales/Blanc/3.webp",
-          "/assets/images/products/brendt-new/Femme/chaussures/sandales/Summer-Sandales/Blanc/4.webp"
+          "/assets/images/products/brendt-new/Femme/chaussures/sandales/Sandales Tarhazout/Raffia-Blanc/1.webp",
+          "/assets/images/products/brendt-new/Femme/chaussures/sandales/Sandales Tarhazout/Raffia-Blanc/2.webp",
+          "/assets/images/products/brendt-new/Femme/chaussures/sandales/Sandales Tarhazout/Raffia-Blanc/3.webp",
+          "/assets/images/products/brendt-new/Femme/chaussures/sandales/Sandales Tarhazout/Raffia-Blanc/4.webp",
+          "/assets/images/products/brendt-new/Femme/chaussures/sandales/Sandales Tarhazout/Raffia-Blanc/5.webp"
         ],
         inStock: true,
         stock: 12
       },
       {
-        name: "Noir",
-        code: "#000000",
+        name: "Raffia Naturel",
+        code: "#D2B48C",
         images: [
-          "/assets/images/products/brendt-new/Femme/chaussures/sandales/Summer-Sandales/Noir/1.webp",
-          "/assets/images/products/brendt-new/Femme/chaussures/sandales/Summer-Sandales/Noir/2.webp",
-          "/assets/images/products/brendt-new/Femme/chaussures/sandales/Summer-Sandales/Noir/3.webp",
-          "/assets/images/products/brendt-new/Femme/chaussures/sandales/Summer-Sandales/Noir/4.webp"
+          "/assets/images/products/brendt-new/Femme/chaussures/sandales/Sandales Tarhazout/Raffia-Naturel/1.webp",
+          "/assets/images/products/brendt-new/Femme/chaussures/sandales/Sandales Tarhazout/Raffia-Naturel/2.webp",
+          "/assets/images/products/brendt-new/Femme/chaussures/sandales/Sandales Tarhazout/Raffia-Naturel/3.webp",
+          "/assets/images/products/brendt-new/Femme/chaussures/sandales/Sandales Tarhazout/Raffia-Naturel/4.webp",
+          "/assets/images/products/brendt-new/Femme/chaussures/sandales/Sandales Tarhazout/Raffia-Naturel/5.webp"
         ],
         inStock: true,
-        stock: 18
+        stock: 8
       }
     ],
-    materials: ["Cuir véritable", "Semelle synthétique"],
+    materials: ["Raphia naturel", "Semelle en cuir"],
     sizes: [
       { name: "36", eu: "36", uk: "3", us: "5", available: true },
       { name: "37", eu: "37", uk: "4", us: "6", available: true },
@@ -387,10 +377,10 @@ const allWomenProducts = [
       { name: "40", eu: "40", uk: "7", us: "9", available: true },
       { name: "41", eu: "41", uk: "8", us: "10", available: true }
     ],
-    rating: 4.5,
-    reviewCount: 27,
+    rating: 4.6,
+    reviewCount: 19,
     inStock: true,
-    isNewArrival: false,
+    isNewArrival: true,
     isBestseller: false,
     gender: "femme"
   }
