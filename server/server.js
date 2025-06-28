@@ -73,7 +73,7 @@ app.use((req, res, next) => {
 
 // Replace your CORS section in server.js with this:
 
-// 4. CORS Configuration - FINAL WORKING VERSION
+// 4. CORS Configuration - UPDATED FOR BRENDTSHOES.COM
 const corsOptions = {
   origin: function (origin, callback) {
     console.log('CORS Origin Check:', origin);
@@ -88,7 +88,9 @@ const corsOptions = {
       'http://localhost:3000',
       'http://localhost:3001', 
       'http://127.0.0.1:3000',
-      'https://brendt-store.vercel.app'
+      'https://brendt-store.vercel.app',
+      'https://brendtshoes.com',              // ADD THIS
+      'https://www.brendtshoes.com'           // ADD THIS
     ];
     
     // Check exact match first
