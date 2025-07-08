@@ -1,4 +1,6 @@
 /* src/components/layout/Header/MobileMenu.css */
+
+/* ✨ PERFORMANCE OPTIMIZATIONS AT TOP */
 .mobile-menu {
   position: absolute;
   top: 100%;
@@ -9,7 +11,16 @@
   z-index: 1000;
   overflow-y: auto;
   animation: mobileMenuSlideIn 0.3s ease;
-  overscroll-behavior: contain; /* Prevents scrolling outside when at the edge */
+  /* ✨ CRITICAL MOBILE OPTIMIZATIONS */
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  will-change: transform;
+  /* ✨ Additional performance improvements */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 .mobile-menu__container {
@@ -49,6 +60,9 @@
   color: var(--color-dark);
   text-align: left;
   cursor: pointer;
+  /* ✨ Mobile touch optimization */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .mobile-menu__section-btn--active {
@@ -67,6 +81,9 @@
   font-weight: var(--font-weight-light);
   color: var(--color-dark);
   cursor: pointer;
+  /* ✨ Mobile touch optimization */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .mobile-menu__direct-link:hover {
@@ -102,6 +119,9 @@
   font-weight: var(--font-weight-light);
   color: var(--color-dark);
   text-decoration: none;
+  /* ✨ Mobile touch optimization */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .mobile-menu__category-link:hover {
@@ -122,6 +142,9 @@
   color: var(--color-dark);
   text-align: left;
   cursor: pointer;
+  /* ✨ Mobile touch optimization */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .mobile-menu__category-btn--active {
@@ -138,6 +161,12 @@
   justify-content: center;
   cursor: pointer;
   color: var(--color-dark);
+  /* ✨ Mobile touch optimization */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  /* ✨ Better mobile touch target */
+  min-width: 44px;
+  min-height: 44px;
 }
 
 .mobile-menu__toggle-btn:hover {
@@ -177,6 +206,9 @@
   font-weight: var(--font-weight-light);
   color: var(--color-dark);
   text-decoration: none;
+  /* ✨ Mobile touch optimization */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .mobile-menu__subcategory-link:hover {
@@ -197,6 +229,9 @@
   color: var(--color-dark);
   text-align: left;
   cursor: pointer;
+  /* ✨ Mobile touch optimization */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .mobile-menu__subcategory-btn--active {
@@ -227,6 +262,9 @@
   font-weight: var(--font-weight-light);
   color: var(--color-dark);
   text-decoration: none;
+  /* ✨ Mobile touch optimization */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .mobile-menu__item-link:hover {
@@ -288,6 +326,9 @@
   text-decoration: none;
   position: relative;
   transition: color 0.2s ease;
+  /* ✨ Mobile touch optimization */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .mobile-menu__image-btn::after {
@@ -331,6 +372,9 @@
   color: var(--color-dark);
   text-decoration: none;
   padding: var(--spacing-1) 0;
+  /* ✨ Mobile touch optimization */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .mobile-menu__additional-link:hover {
@@ -354,6 +398,9 @@
   color: var(--color-dark);
   text-decoration: none;
   padding: var(--spacing-1) 0;
+  /* ✨ Mobile touch optimization */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .mobile-menu__footer-link:hover {
@@ -375,6 +422,124 @@
   color: var(--color-dark);
   line-height: 1.8;
   margin-bottom: var(--spacing-2);
+}
+
+/* Products container */
+.mobile-menu__products-container {
+  margin-top: var(--spacing-2);
+  animation: fadeIn 0.3s ease;
+}
+
+.mobile-menu__products-loading {
+  padding: var(--spacing-2) var(--spacing-3);
+  text-align: center;
+  color: #666;
+  font-size: var(--font-size-xs);
+  font-style: italic;
+}
+
+.mobile-menu__products {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0 var(--spacing-4);
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.mobile-menu__product {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.mobile-menu__product:last-child {
+  border-bottom: none;
+}
+
+.mobile-menu__product-link {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-3);
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 0.2s ease;
+  /* ✨ Mobile touch optimization */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-menu__product-link:hover {
+  background-color: rgba(212, 175, 55, 0.1);
+}
+
+.mobile-menu__product-image {
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background-color: #f5f5f5;
+}
+
+.mobile-menu__product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mobile-menu__product-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.mobile-menu__product-name {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-dark);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mobile-menu__product-price {
+  font-family: var(--font-primary);
+  font-size: 11px;
+  color: #666;
+  font-weight: var(--font-weight-light);
+}
+
+.mobile-menu__product-arrow {
+  color: var(--color-accent);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.mobile-menu__view-all {
+  background-color: rgba(212, 175, 55, 0.1);
+}
+
+.mobile-menu__view-all-link {
+  display: block;
+  padding: var(--spacing-2) var(--spacing-3);
+  text-align: center;
+  font-family: var(--font-primary);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+  /* ✨ Mobile touch optimization */
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mobile-menu__view-all-link:hover {
+  background-color: rgba(212, 175, 55, 0.2);
 }
 
 /* Animations */
@@ -403,7 +568,7 @@
   to { opacity: 1; transform: translateX(0); }
 }
 
-/* Media queries */
+/* ✨ ENHANCED: Mobile-specific optimizations */
 @media (max-width: 640px) {
   .mobile-menu__image-grid {
     grid-template-columns: 1fr;
@@ -411,5 +576,58 @@
   
   .mobile-menu__image-wrapper {
     height: 250px;
+  }
+  
+  /* ✨ Better mobile touch targets */
+  .mobile-menu__section-btn,
+  .mobile-menu__category-link,
+  .mobile-menu__subcategory-link,
+  .mobile-menu__direct-link,
+  .mobile-menu__footer-link {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  
+  /* ✨ Enhanced mobile product display */
+  .mobile-menu__product-link {
+    min-height: 60px;
+    padding: var(--spacing-3);
+  }
+  
+  .mobile-menu__product-image {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+/* ✨ ACCESSIBILITY IMPROVEMENTS */
+@media (prefers-reduced-motion: reduce) {
+  .mobile-menu,
+  .mobile-menu__section,
+  .mobile-menu__category,
+  .mobile-menu__subcategory,
+  .mobile-menu__item,
+  .mobile-menu__image-item,
+  .mobile-menu__additional,
+  .mobile-menu__products-container {
+    animation: none;
+  }
+  
+  .mobile-menu__product-link,
+  .mobile-menu__view-all-link,
+  .mobile-menu__image-btn {
+    transition: none;
+  }
+}
+
+/* ✨ HIGH-DPI DISPLAY OPTIMIZATION */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .mobile-menu__product {
+    border-bottom-width: 0.5px;
+  }
+  
+  .mobile-menu__section {
+    border-bottom-width: 0.5px;
   }
 }

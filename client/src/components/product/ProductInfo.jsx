@@ -1,7 +1,7 @@
-// src/components/product/ProductInfo.jsx
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import useCart from '../../hooks/useCart';
 import CartNotification from '../ui/CartNotification';
 import styles from './ProductInfo.module.css';
@@ -27,9 +27,11 @@ export default function ProductInfo({
   setSelectedSize
 }) {
   const cart = useCart();
+  const router = useRouter();
   const [isMobileView, setIsMobileView] = useState(false);
   const [buttonMessage, setButtonMessage] = useState('');
   const [isAddedToCart, setIsAddedToCart] = useState(false);
+  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
   
   // ✨ NEW: Cart notification state
   const [showNotification, setShowNotification] = useState(false);
@@ -45,37 +47,46 @@ export default function ProductInfo({
     return () => window.removeEventListener('resize', handleResize);
   }, []);
   
-  // Add state for sticky button on mobile
-  const [isSticky, setIsSticky] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  // ✨ FIXED: Remove sticky button logic - handle in CSS only
+  // Add state for sticky button visibility
+  const [stickyButtonVisible, setStickyButtonVisible] = useState(true);
   
-  // Handle scroll for sticky button on mobile
+  // Handle scroll for sticky button visibility
   useEffect(() => {
+    let ticking = false;
+    
     const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      if (isMobileView) {
-        // If scrolling down, hide button
-        if (currentScrollY > lastScrollY && currentScrollY > 200) {
-          setIsSticky(false);
-        } 
-        // If scrolling up or at top, show button
-        else if (currentScrollY < lastScrollY || currentScrollY < 100) {
-          setIsSticky(true);
-        }
-        
-        setLastScrollY(currentScrollY);
+      if (!ticking && isMobileView) {
+        requestAnimationFrame(() => {
+          const scrollY = window.scrollY;
+          const windowHeight = window.innerHeight;
+          const documentHeight = document.documentElement.scrollHeight;
+          
+          // Hide when near bottom of page
+          if (scrollY + windowHeight >= documentHeight - 100) {
+            setStickyButtonVisible(false);
+          } else {
+            setStickyButtonVisible(true);
+          }
+          
+          ticking = false;
+        });
+        ticking = true;
       }
     };
     
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    if (isMobileView) {
+      window.addEventListener('scroll', handleScroll, { passive: true });
+    }
+    
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY, isMobileView]);
+  }, [isMobileView]);
   
   // Reset message when selections change
   useEffect(() => {
     setButtonMessage('');
     setIsAddedToCart(false);
+    setIsCheckoutLoading(false);
   }, [selectedColor, selectedSize]);
   
   // Get French color name
@@ -125,16 +136,17 @@ export default function ProductInfo({
     return true;
   };
   
-  // ✨ UPDATED: Beautiful add to cart with notification
+  // ✨ FIXED: Proper add to cart functionality
   const addToCart = () => {
     if (!validateSelection()) return;
     
     try {
       const success = cart.addItem(product, selectedSize, selectedColor);
       if (success) {
-        // Show beautiful notification instead of basic message
+        // Show beautiful notification
         setShowNotification(true);
         setIsAddedToCart(true);
+        setButtonMessage('');
         
         // Reset button state after 2 seconds
         setTimeout(() => {
@@ -149,21 +161,26 @@ export default function ProductInfo({
     }
   };
   
+  // ✨ NEW: Direct to checkout functionality
   const proceedToCheckout = () => {
     if (!validateSelection()) return;
+    
+    setIsCheckoutLoading(true);
     
     try {
       const success = cart.addItem(product, selectedSize, selectedColor);
       
       if (success) {
         // Redirect to checkout page
-        window.location.href = '/checkout';
+        router.push('/checkout');
       } else {
         setButtonMessage('Erreur lors de l\'ajout au panier');
+        setIsCheckoutLoading(false);
       }
     } catch (error) {
       console.error('Error adding to cart for checkout:', error);
       setButtonMessage('Erreur lors de l\'ajout au panier');
+      setIsCheckoutLoading(false);
     }
   };
   
@@ -175,7 +192,7 @@ export default function ProductInfo({
     return '';
   };
   
-  // Format price in MAD with discount
+  // ✨ FIXED: Single price display - remove duplicate prices
   const formatPriceMAD = (price) => {
     if (!price && price !== 0) return '';
     return `${price.toLocaleString()} MAD`;
@@ -197,25 +214,29 @@ export default function ProductInfo({
   
   return (
     <div className={styles.productInfoContainer}>
-      <h1 className={styles.productName}>{product.name}</h1>
-      <p className={styles.productMaterial}>{getMaterialInfo()}</p>
-      
-      {/* Enhanced price display with discount and strikethrough */}
-      <div className={styles.priceDisplay}>
-        <p className={styles.productPrice}>
-          {formatPriceMAD(getEffectivePrice())}
-        </p>
-        
-        {product.previousPrice && (
-          <>
-            <p className={styles.previousPrice}>
-              {formatPriceMAD(product.previousPrice)}
-            </p>
-            {product.discount && (
-              <span className={styles.discountBadge}>-{product.discount}%</span>
-            )}
-          </>
+      <div className={styles.productHeader}>
+        <h1 className={styles.productName}>{product.name}</h1>
+        {getMaterialInfo() && (
+          <p className={styles.productMaterial}>{getMaterialInfo()}</p>
         )}
+        
+        {/* ✨ FIXED: Single clean price display */}
+        <div className={styles.priceContainer}>
+          <p className={styles.currentPrice}>
+            {formatPriceMAD(getEffectivePrice())}
+          </p>
+          
+          {product.previousPrice && (
+            <>
+              <p className={styles.originalPrice}>
+                {formatPriceMAD(product.previousPrice)}
+              </p>
+              {product.discount && (
+                <span className={styles.discountBadge}>-{product.discount}%</span>
+              )}
+            </>
+          )}
+        </div>
       </div>
       
       {/* Stock Status Banner */}
@@ -232,10 +253,10 @@ export default function ProductInfo({
         </div>
       )}
       
-      <div className={styles.divider}></div>
-      
       <div className={styles.colorSection}>
-        <p className={styles.sectionLabel}>Couleur: {getColorName(selectedColor?.name || '')}</p>
+        <p className={styles.sectionTitle}>
+          Couleur: <span className={styles.selectedValue}>{getColorName(selectedColor?.name || '')}</span>
+        </p>
         <div className={styles.colorOptions}>
           {product.colors.map((color, index) => (
             <button
@@ -246,15 +267,19 @@ export default function ProductInfo({
               aria-label={`Couleur ${getColorName(color.name)}`}
               title={getColorName(color.name)}
               disabled={!product.inStock || color.inStock === false}
-            />
+            >
+              {selectedColor?.name === color.name && (
+                <span className={styles.colorCheck}>✓</span>
+              )}
+            </button>
           ))}
         </div>
       </div>
       
-      <div className={styles.divider}></div>
-      
       <div className={styles.sizeSection}>
-        <p className={styles.sectionLabel}>Taille EU</p>
+        <div className={styles.sizeTitleRow}>
+          <p className={styles.sectionTitle}>Taille EU</p>
+        </div>
         <div className={styles.sizeOptions}>
           {product.sizes.map((size, index) => (
             <button
@@ -268,40 +293,67 @@ export default function ProductInfo({
               disabled={!size.available || !product.inStock || !hasAvailableColors}
             >
               {size.eu || size.name}
-              {(!size.available || !product.inStock || !hasAvailableColors) && <span className={styles.unavailableX}>×</span>}
+              {(!size.available || !product.inStock || !hasAvailableColors) && (
+                <span className={styles.unavailableX}>×</span>
+              )}
             </button>
           ))}
         </div>
       </div>
       
-      <div className={styles.divider}></div>
-      
-      <div className={styles.actionButtons}>
-        <div className={styles.buttonWrapper}>
+      {/* ✨ FIXED: Proper desktop buttons */}
+      <div className={styles.actionsSection}>
+        <div className={styles.buttonGroup}>
           <button 
-            className={`${styles.addToCartButton} ${isAddedToCart ? styles.success : ''} ${!product.inStock || !hasAvailableColors ? styles.disabled : ''}`}
+            className={`${styles.addToCartBtn} ${isAddedToCart ? styles.success : ''} ${!product.inStock || !hasAvailableColors ? styles.disabled : ''}`}
             onClick={addToCart}
             disabled={!product.inStock || !hasAvailableColors}
           >
-            {!product.inStock || !hasAvailableColors ? 'Rupture de stock' : (isAddedToCart ? 'Ajouté au panier ✓' : 'Ajouter au panier')}
+            {!product.inStock || !hasAvailableColors ? 
+              'Rupture de stock' : 
+              (isAddedToCart ? 'Ajouté au panier ✓' : 'Ajouter au panier')
+            }
           </button>
-          {buttonMessage && !isAddedToCart && (
-            <p className={styles.errorMessage}>{buttonMessage}</p>
+          
+          {/* ✨ FIXED: Only show on desktop */}
+          {!isMobileView && (
+            <button 
+              className={`${styles.buyNowBtn} ${isCheckoutLoading ? styles.loading : ''} ${!product.inStock || !hasAvailableColors ? styles.disabled : ''}`}
+              onClick={proceedToCheckout}
+              disabled={!product.inStock || !hasAvailableColors || isCheckoutLoading}
+            >
+              {!product.inStock || !hasAvailableColors ? 
+                'Rupture de stock' : 
+                (isCheckoutLoading ? 'Redirection...' : 'Acheter maintenant')
+              }
+            </button>
           )}
         </div>
         
-        <div className={`${styles.buttonWrapper} ${isMobileView && isSticky ? styles.mobileSticky : isMobileView ? `${styles.mobileSticky} ${styles.hidden}` : ''}`}>
-          <button 
-            className={`${styles.checkoutButton} ${!product.inStock || !hasAvailableColors ? styles.disabled : ''}`}
-            onClick={proceedToCheckout}
-            disabled={!product.inStock || !hasAvailableColors}
-          >
-            {!product.inStock || !hasAvailableColors ? 'Rupture de stock' : 'Acheter maintenant'}
-          </button>
-        </div>
+        {buttonMessage && !isAddedToCart && (
+          <p className={styles.errorMessage}>{buttonMessage}</p>
+        )}
       </div>
 
-      {/* ✨ NEW: Beautiful Cart Notification */}
+      {/* ✨ FIXED: Mobile sticky button - only on mobile */}
+      {isMobileView && stickyButtonVisible && (
+        <div className={styles.mobileSticky}>
+          <div className={styles.mobileStickyContent}>
+            <button 
+              className={`${styles.mobileBuyNowBtn} ${isCheckoutLoading ? styles.loading : ''} ${!product.inStock || !hasAvailableColors ? styles.disabled : ''}`}
+              onClick={proceedToCheckout}
+              disabled={!product.inStock || !hasAvailableColors || isCheckoutLoading}
+            >
+              {!product.inStock || !hasAvailableColors ? 
+                'Rupture de stock' : 
+                (isCheckoutLoading ? 'Redirection...' : 'Acheter maintenant')
+              }
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ✨ Cart Notification */}
       <CartNotification
         isVisible={showNotification}
         onClose={() => setShowNotification(false)}

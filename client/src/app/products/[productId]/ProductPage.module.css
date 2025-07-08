@@ -1,14 +1,21 @@
-/* src/app/products/[productId]/ProductPage.module.css */
+/* ✨ PERFECT SPACING PRODUCT PAGE CONTAINER */
 .productPageContainer {
   width: 100%;
   padding: 0 calc(var(--side-padding) * 0.7);
-  margin-top: 120px; /* ONLY CHANGE: Reduced from 150px for better spacing */
+  /* ✨ CONSISTENT SPACING: Minimal gap after header */
+  margin-top: var(--spacing-6); /* 24px - minimal consistent spacing */
+  /* ✨ Prevent layout shifting */
+  overscroll-behavior: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .productContentWrapper {
   display: flex;
   gap: 5%;
   margin-bottom: var(--spacing-8);
+  /* ✨ Container stability */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 .productGallerySection {
@@ -16,6 +23,9 @@
   height: auto;
   position: relative;
   padding-right: var(--spacing-2);
+  /* ✨ Gallery section isolation */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 .productInfoSection {
@@ -24,6 +34,9 @@
   height: auto;
   padding-left: var(--spacing-3);
   padding-right: var(--spacing-2);
+  /* ✨ Info section optimization */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 }
 
 .relatedProductsSection {
@@ -59,58 +72,202 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Media queries for responsiveness */
+/* ✨ TABLET RESPONSIVE - Consistent spacing */
 @media (max-width: 1024px) {
+  .productPageContainer {
+    margin-top: var(--spacing-4); /* 16px - slightly less for tablet */
+  }
+  
   .productContentWrapper {
-    gap: 5%;
+    gap: 4%;
   }
   
   .productGallerySection {
-    width: 60%;
+    width: 58%;
   }
   
   .productInfoSection {
-    width: 35%;
+    width: 38%;
   }
 }
 
+/* ✨ MOBILE: PERFECT SPACING - Minimal header gap */
 @media (max-width: 768px) {
+  .productPageContainer {
+    /* ✨ CRITICAL: MINIMAL CONSISTENT SPACING after header */
+    margin-top: var(--spacing-2); /* 8px - minimal but consistent */
+    padding: 0;
+    /* ✨ CRITICAL: Natural mobile scroll */
+    overscroll-behavior-y: auto;
+    overscroll-behavior-x: auto;
+    -webkit-overflow-scrolling: touch;
+    /* ✨ Stable mobile viewport */
+    min-height: 100dvh;
+    /* ✨ Hardware acceleration for smooth scrolling */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    will-change: scroll-position;
+  }
+  
   .productContentWrapper {
     flex-direction: column;
+    /* ✨ Mobile layout stability - no extra margins */
+    margin-bottom: 0;
+    gap: 0;
   }
   
   .productGallerySection {
     width: 100%;
     height: auto;
-    padding-right: 0;
+    padding: 0;
+    /* ✨ CRITICAL: Gallery section isolation */
+    position: relative;
+    overflow: hidden;
+    /* ✨ Create proper stacking context */
+    z-index: 1;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    /* ✨ NO EXTRA SPACING - Images start immediately */
+    margin: 0;
   }
   
   .productInfoSection {
     width: 100%;
-    margin: var(--spacing-6) 0 0;
-    padding-left: var(--spacing-2);
-    padding-right: var(--spacing-2);
+    /* ✨ PERFECT SPACING: Small gap between gallery and info */
+    margin: var(--spacing-4) 0 0; /* 16px top margin only */
+    padding: 0 var(--spacing-3); /* 12px horizontal padding */
+    /* ✨ Info section below gallery */
+    position: relative;
+    z-index: 2;
+    /* ✨ Account for sticky button space */
+    padding-bottom: calc(var(--spacing-20) + env(safe-area-inset-bottom, 0px));
   }
-  
+}
+
+/* ✨ SMALL MOBILE: Extra minimal spacing */
+@media (max-width: 480px) {
   .productPageContainer {
-    margin-top: 80px; /* ONLY CHANGE: Reduced from 120px for mobile */
-    padding: 0;
+    /* ✨ Even more minimal on very small screens */
+    margin-top: var(--spacing-1); /* 4px */
   }
   
-  /* Sticky buy now button */
-  .mobileSticky {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: var(--color-white);
-    padding: var(--spacing-3) var(--spacing-2);
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 100;
-    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  .productInfoSection {
+    padding: 0 var(--spacing-2); /* 8px horizontal padding */
+    margin: var(--spacing-3) 0 0; /* 12px top margin */
+  }
+}
+
+/* ✨ LARGE MOBILE: Slightly more breathing room */
+@media (min-width: 480px) and (max-width: 768px) {
+  .productPageContainer {
+    margin-top: var(--spacing-3); /* 12px */
   }
   
-  .mobileSticky.hidden {
-    transform: translateY(100%);
+  .productInfoSection {
+    margin: var(--spacing-5) 0 0; /* 20px top margin */
+    padding: 0 var(--spacing-4); /* 16px horizontal padding */
+  }
+}
+
+/* ✨ iOS Safari SPECIFIC OPTIMIZATIONS */
+@supports (-webkit-touch-callout: none) {
+  @media (max-width: 768px) {
+    .productPageContainer {
+      /* ✨ iOS Safari scroll optimization */
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: auto;
+      /* ✨ Account for iOS header behavior */
+      margin-top: var(--spacing-1); /* Minimal for iOS */
+    }
+    
+    .productGallerySection {
+      /* ✨ iOS Safari carousel container */
+      -webkit-transform: translateZ(0);
+      transform: translateZ(0);
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+    }
+  }
+}
+
+/* ✨ ANDROID CHROME & SAMSUNG INTERNET OPTIMIZATIONS */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  @media (max-width: 768px) {
+    .productPageContainer {
+      /* ✨ Android scroll optimization */
+      overscroll-behavior-y: contain;
+      overscroll-behavior-x: none;
+      /* ✨ Consistent Android spacing */
+      margin-top: var(--spacing-2); /* 8px */
+    }
+    
+    .productGallerySection {
+      /* ✨ Android carousel optimization */
+      transform: translate3d(0, 0, 0);
+      -webkit-transform: translate3d(0, 0, 0);
+    }
+  }
+}
+
+/* ✨ LANDSCAPE ORIENTATION - Mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .productPageContainer {
+    /* ✨ Minimal spacing in landscape for more content */
+    margin-top: var(--spacing-1); /* 4px */
+  }
+  
+  .productInfoSection {
+    /* ✨ Reduced spacing in landscape */
+    margin: var(--spacing-2) 0 0; /* 8px top margin */
+    padding: 0 var(--spacing-3); /* 12px horizontal */
+  }
+}
+
+/* ✨ ACCESSIBILITY: Motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .productGallerySection,
+  .productInfoSection,
+  .productContentWrapper {
+    transform: none;
+    -webkit-transform: none;
+    will-change: auto;
+  }
+}
+
+/* ✨ VERY PRECISE DEVICE TARGETING */
+
+/* iPhone SE (375px) */
+@media (max-width: 375px) {
+  .productPageContainer {
+    margin-top: var(--spacing-1); /* 4px - minimal for small screen */
+  }
+  
+  .productInfoSection {
+    margin: var(--spacing-2) 0 0; /* 8px */
+    padding: 0 var(--spacing-2); /* 8px horizontal */
+  }
+}
+
+/* iPhone 12/13/14 (390px-428px) */
+@media (min-width: 390px) and (max-width: 428px) {
+  .productPageContainer {
+    margin-top: var(--spacing-2); /* 8px - perfect for modern iPhones */
+  }
+  
+  .productInfoSection {
+    margin: var(--spacing-4) 0 0; /* 16px */
+    padding: 0 var(--spacing-3); /* 12px horizontal */
+  }
+}
+
+/* Larger phones/small tablets (429px-767px) */
+@media (min-width: 429px) and (max-width: 767px) {
+  .productPageContainer {
+    margin-top: var(--spacing-3); /* 12px - more breathing room */
+  }
+  
+  .productInfoSection {
+    margin: var(--spacing-5) 0 0; /* 20px */
+    padding: 0 var(--spacing-4); /* 16px horizontal */
   }
 }

@@ -329,6 +329,7 @@ function main() {
 }
 
 // Category mappings - maintaining French for categories
+// Category mappings - maintaining French for categories
 const CATEGORY_MAPPINGS = {
   'Shoes': {
     id: 'chaussures',
@@ -339,6 +340,18 @@ const CATEGORY_MAPPINGS = {
       'Mocassins 44': { id: 'mocassins', name: 'Mocassins' },
       'Sneakers 48': { id: 'sneakers', name: 'Sneakers' },
       'Babouches': { id: 'babouches', name: 'Babouches' }
+    }
+  },
+  'chaussures': {
+    id: 'chaussures',
+    name: 'Chaussures',
+    subcategories: {
+      'sandales': { id: 'sandales', name: 'Sandales' },
+      'mocassins': { id: 'mocassins', name: 'Mocassins' },
+      'babouches': { id: 'babouches', name: 'Babouches' },
+      'boots': { id: 'boots', name: 'Boots' },
+      'derbies': { id: 'derbies', name: 'Derbies' },
+      'sneakers': { id: 'sneakers', name: 'Sneakers' }
     }
   },
   'Accessoires': {
@@ -372,6 +385,7 @@ const CATEGORY_MAPPINGS = {
     }
   }
 };
+
 
 // Color mappings
 const COLOR_MAPPINGS = {
@@ -409,7 +423,11 @@ const COLOR_MAPPINGS = {
   'ivoir': { name: 'Ivoire', code: '#FFFFF0' },
   'camel': { name: 'Camel', code: '#C19A6B' },
   'taupe': { name: 'Taupe', code: '#483C32' },
-  'clair': { name: 'Clair', code: '#ADD8E6' } // For "Bleu Clair"
+  'clair': { name: 'Clair', code: '#ADD8E6' },
+  'raffia': { name: 'Raffia', code: '#D2B48C' },
+  'naturel': { name: 'Naturel', code: '#E6D3B7' },
+  'raffia-blanc': { name: 'Raffia Blanc', code: '#F5F5DC' },
+  'raffia-naturel': { name: 'Raffia Naturel', code: '#D2B48C' }
 };
 
 // Material mappings
@@ -445,6 +463,16 @@ const MATERIAL_MAPPINGS = {
  * Generate a sophisticated product name from a folder name
  */
 function generateSophisticatedName(folderName) {
+  // Custom name overrides - ADD FIRST
+  const customNames = {
+    'Raffia-Blanc': 'Tarhazout Sandales',
+    'Raffia-Naturel': 'Tarhazout Sandales'
+  };
+  
+  if (customNames[folderName]) {
+    return customNames[folderName];
+  }
+  
   // Remove numbers and special characters from the end
   let name = folderName.replace(/[-_]?\d+$/, '').trim();
   
@@ -890,44 +918,45 @@ function generateProductDetails(category, subcategory, materials, colors) {
  function generatePrice(category, subcategory, materials) {
   let basePrice = 0;
   
-  // Set base price by category
-  if (category === 'chaussures') {
-    if (subcategory === 'mocassins' || subcategory === 'derbies') basePrice = 650;
-    else if (subcategory === 'boots') basePrice = 750;
-    else if (subcategory === 'sneakers') basePrice = 550;
-    else if (subcategory === 'babouches') basePrice = 450;
-  } 
-  else if (category === 'pret-a-porter') {
-    if (subcategory === 'chemises') basePrice = 250;
-    else if (subcategory === 'polos') basePrice = 190;
-    else if (subcategory === 'vestes') basePrice = 850;
-    else if (subcategory === 'costumes') basePrice = 1200;
-    else if (subcategory === 'pantalons') basePrice = 320;
-  }
-  else if (category === 'accessoires') {
-    if (subcategory === 'ceintures') basePrice = 280;
-    else if (subcategory === 'cravates' || subcategory === 'noeuds-papillon') basePrice = 150;
-    else if (subcategory === 'echarpes') basePrice = 320;
-    else if (subcategory === 'gants') basePrice = 240;
-    else if (subcategory === 'casquettes') basePrice = 180;
-    else if (subcategory === 'petite-maroquinerie') basePrice = 260;
-    else basePrice = 200;
-  }
-  else {
-    basePrice = 350; // Default for other categories
-  }
-  
-  // Adjust price based on materials
-  if (materials.includes('Cachemire')) basePrice *= 1.5;
-  else if (materials.includes('Cuir')) basePrice *= 1.2;
-  else if (materials.includes('Soie')) basePrice *= 1.3;
-  else if (materials.includes('Lin')) basePrice *= 1.1;
-  
-  // Add slight randomization for uniqueness
-  const randomFactor = 0.95 + (Math.random() * 0.2); // Between 0.95 and 1.15
-  basePrice = Math.round(basePrice * randomFactor / 10) * 10; // Round to nearest 10
-  
-  return basePrice;
+// Set base price by category
+if (category === 'chaussures') {
+  if (subcategory === 'mocassins' || subcategory === 'derbies') basePrice = 650;
+  else if (subcategory === 'boots') basePrice = 750;
+  else if (subcategory === 'sneakers') basePrice = 550;
+  else if (subcategory === 'babouches') basePrice = 450;
+  else if (subcategory === 'sandales') basePrice = 480;  // ⭐ MOVED INSIDE
+} 
+else if (category === 'pret-a-porter') {
+  if (subcategory === 'chemises') basePrice = 250;
+  else if (subcategory === 'polos') basePrice = 190;
+  else if (subcategory === 'vestes') basePrice = 850;
+  else if (subcategory === 'costumes') basePrice = 1200;
+  else if (subcategory === 'pantalons') basePrice = 320;
+}
+else if (category === 'accessoires') {
+  if (subcategory === 'ceintures') basePrice = 280;
+  else if (subcategory === 'cravates' || subcategory === 'noeuds-papillon') basePrice = 150;
+  else if (subcategory === 'echarpes') basePrice = 320;
+  else if (subcategory === 'gants') basePrice = 240;
+  else if (subcategory === 'casquettes') basePrice = 180;
+  else if (subcategory === 'petite-maroquinerie') basePrice = 260;
+  else basePrice = 200;
+}
+else {
+  basePrice = 350; // Default for other categories
+}
+
+// Adjust price based on materials
+if (materials.includes('Cachemire')) basePrice *= 1.5;
+else if (materials.includes('Cuir')) basePrice *= 1.2;
+else if (materials.includes('Soie')) basePrice *= 1.3;
+else if (materials.includes('Lin')) basePrice *= 1.1;
+
+// Add slight randomization for uniqueness
+const randomFactor = 0.95 + (Math.random() * 0.2); // Between 0.95 and 1.15
+basePrice = Math.round(basePrice * randomFactor / 10) * 10; // Round to nearest 10
+
+return basePrice;
  }
  
  // Run the main function

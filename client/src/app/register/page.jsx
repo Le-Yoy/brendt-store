@@ -4,11 +4,11 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useAuth } from '../../contexts/AuthContext';
+import useAuth from '@/hooks/useAuth'; // FIXED: Use consistent import
 import styles from './register.module.css';
 
 export default function RegisterPage() {
-  const { register } = useAuth();
+  const { register, loading: authLoading, error: authError } = useAuth(); // FIXED: Destructure properly
   const router = useRouter();
   
   const [formData, setFormData] = useState({
@@ -40,12 +40,28 @@ export default function RegisterPage() {
       return;
     }
     
+    // Validate password length
+    if (formData.password.length < 8) {
+      setError('Le mot de passe doit contenir au moins 8 caractères');
+      setLoading(false);
+      return;
+    }
+    
     try {
+      console.log('[REGISTER] Attempting registration with:', formData.email);
+      
       // Extract only the needed fields for registration
       const { name, email, password } = formData;
-      await register({ name, email, password });
-      router.push('/account');
+      const success = await register({ name, email, password });
+      
+      if (success) {
+        console.log('[REGISTER] Registration successful, redirecting to account');
+        router.push('/account');
+      } else {
+        setError(authError || "L'inscription a échoué. Veuillez réessayer.");
+      }
     } catch (err) {
+      console.error('[REGISTER] Registration error:', err);
       setError(err.message || "L'inscription a échoué. Veuillez réessayer.");
     } finally {
       setLoading(false);
@@ -118,9 +134,9 @@ export default function RegisterPage() {
           <button 
             type="submit" 
             className={styles.button}
-            disabled={loading}
+            disabled={loading || authLoading}
           >
-            {loading ? 'Création en cours...' : 'Créer un compte'}
+            {loading || authLoading ? 'Création en cours...' : 'Créer un compte'}
           </button>
         </form>
         

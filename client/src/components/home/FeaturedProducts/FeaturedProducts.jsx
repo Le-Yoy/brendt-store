@@ -14,37 +14,11 @@ const FeaturedProducts = () => {
       try {
         setLoading(true);
         
-        // Specific product IDs to display
-        const featuredProductIds = [
-          "67d607dc033ca42b418411f8",
-          "67d607dc033ca42b41841209",
-          "67d607dc033ca42b41841211",
-          "67d607dc033ca42b418411de"
-        ];
-        
         // Get all products
         const result = await productService.getProducts({ limit: 200 });
         const fetchedProducts = result.data?.data || result.data || result || [];
         
-        // Filter for the exact products by ID
-        const selectedProducts = [];
-        
-        // Maintain the order of IDs as specified
-        featuredProductIds.forEach(id => {
-          const foundProduct = fetchedProducts.find(p => 
-            (p._id || p.id) === id
-          );
-          if (foundProduct) {
-            selectedProducts.push(foundProduct);
-          }
-        });
-        
-        // If we couldn't find all specific products, fall back to the first 4 available
-        if (selectedProducts.length === 0) {
-          setProducts(fetchedProducts.slice(0, 4));
-        } else {
-          setProducts(selectedProducts);
-        }
+        setProducts(fetchedProducts);
       } catch (error) {
         console.error('Error fetching featured products:', error);
       } finally {
@@ -55,6 +29,73 @@ const FeaturedProducts = () => {
     fetchFeaturedProducts();
   }, []);
 
+  // Helper function to expand products with color variants - ensures unique colors
+  const expandProductsWithColorVariants = (products) => {
+    if (!products || products.length === 0) return [];
+    
+    const expandedProducts = [];
+    
+    products.forEach(product => {
+      if (product.colors && product.colors.length > 0) {
+        // Create a separate "product" for each color variant
+        product.colors.forEach((color, index) => {
+          // Skip colors without images
+          if (!color.images || color.images.length === 0) return;
+          
+          expandedProducts.push({
+            ...product,
+            _id: `${product._id}-color-${color.name.toLowerCase().replace(/\s+/g, '-')}-${index}`,
+            isColorVariant: true,
+            originalProductId: product._id,
+            displayImage: color.images[0],
+            selectedColor: color,
+            displayColorIndex: index
+          });
+        });
+      } else {
+        // Product has only one color or no colors, add as is
+        expandedProducts.push(product);
+      }
+    });
+    
+    return expandedProducts;
+  };
+
+  // Helper function to get unique color variants (max 4)
+  const getUniqueColorVariants = (products, maxCount = 4) => {
+    const allVariants = expandProductsWithColorVariants(products);
+    const uniqueVariants = [];
+    const seenColors = new Set();
+    
+    for (const variant of allVariants) {
+      const colorKey = variant.selectedColor ? 
+        `${variant.originalProductId}-${variant.selectedColor.name}` : 
+        variant._id;
+      
+      if (!seenColors.has(colorKey) && uniqueVariants.length < maxCount) {
+        seenColors.add(colorKey);
+        uniqueVariants.push(variant);
+      }
+    }
+    
+    return uniqueVariants;
+  };
+
+  // Find products by name
+  const findProductsByNames = (names) => {
+    return names.map(name => {
+      return products.find(p => p.name === name);
+    }).filter(Boolean);
+  };
+
+  // Collection 1: Penny Loafer variations
+  const pennyLoaferProducts = findProductsByNames(['Penny Loafer']);
+  const expandedPennyLoaferProducts = getUniqueColorVariants(pennyLoaferProducts, 4);
+  
+  // Collection 2: Babouches variations
+  const babouchesProducts = findProductsByNames(['Babouches']);
+  const expandedBabouchesProducts = getUniqueColorVariants(babouchesProducts, 4);
+
   return (
     <section className={styles.featuredProducts}>
       <div className={styles.container}>
@@ -62,8 +103,18 @@ const FeaturedProducts = () => {
         <p className={styles.quote}>
           Une nouvelle collection de mocassins mettant en valeur l'excellence et le <em>savoir-faire</em> italien.
         </p>
-        <h2 className={styles.title}>Collections</h2>
-        <FeaturedProductGrid products={products} loading={loading} />
+        
+        {/* Collection 1: Penny Loafer */}
+        <div className={styles.collectionSection}>
+          <h3 className={styles.collectionTitle}>Penny Loafer Collection</h3>
+          <FeaturedProductGrid products={expandedPennyLoaferProducts} loading={loading} />
+        </div>
+
+        {/* Collection 2: Babouches Collection */}
+        <div className={styles.collectionSection}>
+          <h3 className={styles.collectionTitle}>Babouches Collection</h3>
+          <FeaturedProductGrid products={expandedBabouchesProducts} loading={loading} />
+        </div>
       </div>
     </section>
   );

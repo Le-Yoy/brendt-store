@@ -1,37 +1,25 @@
-'use client';
-
+// src/app/layout.js
 import { Inter } from 'next/font/google';
-import '../styles/globals.css';
-import { useEffect } from 'react';
-import { checkApiEndpoints } from '@/utils/debug';
+import './globals.css';
+import ClientLayout from '@/components/layout/ClientLayout';
+import { AuthProvider } from '@/hooks/useAuth'; // ADDED: Import AuthProvider
 
-// Initialize the font
-const inter = Inter({ 
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter'
-});
+const inter = Inter({ subsets: ['latin'] });
 
-// Metadata moved to separate file to support client components
 export const metadata = {
-  title: 'BRENDT - Premium Footwear',
-  description: 'Shop the finest handcrafted shoes and boots',
+  title: 'Brendt Store',
+  description: 'Your premium online store',
 };
 
 export default function RootLayout({ children }) {
-  // Run API endpoint checks in development
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      checkApiEndpoints();
-    }
-  }, []);
-  
   return (
-    <html lang="en" className={`${inter.variable}`}>
-      <body>
-        <main>
-          {children}
-        </main>
+    <html lang="fr">
+      <body className={inter.className}>
+        <AuthProvider>
+          <ClientLayout>
+            {children}
+          </ClientLayout>
+        </AuthProvider>
       </body>
     </html>
   );

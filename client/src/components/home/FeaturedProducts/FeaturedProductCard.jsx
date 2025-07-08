@@ -20,16 +20,46 @@ const FeaturedProductCard = ({ product }) => {
     price,
     colors = [],
     isNewArrival,
-    isBestseller
+    isBestseller,
+    isColorVariant,
+    originalProductId,
+    displayImage,
+    selectedColor,
+    displayColorIndex
   } = product;
   
-  const defaultColor = colors[0] || {};
-  const defaultImage = defaultColor.images?.[0] || '/assets/images/placeholder.jpg';
-  const secondImage = defaultColor.images?.[1] || defaultColor.images?.[0] || '/assets/images/placeholder.jpg';
+  // Get images based on whether this is a color variant or not
+  let defaultImage, secondImage;
   
-  const displayImage = imageError 
+  if (isColorVariant && selectedColor) {
+    // Use the specific color variant images
+    defaultImage = displayImage || selectedColor.images?.[0] || '/assets/images/placeholder.jpg';
+    secondImage = selectedColor.images?.[1] || selectedColor.images?.[0] || '/assets/images/placeholder.jpg';
+  } else {
+    // Use the first color's images
+    const defaultColor = colors[0] || {};
+    defaultImage = defaultColor.images?.[0] || '/assets/images/placeholder.jpg';
+    secondImage = defaultColor.images?.[1] || defaultColor.images?.[0] || '/assets/images/placeholder.jpg';
+  }
+  
+  const displayImg = imageError 
     ? '/assets/images/placeholder.jpg' 
     : (hovered && secondImage ? secondImage : defaultImage);
+
+  // Build product URL with proper color variant
+  let productUrl = '';
+  
+  if (isColorVariant && originalProductId && selectedColor) {
+    // Link to the exact color variant the user clicked on
+    productUrl = `/products/${originalProductId}?color=${encodeURIComponent(selectedColor.name)}`;
+    
+    // If we also have the index, add it to make sure we get the right color
+    if (displayColorIndex !== undefined) {
+      productUrl += `&colorIndex=${displayColorIndex}`;
+    }
+  } else {
+    productUrl = `/products/${_id}`;
+  }
 
   // Enhanced touch handlers
   const handleTouchStart = (e) => {
@@ -55,7 +85,7 @@ const FeaturedProductCard = ({ product }) => {
     
     // If it was a tap (no movement), navigate to product
     e.preventDefault();
-    window.location.href = `/products/${_id}`;
+    window.location.href = productUrl;
   };
 
   const handleClick = (e) => {
@@ -65,50 +95,56 @@ const FeaturedProductCard = ({ product }) => {
       return false;
     }
   };
+
+  // Display color name for color variants
+  const displayName = isColorVariant && selectedColor ? 
+    `${name} - ${selectedColor.name}` : name;
   
   return (
     <div className={styles.productCard}>
-      <div 
-        className={styles.productLink}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onClick={handleClick}
-      >
-        <div className={styles.imageContainer}>
-          <Image
-            src={displayImage}
-            alt={name}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
-            className={styles.productImage}
-            priority={false}
-            onError={() => setImageError(true)}
-            draggable={false}
-          />
-          
-          {(isNewArrival || isBestseller) && (
-            <div className={styles.labelsContainer}>
-              {isNewArrival && <span className={styles.newLabel}>Nouveau</span>}
-              {isBestseller && <span className={styles.bestsellerLabel}>Bestseller</span>}
-            </div>
-          )}
-          
-          <div className={styles.hoverInfo}>
-            <div className={styles.infoBox}>
-              <h3 className={styles.productName}>{name}</h3>
-              <span className={styles.productPrice}>{price} €</span>
+      <Link href={productUrl} className={styles.productLink}>
+        <div 
+          className={styles.linkContent}
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onClick={handleClick}
+        >
+          <div className={styles.imageContainer}>
+            <Image
+              src={displayImg}
+              alt={displayName}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
+              className={styles.productImage}
+              priority={false}
+              onError={() => setImageError(true)}
+              draggable={false}
+            />
+            
+            {(isNewArrival || isBestseller) && (
+              <div className={styles.labelsContainer}>
+                {isNewArrival && <span className={styles.newLabel}>Nouveau</span>}
+                {isBestseller && <span className={styles.bestsellerLabel}>Bestseller</span>}
+              </div>
+            )}
+            
+            <div className={styles.hoverInfo}>
+              <div className={styles.infoBox}>
+                <h3 className={styles.productName}>{displayName}</h3>
+                <span className={styles.productPrice}>{price} MAD</span>
+              </div>
             </div>
           </div>
+          
+          <div className={styles.productInfo}>
+            <h3 className={styles.productName}>{displayName}</h3>
+            <span className={styles.productPrice}>{price} MAD</span>
+          </div>
         </div>
-        
-        <div className={styles.productInfo}>
-          <h3 className={styles.productName}>{name}</h3>
-          <span className={styles.productPrice}>{price} €</span>
-        </div>
-      </div>
+      </Link>
     </div>
   );
 };

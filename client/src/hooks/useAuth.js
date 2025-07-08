@@ -12,14 +12,46 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Load user data on mount or token change
+  // Utility function to safely access localStorage
+  const safeLocalStorage = {
+    getItem: (key) => {
+      try {
+        if (typeof window !== 'undefined') {
+          return localStorage.getItem(key);
+        }
+      } catch (error) {
+        console.warn('[AUTH] localStorage access failed:', error);
+      }
+      return null;
+    },
+    setItem: (key, value) => {
+      try {
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(key, value);
+        }
+      } catch (error) {
+        console.warn('[AUTH] localStorage write failed:', error);
+      }
+    },
+    removeItem: (key) => {
+      try {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem(key);
+        }
+      } catch (error) {
+        console.warn('[AUTH] localStorage remove failed:', error);
+      }
+    }
+  };
+
+  // Load user data on mount
   useEffect(() => {
     const loadUser = async () => {
       try {
         setLoading(true);
         
-        // Get token from localStorage
-        const token = localStorage.getItem('userToken') || localStorage.getItem('auth-token');
+        // Get token from localStorage - use single key
+        const token = safeLocalStorage.getItem('userToken');
         
         if (!token) {
           console.log('[AUTH] No token found, user is not authenticated');
@@ -31,7 +63,7 @@ export function AuthProvider({ children }) {
         
         console.log('[AUTH] Token found, fetching user profile');
         
-        // Fetch user profile from API - FIXED: Use hardcoded URL
+        // Fetch user profile from API
         const response = await fetch(`https://brendt-store-production-d6ef.up.railway.app/api/users/profile`, {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -50,7 +82,7 @@ export function AuthProvider({ children }) {
         // Save user data to state and localStorage for persistence
         setUser(userData);
         setIsAuthenticated(true);
-        localStorage.setItem('user-data', JSON.stringify(userData));
+        safeLocalStorage.setItem('user-data', JSON.stringify(userData));
       } catch (err) {
         console.error('[AUTH] Error loading user data:', err);
         setError('Failed to load user data');
@@ -58,9 +90,8 @@ export function AuthProvider({ children }) {
         setUser(null);
         
         // Clean up invalid tokens
-        localStorage.removeItem('userToken');
-        localStorage.removeItem('auth-token');
-        localStorage.removeItem('user-data');
+        safeLocalStorage.removeItem('userToken');
+        safeLocalStorage.removeItem('user-data');
       } finally {
         setLoading(false);
       }
@@ -70,110 +101,58 @@ export function AuthProvider({ children }) {
   }, []);
 
   // Login function
-  // Replace the existing login function in src/hooks/useAuth.js with this implementation:
-
-// Replace the login function in src/hooks/useAuth.js with this version:
-
-// Update the login function in src/hooks/useAuth.js to test different URLs:
-
-const login = async (email, password) => {
-  try {
-    setLoading(true);
-    setError(null);
-    
-    // Try a direct URL without relying on environment variables
-    const apiUrl = 'https://brendt-store-production-d6ef.up.railway.app';
-    console.log('[AUTH] Using direct API URL:', apiUrl);
-    
-    // Log the exact URL being accessed
-    const loginUrl = `${apiUrl}/api/users/login`;
-    console.log('[AUTH] Attempting login at:', loginUrl);
-    
-    // Make the request with detailed logging
-    console.log('[AUTH] Request payload:', { email, password: '******' });
-    
-    const response = await fetch(loginUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      },
-      body: JSON.stringify({ email, password })
-    });
-    
-    console.log('[AUTH] Response received. Status:', response.status);
-    console.log('[AUTH] Response headers:', Object.fromEntries([...response.headers.entries()]));
-    
-    if (response.status === 404) {
-      console.error('[AUTH] ENDPOINT NOT FOUND! Check server routes configuration');
-      // Try an alternative endpoint as a test
-      console.log('[AUTH] Testing alternative endpoint...');
+  const login = async (email, password) => {
+    try {
+      setLoading(true);
+      setError(null);
       
-      const testResponse = await fetch(`${apiUrl}/api/test`, {
-        method: 'GET'
+      console.log('[AUTH] Attempting login with:', email);
+      
+      const response = await fetch('https://brendt-store-production-d6ef.up.railway.app/api/users/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
       });
       
-      console.log('[AUTH] Test endpoint response:', testResponse.status);
-      if (testResponse.ok) {
-        console.log('[AUTH] Test endpoint works, login endpoint is missing!');
+      console.log('[AUTH] Response received. Status:', response.status);
+      
+      const responseData = await response.json();
+      console.log('[AUTH] Response data:', { 
+        success: responseData.success, 
+        hasToken: !!responseData.token,
+        hasData: !!responseData.data 
+      });
+      
+      if (!response.ok || !responseData.success) {
+        throw new Error(responseData.error || 'Authentication failed');
       }
       
-      throw new Error('Login service unavailable. Please try again later.');
-    }
-    
-    // Try to parse the response
-    let responseData;
-    try {
-      responseData = await response.json();
-      console.log('[AUTH] Response data:', { ...responseData, token: responseData.token ? '[PRESENT]' : '[MISSING]' });
-    } catch (parseError) {
-      console.error('[AUTH] Failed to parse response:', parseError);
-      responseData = {};
-    }
-    
-    if (!response.ok) {
-      throw new Error(responseData.message || 'Authentication failed');
-    }
-    
-    // Handle successful login
-    if (responseData.token) {
-      localStorage.setItem('userToken', responseData.token);
-      localStorage.setItem('auth-token', responseData.token);
-      
-      if (responseData._id) {
-        const userData = {
-          _id: responseData._id,
-          name: responseData.name || '',
-          email: responseData.email,
-          role: responseData.role || 'user'
-        };
+      // Handle successful login - backend sends data in 'data' object
+      if (responseData.token && responseData.data) {
+        // Store token
+        safeLocalStorage.setItem('userToken', responseData.token);
         
-        localStorage.setItem('user-data', JSON.stringify(userData));
+        // Store user data
+        const userData = responseData.data;
+        safeLocalStorage.setItem('user-data', JSON.stringify(userData));
         setUser(userData);
+        setIsAuthenticated(true);
+        
+        console.log('[AUTH] Login successful for user:', userData._id);
+        return true;
+      } else {
+        throw new Error('Invalid response from server');
       }
-      
-      setIsAuthenticated(true);
-      return true;
-    } else {
-      throw new Error('Invalid response from server (no token)');
+    } catch (err) {
+      console.error('[AUTH] Login error:', err.message);
+      setError(err.message);
+      return false;
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    console.error('[AUTH] Login error:', err.message);
-    setError(err.message);
-    return false;
-  } finally {
-    setLoading(false);
-  }
-};
-
-  // Logout function
-  const logout = () => {
-    console.log('[AUTH] Logging out user');
-    localStorage.removeItem('userToken');
-    localStorage.removeItem('auth-token');
-    localStorage.removeItem('user-data');
-    setUser(null);
-    setIsAuthenticated(false);
   };
 
   // Register function
@@ -182,18 +161,9 @@ const login = async (email, password) => {
       setLoading(true);
       setError(null);
       
-      // Use direct URL approach
-      const apiUrl = 'https://brendt-store-production-d6ef.up.railway.app';
-      const registerUrl = `${apiUrl}/api/users/register`;
+      console.log('[AUTH] Attempting registration for:', userData.email);
       
-      console.log('[AUTH] Attempting registration at:', registerUrl);
-      console.log('[AUTH] Registration payload:', { 
-        name: userData.name,
-        email: userData.email,
-        password: userData.password ? '[PROVIDED]' : '[MISSING]'
-      });
-      
-      const response = await fetch(registerUrl, {
+      const response = await fetch('https://brendt-store-production-d6ef.up.railway.app/api/users/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -204,38 +174,32 @@ const login = async (email, password) => {
       
       console.log('[AUTH] Registration response status:', response.status);
       
-      let responseData;
-      try {
-        responseData = await response.json();
-        console.log('[AUTH] Registration response data:', 
-          { ...responseData, token: responseData.token ? '[PRESENT]' : '[MISSING]' });
-      } catch (parseError) {
-        console.error('[AUTH] Failed to parse registration response:', parseError);
-        responseData = {};
+      const responseData = await response.json();
+      console.log('[AUTH] Registration response:', { 
+        success: responseData.success, 
+        hasToken: !!responseData.token,
+        hasData: !!responseData.data 
+      });
+      
+      if (!response.ok || !responseData.success) {
+        throw new Error(responseData.error || 'Registration failed');
       }
       
-      if (!response.ok) {
-        throw new Error(responseData.message || 'Registration failed');
-      }
-      
-      // Handle successful registration
-      if (responseData.token) {
-        localStorage.setItem('userToken', responseData.token);
-        localStorage.setItem('auth-token', responseData.token);
+      // Handle successful registration - backend sends data in 'data' object
+      if (responseData.token && responseData.data) {
+        // Store token
+        safeLocalStorage.setItem('userToken', responseData.token);
         
-        const userData = {
-          _id: responseData._id,
-          name: responseData.name || '',
-          email: responseData.email,
-          role: responseData.role || 'user'
-        };
-        
-        localStorage.setItem('user-data', JSON.stringify(userData));
-        setUser(userData);
+        // Store user data
+        const userInfo = responseData.data;
+        safeLocalStorage.setItem('user-data', JSON.stringify(userInfo));
+        setUser(userInfo);
         setIsAuthenticated(true);
+        
+        console.log('[AUTH] Registration successful for user:', userInfo._id);
         return true;
       } else {
-        throw new Error('Invalid response from server (no token)');
+        throw new Error('Invalid response from server');
       }
     } catch (err) {
       console.error('[AUTH] Registration error:', err);
@@ -246,20 +210,27 @@ const login = async (email, password) => {
     }
   };
 
+  // Logout function
+  const logout = () => {
+    console.log('[AUTH] Logging out user');
+    safeLocalStorage.removeItem('userToken');
+    safeLocalStorage.removeItem('user-data');
+    setUser(null);
+    setIsAuthenticated(false);
+    setError(null);
+  };
+
   // Update profile function
   const updateProfile = async (profileData) => {
     try {
       setLoading(true);
       setError(null);
       
-      console.log('[AUTH] Updating user profile');
-      
-      const token = localStorage.getItem('userToken') || localStorage.getItem('auth-token');
+      const token = safeLocalStorage.getItem('userToken');
       if (!token) {
         throw new Error('Authentication required');
       }
       
-      // FIXED: Use hardcoded URL instead of environment variable
       const response = await fetch(`https://brendt-store-production-d6ef.up.railway.app/api/users/profile`, {
         method: 'PUT',
         headers: {
@@ -271,16 +242,14 @@ const login = async (email, password) => {
       
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        console.error('[AUTH] Profile update failed:', errorData);
         throw new Error(errorData.message || 'Failed to update profile');
       }
       
       const updatedData = await response.json();
-      console.log('[AUTH] Profile updated successfully');
       
       // Update local state and storage
       setUser(updatedData);
-      localStorage.setItem('user-data', JSON.stringify(updatedData));
+      safeLocalStorage.setItem('user-data', JSON.stringify(updatedData));
       
       return true;
     } catch (err) {
@@ -292,65 +261,14 @@ const login = async (email, password) => {
     }
   };
 
-  // Update password function
-  const updatePassword = async (passwordData) => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      console.log('[AUTH] Updating user password');
-      
-      const token = localStorage.getItem('userToken') || localStorage.getItem('auth-token');
-      if (!token) {
-        throw new Error('Authentication required');
-      }
-      
-      // Ensure the payload has the correct structure
-      const payload = {
-        currentPassword: passwordData.currentPassword,
-        newPassword: passwordData.newPassword
-      };
-      
-      // FIXED: Use hardcoded URL instead of environment variable
-      const response = await fetch(`https://brendt-store-production-d6ef.up.railway.app/api/users/password`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(payload)
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        console.error('[AUTH] Password update failed:', errorData);
-        throw new Error(errorData.message || 'Failed to update password');
-      }
-      
-      const result = await response.json();
-      console.log('[AUTH] Password updated successfully');
-      
-      return true;
-    } catch (err) {
-      console.error('[AUTH] Password update error:', err);
-      setError(err.message || 'Failed to update password');
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  };
-
   // Refresh user data function
   const refreshUserData = async () => {
     try {
-      setLoading(true);
-      
-      const token = localStorage.getItem('userToken') || localStorage.getItem('auth-token');
+      const token = safeLocalStorage.getItem('userToken');
       if (!token) {
         throw new Error('Authentication required');
       }
       
-      // FIXED: Use hardcoded URL instead of environment variable
       const response = await fetch(`https://brendt-store-production-d6ef.up.railway.app/api/users/profile`, {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -366,14 +284,12 @@ const login = async (email, password) => {
       
       // Update local state and storage
       setUser(freshData);
-      localStorage.setItem('user-data', JSON.stringify(freshData));
+      safeLocalStorage.setItem('user-data', JSON.stringify(freshData));
       
       return freshData;
     } catch (err) {
       console.error('[AUTH] Error refreshing user data:', err);
       return null;
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -387,7 +303,6 @@ const login = async (email, password) => {
     logout,
     register,
     updateProfile,
-    updatePassword,
     refreshUserData,
     isAdmin: user?.role === 'admin'
   };
@@ -411,7 +326,6 @@ export function useAuth() {
       logout: () => {},
       register: () => Promise.resolve(false),
       updateProfile: () => Promise.resolve(false),
-      updatePassword: () => Promise.resolve(false),
       refreshUserData: () => Promise.resolve(null),
       isAdmin: false
     };
@@ -420,5 +334,5 @@ export function useAuth() {
   return context;
 }
 
-// Also export a default to maintain backward compatibility with existing imports
+// Export default
 export default useAuth;

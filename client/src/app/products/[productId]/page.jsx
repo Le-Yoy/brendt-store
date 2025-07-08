@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useSearchParams, useRouter } from 'next/navigation';
 import styles from './ProductPage.module.css';
 
@@ -22,43 +22,65 @@ export default function ProductPage({ params }) {
   const [selectedColor, setSelectedColor] = useState(null);
   const [usingMockData, setUsingMockData] = useState(false);
 
-  // Function to update URL when color changes
-  const updateURL = (color, colorIndex) => {
-    const params = new URLSearchParams(searchParams);
+  // ✨ FIXED: Smooth URL update without reload
+  const updateURL = useCallback((color, colorIndex) => {
+    if (!color || !product) return;
+    
+    const params = new URLSearchParams(searchParams.toString());
     params.set('color', color.name || color);
     params.set('colorIndex', colorIndex.toString());
     
-    // Replace current URL without adding to history
+    // ✨ CRITICAL: Use shallow routing to prevent page reload
     const newURL = `${window.location.pathname}?${params.toString()}`;
-    router.replace(newURL, { scroll: false });
-  };
+    window.history.replaceState(
+      { ...window.history.state, url: newURL, as: newURL },
+      '',
+      newURL
+    );
+  }, [searchParams, product]);
 
-  // Enhanced setSelectedColor that also updates URL
-  const handleColorChange = (color) => {
-    if (product && product.colors) {
-      const colorIndex = product.colors.findIndex(c => c.name === color.name);
-      if (colorIndex !== -1) {
-        setSelectedColor(color);
-        updateURL(color, colorIndex);
-      }
+  // ✨ FIXED: Smooth color change without page reload
+  const handleColorChange = useCallback((color) => {
+    if (!product || !product.colors) return;
+    
+    const colorIndex = product.colors.findIndex(c => c.name === color.name);
+    if (colorIndex !== -1) {
+      // ✨ Smooth state update - no page reload
+      setSelectedColor(color);
+      
+      // ✨ Reset size selection when color changes
+      setSelectedSize(null);
+      
+      // ✨ Update URL smoothly without reload
+      updateURL(color, colorIndex);
     }
-  };
+  }, [product, updateURL]);
 
+  // ✨ Initial product fetch - only once
   useEffect(() => {
+    let isMounted = true;
+    
     async function fetchProduct() {
+      if (!productId) return;
+      
       try {
+        setLoading(true);
+        
         // First try to get the product from the API
         const productData = await productService.getProduct(productId);
+        
+        if (!isMounted) return;
+        
         // Handle both formats of API response (data property or direct)
         const resolvedProduct = productData.data || productData;
         setProduct(resolvedProduct);
         setUsingMockData(false);
         
-        // Check URL parameters for color selection
-        const colorIndexParam = searchParams.get('colorIndex');
-        const colorParam = searchParams.get('color');
-        
+        // ✨ Set initial color based on URL or default to first
         if (resolvedProduct.colors && resolvedProduct.colors.length > 0) {
+          const colorIndexParam = searchParams.get('colorIndex');
+          const colorParam = searchParams.get('color');
+          
           let targetColor = null;
           
           // Priority 1: Try to match by colorIndex from URL
@@ -69,7 +91,7 @@ export default function ProductPage({ params }) {
             }
           }
           
-          // Priority 2: Try to match by color name from URL if colorIndex didn't work
+          // Priority 2: Try to match by color name from URL
           if (!targetColor && colorParam) {
             targetColor = resolvedProduct.colors.find(color => 
               color.name?.toLowerCase() === colorParam.toLowerCase()
@@ -81,27 +103,32 @@ export default function ProductPage({ params }) {
             targetColor = resolvedProduct.colors[0];
           }
           
-          setSelectedColor(targetColor);
+          if (isMounted) {
+            setSelectedColor(targetColor);
+          }
         }
         
-        setLoading(false);
       } catch (apiError) {
         console.warn('API fetch failed, falling back to mock data:', apiError);
+        
+        if (!isMounted) return;
         
         try {
           // Fallback to mock data if API fails
           const mockData = await productService.getMockProduct(productId);
+          
+          if (!isMounted) return;
+          
           setProduct(mockData);
           setUsingMockData(true);
           
-          // Check URL parameters for color selection
-          const colorIndexParam = searchParams.get('colorIndex');
-          const colorParam = searchParams.get('color');
-          
+          // Set initial color for mock data
           if (mockData.colors && mockData.colors.length > 0) {
+            const colorIndexParam = searchParams.get('colorIndex');
+            const colorParam = searchParams.get('color');
+            
             let targetColor = null;
             
-            // Priority 1: Try to match by colorIndex from URL
             if (colorIndexParam !== null) {
               const colorIndex = parseInt(colorIndexParam);
               if (colorIndex >= 0 && colorIndex < mockData.colors.length) {
@@ -109,33 +136,42 @@ export default function ProductPage({ params }) {
               }
             }
             
-            // Priority 2: Try to match by color name from URL if colorIndex didn't work
             if (!targetColor && colorParam) {
               targetColor = mockData.colors.find(color => 
                 color.name?.toLowerCase() === colorParam.toLowerCase()
               );
             }
             
-            // Priority 3: Fall back to first color
             if (!targetColor) {
               targetColor = mockData.colors[0];
             }
             
-            setSelectedColor(targetColor);
+            if (isMounted) {
+              setSelectedColor(targetColor);
+            }
           }
           
-          setLoading(false);
         } catch (mockError) {
           console.error('Error fetching product:', mockError);
+        }
+      } finally {
+        if (isMounted) {
           setLoading(false);
         }
       }
     }
 
     fetchProduct();
-    // Reset scroll position when product changes
+    
+    return () => {
+      isMounted = false;
+    };
+  }, [productId]); // ✨ CRITICAL: Only depend on productId, not searchParams
+
+  // ✨ SMOOTH: Reset scroll only when productId changes, not on color change
+  useEffect(() => {
     window.scrollTo(0, 0);
-  }, [productId, searchParams]);
+  }, [productId]);
 
   if (loading) {
     return (
@@ -167,7 +203,7 @@ export default function ProductPage({ params }) {
       <div className={styles.productContentWrapper}>
         <div className={styles.productGallerySection}>
           <ProductGallery 
-            images={selectedColor ? selectedColor.images : product.colors[0].images} 
+            images={selectedColor ? selectedColor.images : product.colors[0]?.images || []} 
             productName={product.name}
           />
         </div>
@@ -187,7 +223,7 @@ export default function ProductPage({ params }) {
       <div className={styles.relatedProductsSection}>
         <RelatedProducts 
           category={product.category} 
-          currentProductId={product.id} 
+          currentProductId={product.id || product._id} 
           usingApi={!usingMockData}
         />
       </div>

@@ -53,7 +53,7 @@ export default function ProductAdditionalInfo({ product }) {
           
           <h3>Demandes Spéciales</h3>
           <p>Pour toute demande spéciale ou personnalisation, n'hésitez pas à nous contacter directement.</p>
-          <a href="/contactez-nous" className={styles.contactLink}>Contactez-nous &rarr;</a>
+          <a href="/contactez-nous" className={styles.contactLink}>Contactez-nous →</a>
         </>
       )
     }
@@ -94,7 +94,7 @@ export default function ProductAdditionalInfo({ product }) {
     },
     {
       id: 'help',
-      title: 'Besoin daide',
+      title: 'Besoin d\'aide',
       content: (
         <div className={styles.helpContent}>
           <p>Notre équipe de service client est disponible pour répondre à toutes vos questions.</p>
@@ -157,15 +157,13 @@ export default function ProductAdditionalInfo({ product }) {
   
   return (
     <div className={styles.additionalInfoContainer}>
-      {/* Description */}
       <div className={styles.productDescription}>
         <p>{product.description}</p>
-        {/* Can add show more/less toggle here if description is long */}
       </div>
       
       <div className={styles.divider}></div>
       
-      {/* Info Panels */}
+      {/* Info Panels - Now work like accordions */}
       <div className={styles.infoPanels}>
         {infoPanels.map((panel) => (
           <div key={panel.id} className={styles.infoPanel}>
@@ -174,42 +172,26 @@ export default function ProductAdditionalInfo({ product }) {
               onClick={() => toggleInfoPanel(panel.id)}
             >
               <span>{panel.title}</span>
-              <IoIosArrowForward className={activeInfoPanel === panel.id ? styles.arrowRotated : ''} />
+              <span className={styles.infoPanelIcon}>
+                {activeInfoPanel === panel.id ? '−' : '+'}
+              </span>
             </button>
+            
+            <div className={`${styles.infoPanelContent} ${activeInfoPanel === panel.id ? styles.infoPanelExpanded : ''}`}>
+              <div className={styles.infoPanelInner}>
+                {panel.content}
+              </div>
+            </div>
           </div>
         ))}
       </div>
-      
-      {/* Info Panel Content - Slides in from right */}
-      {activeInfoPanel && (
-        <div className={styles.infoPanelOverlay} onClick={() => setActiveInfoPanel(null)}>
-          <div 
-            className={styles.infoPanelContent}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button 
-              className={styles.closePanel} 
-              onClick={() => setActiveInfoPanel(null)}
-            >
-              &times;
-            </button>
-            <h2>{infoPanels.find(p => p.id === activeInfoPanel)?.title}</h2>
-            <div className={styles.panelContentBody}>
-              {infoPanels.find(p => p.id === activeInfoPanel)?.content}
-            </div>
-          </div>
-        </div>
-      )}
       
       <div className={styles.divider}></div>
       
       {/* Accordions */}
       <div className={styles.accordionContainer}>
         {accordions.map((accordion) => (
-          <div 
-            key={accordion.id} 
-            className={`${styles.accordion} ${activeAccordion === accordion.id ? styles.activeAccordion : ''}`}
-          >
+          <div key={accordion.id} className={styles.accordion}>
             <button 
               className={styles.accordionHeader}
               onClick={() => toggleAccordion(accordion.id)}

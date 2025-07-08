@@ -1,10 +1,10 @@
-/* src/components/product/ProductGallery.module.css */
+/* ✨ DESKTOP GALLERY - Your Original Design */
 .galleryContainer {
   width: 100%;
   height: auto;
   padding-right: var(--spacing-2);
-  /* Enhanced touch behavior */
-  touch-action: manipulation;
+  /* Natural desktop touch */
+  touch-action: auto;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -20,8 +20,8 @@
   position: relative;
   overflow: hidden;
   margin-bottom: var(--spacing-3);
-  /* Touch optimization */
-  touch-action: manipulation;
+  /* Natural touch behavior */
+  touch-action: auto;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -30,9 +30,10 @@
   width: 100%;
   height: 100%;
   background-color: var(--color-secondary);
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='18' fill='%23B07A72' opacity='0.8'/%3E%3Cpath d='M20 10 L20 30 M10 20 L30 20' stroke='%23000000' stroke-width='2'/%3E%3C/svg%3E"), pointer;
-  /* Perfect touch optimization */
-  touch-action: manipulation;
+  /* REMOVED ZOOM CURSOR - NO CLICK ON DESKTOP */
+  cursor: default;
+  /* Natural touch */
+  touch-action: auto;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -42,8 +43,8 @@
 .productImage {
   object-fit: cover;
   object-position: center;
-  /* Ultra-smooth touch */
-  touch-action: manipulation;
+  /* Natural image behavior */
+  touch-action: auto;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -55,7 +56,7 @@
   will-change: transform;
 }
 
-/* Wishlist button */
+/* Wishlist button - Your Original Style */
 .wishlistButton {
   position: absolute;
   top: 15px;
@@ -71,7 +72,7 @@
   cursor: pointer;
   z-index: 10;
   transition: all 0.3s ease;
-  /* Enhanced touch */
+  /* Touch-friendly */
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
   min-width: 44px;
@@ -83,100 +84,38 @@
   color: var(--color-accent);
 }
 
-/* Zoom functionality */
-.zoomOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.95);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(5px);
-  /* Smooth touch */
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.zoomContent {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.closeZoom {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  width: 50px;
-  height: 50px;
-  background-color: var(--color-accent);
-  border: 2px solid var(--color-white);
-  border-radius: 50%;
-  color: var(--color-white);
-  font-size: 24px;
-  cursor: pointer;
-  z-index: 1001;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
-  /* Touch-friendly */
-  min-width: 50px;
-  min-height: 50px;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.closeZoom:hover {
-  background-color: var(--color-accent-dark);
-  transform: scale(1.1);
-}
-
-.zoomedImageContainer {
-  position: relative;
-  width: 90%;
-  height: 90%;
-  max-width: 1600px;
-  max-height: 90vh;
-}
-
-.zoomedImage {
-  object-fit: contain;
-  /* Prevent interactions */
-  pointer-events: none;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* Mobile styles */
+/* ✨ MOBILE CAROUSEL - SLOWER TRANSITIONS + NATURAL BEHAVIOR */
 .mobileGallery {
   width: 100%;
   position: relative;
   overflow: hidden;
-  /* Enhanced touch behavior for mobile */
-  touch-action: pan-y pinch-zoom;
+  /* ✨ CRITICAL: COMPLETELY NATURAL TOUCH BY DEFAULT */
+  touch-action: auto;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
+  /* ✨ Hardware acceleration for performance */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: transform;
+  /* ✨ Natural scroll behavior */
+  overscroll-behavior: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .mobileCarousel {
   display: flex;
-  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   width: 100%;
+  /* ✨ SLOWER TRANSITION: 20% slower for more deliberate feel */
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Was 0.4s */
+  /* ✨ Hardware acceleration */
   will-change: transform;
-  /* Hardware acceleration */
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
+  /* ✨ Natural touch behavior */
+  touch-action: auto;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .mobileCarouselItem {
@@ -184,9 +123,35 @@
   width: 100%;
   aspect-ratio: 3/4;
   height: 65dvh;
-  /* Smooth touch */
-  touch-action: manipulation;
+  position: relative;
+  /* ✨ NATURAL: Allow all touch events by default */
+  touch-action: auto;
   -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  /* ✨ Hardware acceleration */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+}
+
+/* ✨ Mobile image wrapper - NO ZOOM ON MOBILE EITHER */
+.mobileGallery .imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-secondary);
+  cursor: default;
+  /* ✨ NATURAL: No touch restrictions */
+  touch-action: auto;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  /* ✨ Hardware acceleration */
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  will-change: transform;
 }
 
 .mobileIndicator {
@@ -196,6 +161,8 @@
   margin-top: var(--spacing-4);
   position: relative;
   z-index: 2;
+  /* ✨ Natural touch for indicators */
+  touch-action: manipulation;
 }
 
 .indicatorDot {
@@ -214,6 +181,8 @@
   justify-content: center;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  /* ✨ SLOWER INDICATOR TRANSITIONS */
+  transition: all 0.4s ease; /* Was 0.3s */
 }
 
 .indicatorDot::before {
@@ -223,7 +192,8 @@
   border-radius: 50%;
   border: 1px solid var(--color-accent);
   background: transparent;
-  transition: all 0.3s ease;
+  /* ✨ SLOWER DOT TRANSITIONS */
+  transition: all 0.4s ease; /* Was 0.3s */
 }
 
 .activeDot::before {
@@ -246,32 +216,58 @@
     /* Enhanced mobile touch */
     min-width: 44px;
     min-height: 44px;
+    /* ✨ Isolated touch for wishlist */
+    touch-action: manipulation;
+    z-index: 20;
   }
   
   .wishlistIcon {
     font-size: 20px;
   }
   
-  /* Mobile-specific touch optimizations */
-  .mobileGallery {
-    -webkit-overflow-scrolling: touch;
+  /* ✨ SLOWER MOBILE TRANSITIONS */
+  .mobileCarousel {
+    /* ✨ Even slower on mobile for product page feel */
+    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* 20% slower than original */
   }
   
-  .imageWrapper {
-    /* Improve mobile touch response */
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
+  .indicatorDot {
+    /* ✨ Slower mobile indicator transitions */
+    transition: all 0.5s ease;
+  }
+  
+  .indicatorDot::before {
+    /* ✨ Slower mobile dot transitions */
+    transition: all 0.5s ease;
   }
 }
 
-/* iOS Safari specific optimizations */
+/* ✨ iOS Safari specific optimizations */
 @supports (-webkit-touch-callout: none) {
   .mobileGallery,
+  .mobileCarousel,
+  .mobileCarouselItem,
   .imageWrapper,
-  .productImage,
-  .zoomOverlay {
+  .productImage {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     -webkit-touch-callout: none;
     -webkit-user-select: none;
+  }
+  
+  /* ✨ iOS-specific natural behavior */
+  .mobileGallery {
+    -webkit-overflow-scrolling: touch;
+    /* Keep completely natural touch */
+    touch-action: auto !important;
+  }
+}
+
+/* ✨ ACCESSIBILITY: Respect motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .mobileCarousel,
+  .indicatorDot,
+  .indicatorDot::before,
+  .wishlistButton {
+    transition: none;
   }
 }

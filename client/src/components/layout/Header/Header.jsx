@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { FiShoppingBag, FiSearch, FiX, FiHeart, FiUser, FiLogOut } from 'react-icons/fi';
 import useCart from '../../../hooks/useCart';
-import { useAuth } from '@/hooks/useAuth'; // Updated import
+import useAuth from '@/hooks/useAuth'; // FIXED: Use consistent import (removed destructuring)
 import AccountWidget from '../Account/AccountWidget';
 import PreHeader from './PreHeader';
 import MegaMenu from './MegaMenu';
@@ -331,11 +331,11 @@ const Header = () => {
       
       {/* Cart widget - slide in from right */}
       {isCartOpen && (
-  <CartWidget onClose={() => {
-    setCartOpen(false);
-    setIsCartOpen(false);
-  }} />
-)}
+        <CartWidget onClose={() => {
+          setCartOpen(false);
+          setIsCartOpen(false);
+        }} />
+      )}
       
       {/* Wishlist widget - slide in from right */}
       {isWishlistOpen && (
@@ -386,10 +386,13 @@ const Header = () => {
         </div>
       )}
       
-      {/* Account widget - enhanced with auth state */}
+      {/* Account widget - FIXED: Remove extra props, component handles auth internally */}
       {isAccountOpen && (
-  <AccountWidget isOpen={isAccountOpen} onClose={toggleAccount} />
-)}
+        <AccountWidget 
+          isOpen={isAccountOpen} 
+          onClose={toggleAccount}
+        />
+      )}
     </header>
   );
 };

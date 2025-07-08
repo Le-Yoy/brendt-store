@@ -179,6 +179,14 @@ export const femmeCategories = [
         ]
       },
       {
+        id: 'sandales',
+        name: 'Sandales',
+        items: [
+          { id: 'sandales-tarhazout-raffia-blanc', name: 'Tarhazout Raffia Blanc' },
+          { id: 'sandales-tarhazout-raffia-naturel', name: 'Tarhazout Raffia Naturel' }
+        ]
+      },
+      {
         id: 'mocassins',
         name: 'Mocassins',
         items: [
@@ -191,6 +199,7 @@ export const femmeCategories = [
           { id: 'tangier-walk-pompom-marron', name: 'Tangier Walk Pompom Marron' }
         ]
       }
+      
     ]
   }
 ];

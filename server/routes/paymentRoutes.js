@@ -5,64 +5,110 @@ const dotenv = require('dotenv');
 // Ensure environment variables are loaded
 dotenv.config();
 
-// Webhook handlers
-const { handleSuccessfulPayment, handleFailedPayment } = require('../webhooks/stripeWebhooks');
+// Import Order model for webhook processing
+const Order = require('../models/Order');
 
-// Initialize Stripe with secret key from environment variables
-const stripeKey = process.env.STRIPE_SECRET_KEY || 'sk_test_51OFY8OKD6oC0E24lRsBz15aZ021IledPq9WQ33NCNOf944Bsa3dd7ItTjjYMDnE290mVJiy1BPF3C3LVOhROelBq00ls0x5qIS';
+// Security middleware
+const rateLimit = require('express-rate-limit');
+
+// Create rate limiter for payment endpoints
+const paymentLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // limit each IP to 10 requests per windowMs
+  message: 'Too many payment attempts, please try again later',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Validate Stripe configuration
+const stripeKey = process.env.STRIPE_SECRET_KEY;
+if (!stripeKey) {
+  console.error('CRITICAL ERROR: STRIPE_SECRET_KEY is not set in environment variables');
+  throw new Error('Stripe configuration is missing');
+}
+
+// Check if we're using the right keys for the environment
+const isProduction = process.env.NODE_ENV === 'production';
+const isTestKey = stripeKey.startsWith('sk_test_');
+
+if (isProduction && isTestKey) {
+  console.error('CRITICAL ERROR: Using TEST Stripe keys in PRODUCTION environment!');
+  throw new Error('Invalid Stripe configuration for production');
+}
+
+if (!isProduction && !isTestKey) {
+  console.warn('WARNING: Using LIVE Stripe keys in DEVELOPMENT environment!');
+}
+
+// Initialize Stripe
 const stripe = require('stripe')(stripeKey);
 
-// Webhook secret from environment variables
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || 'whsec_your_webhook_secret';
+// Webhook secret
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+if (!webhookSecret) {
+  console.error('WARNING: STRIPE_WEBHOOK_SECRET is not set - webhooks will not work!');
+}
 
 // Client URL for redirects
 const clientUrl = process.env.CLIENT_URL || 'http://localhost:3000';
 
+// Log startup configuration
+console.log('Stripe Payment Routes Initialized:', {
+  environment: process.env.NODE_ENV,
+  stripeMode: isTestKey ? 'TEST' : 'LIVE',
+  clientUrl: clientUrl,
+  webhookConfigured: !!webhookSecret
+});
+
 /**
- * @route   POST /api/create-payment-intent
- * @desc    Create a payment intent for Stripe checkout
+ * @route   POST /api/payments/create-payment-intent
+ * @desc    Create a payment intent for Stripe payments
  * @access  Public
  */
-router.post('/create-payment-intent', async (req, res) => {
+router.post('/create-payment-intent', paymentLimiter, async (req, res) => {
   try {
-    console.log('Payment request received:', req.body);
+    console.log('Payment intent request received:', {
+      amount: req.body.amount,
+      currency: req.body.currency,
+      orderId: req.body.orderId
+    });
     
-    // Extract amount and currency from request body
     const { amount, currency = 'usd', orderId } = req.body;
     
-    if (!amount) {
+    // Validate amount
+    if (!amount || amount <= 0) {
       return res.status(400).json({ 
-        error: 'Missing required parameter: amount' 
+        error: 'Invalid amount provided' 
       });
     }
     
-    // Convert amount to cents for Stripe
+    // Maximum amount check (adjust based on your business)
+    const MAX_AMOUNT_USD = 5000; // $5000 max
+    if (amount > MAX_AMOUNT_USD) {
+      return res.status(400).json({ 
+        error: 'Amount exceeds maximum allowed' 
+      });
+    }
+    
+    // Convert amount to cents
     const amountInCents = Math.round(amount * 100);
     
-    console.log(`Creating payment intent: ${amountInCents} cents (${amount} ${currency})`);
-    
-    // Create the payment intent with metadata
+    // Create payment intent
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amountInCents,
       currency: currency,
-      // Add metadata for tracking
       metadata: {
-        orderId: orderId || 'checkout-page',
-        integration: 'brendt-ecommerce'
+        orderId: orderId || 'direct-payment',
+        integration: 'brendt-ecommerce',
+        environment: process.env.NODE_ENV
       },
-      // Enable auto confirmation with common payment methods
-      payment_method_types: ['card'],
-      // If true, can directly redirect the customer to their bank
       automatic_payment_methods: {
-        enabled: true
+        enabled: true,
       },
-      // Ensures synchronous confirmation
-      confirm: false
     });
 
-    console.log('Payment intent created:', paymentIntent.id);
+    console.log('Payment intent created successfully:', paymentIntent.id);
     
-    // Return the client secret to the frontend
     res.status(200).json({
       clientSecret: paymentIntent.client_secret,
       paymentIntentId: paymentIntent.id
@@ -70,42 +116,48 @@ router.post('/create-payment-intent', async (req, res) => {
   } catch (error) {
     console.error('Error creating payment intent:', error);
     
-    // Send detailed error information
     res.status(500).json({ 
-      error: error.message,
-      code: error.code,
-      type: error.type,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      error: 'Failed to create payment intent',
+      message: isProduction ? 'Payment processing error' : error.message
     });
   }
 });
 
 /**
- * @route   POST /api/create-checkout-session
- * @desc    Create a checkout session for Stripe checkout
+ * @route   POST /api/payments/create-checkout-session
+ * @desc    Create a checkout session for Stripe Checkout
  * @access  Public
  */
-router.post('/create-checkout-session', async (req, res) => {
+router.post('/create-checkout-session', paymentLimiter, async (req, res) => {
   try {
-    console.log('Checkout session request received:', req.body);
+    console.log('Checkout session request received');
     
-    // Extract parameters from request body
-    const { madAmount, items } = req.body;
+    const { madAmount, items, orderId, customerEmail, customerPhone } = req.body;
     
-    if (!madAmount) {
+    // Validate required fields
+    if (!madAmount || madAmount <= 0) {
       return res.status(400).json({ 
-        error: 'Missing required parameter: madAmount' 
+        error: 'Invalid amount provided' 
       });
     }
     
-    // Convert MAD to USD
-    const usdAmount = madAmount / 9.5;
+    // Currency conversion: 1 USD = 9.5 MAD
+    const CONVERSION_RATE = 9.5;
+    const usdAmount = madAmount / CONVERSION_RATE;
     const roundedUsdAmount = Math.round(usdAmount * 100) / 100;
     
-    console.log('Payment calculation:', {
+    // Maximum amount check
+    const MAX_AMOUNT_MAD = 50000; // 50,000 MAD max
+    if (madAmount > MAX_AMOUNT_MAD) {
+      return res.status(400).json({ 
+        error: 'Amount exceeds maximum allowed' 
+      });
+    }
+    
+    console.log('Creating checkout session:', {
       originalMAD: madAmount,
-      conversionRate: '1 USD = 9.5 MAD',
-      convertedUSD: roundedUsdAmount
+      convertedUSD: roundedUsdAmount,
+      orderId: orderId
     });
     
     // Prepare line items
@@ -114,151 +166,153 @@ router.post('/create-checkout-session', async (req, res) => {
         currency: 'usd',
         product_data: {
           name: 'BRENDT Order',
-          description: 'Complete order payment',
+          description: items && items.length > 0 
+            ? `${items.length} article${items.length > 1 ? 's' : ''}`
+            : 'Commande en ligne',
+          metadata: {
+            madAmount: madAmount.toString()
+          }
         },
-        unit_amount: Math.round(roundedUsdAmount * 100),
+        unit_amount: Math.round(roundedUsdAmount * 100), // Convert to cents
       },
       quantity: 1,
     }];
     
-    // Create the checkout session
-    const session = await stripe.checkout.sessions.create({
+    // Create session configuration
+    const sessionConfig = {
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
       success_url: `${clientUrl}/thank-you?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${clientUrl}/checkout?canceled=true`,
       metadata: {
-        orderId: 'checkout-' + Date.now(),
-        integration: 'brendt-ecommerce-checkout',
-        madAmount: madAmount
+        orderId: orderId || `order_${Date.now()}`,
+        madAmount: madAmount.toString(),
+        environment: process.env.NODE_ENV,
+        customerPhone: customerPhone || 'N/A'
+      },
+      payment_intent_data: {
+        metadata: {
+          orderId: orderId || `order_${Date.now()}`,
+          madAmount: madAmount.toString()
+        }
       }
+    };
+    
+    // Add customer email if provided
+    if (customerEmail) {
+      sessionConfig.customer_email = customerEmail;
+    }
+    
+    // Set up billing address collection
+    sessionConfig.billing_address_collection = 'required';
+    
+    // Create the session
+    const session = await stripe.checkout.sessions.create(sessionConfig);
+    
+    console.log('Checkout session created successfully:', {
+      sessionId: session.id,
+      url: session.url.substring(0, 50) + '...'
     });
     
-    console.log('Checkout session created:', session.id);
-    
-    // Return the session URL for redirecting the customer
     res.status(200).json({
       url: session.url,
       sessionId: session.id
     });
+    
   } catch (error) {
     console.error('Error creating checkout session:', error);
+    
     res.status(500).json({ 
-      error: error.message,
-      code: error.code,
-      type: error.type
+      error: 'Failed to create checkout session',
+      message: isProduction ? 'Payment setup failed' : error.message
     });
   }
 });
 
 /**
- * @route   POST /api/webhook
+ * @route   POST /api/payments/webhook
  * @desc    Stripe webhook endpoint for event handling
- * @access  Public (but secured by Stripe signature verification)
+ * @access  Public (secured by Stripe signature)
  */
-// IMPORTANT: This route needs raw body, not JSON-parsed body
 router.post('/webhook', express.raw({type: 'application/json'}), async (req, res) => {
   const sig = req.headers['stripe-signature'];
   let event;
 
+  if (!webhookSecret) {
+    console.error('Webhook secret not configured - rejecting webhook');
+    return res.status(500).send('Webhook not configured');
+  }
+
   try {
-    // Verify the event came from Stripe using the webhook secret
+    // Verify webhook signature
     event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+    console.log(`Webhook event received: ${event.type}`);
   } catch (err) {
     console.error(`Webhook signature verification failed:`, err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  // Handle the event based on its type
+  // Handle the event
   try {
-    // Get the object from the event
     const dataObject = event.data.object;
     
-    console.log(`Received webhook event: ${event.type}`);
-    
-    // Handle different event types
     switch (event.type) {
+      case 'checkout.session.completed':
+        console.log('Checkout session completed:', dataObject.id);
+        
+        // Update order status
+        if (dataObject.metadata?.orderId) {
+          try {
+            const order = await Order.findById(dataObject.metadata.orderId);
+            if (order) {
+              order.isPaid = true;
+              order.paidAt = Date.now();
+              order.paymentResult = {
+                id: dataObject.payment_intent,
+                status: 'completed',
+                update_time: Date.now(),
+                email_address: dataObject.customer_details?.email
+              };
+              await order.save();
+              console.log('Order updated successfully:', order._id);
+            }
+          } catch (orderError) {
+            console.error('Error updating order:', orderError);
+          }
+        }
+        break;
+        
       case 'payment_intent.succeeded':
-        await handleSuccessfulPayment(dataObject);
+        console.log('Payment succeeded:', dataObject.id);
+        // Additional payment success handling if needed
         break;
         
       case 'payment_intent.payment_failed':
-        await handleFailedPayment(dataObject);
+        console.log('Payment failed:', dataObject.id);
+        // Handle failed payment
         break;
         
-      case 'checkout.session.completed':
-        // Handle checkout completion if using Checkout
-        console.log('Checkout session completed:', dataObject.id);
-        // Update order status in database if needed
-        break;
-        
-      case 'checkout.session.async_payment_succeeded':
-        console.log('Async payment succeeded for checkout session:', dataObject.id);
-        break;
-        
-      case 'checkout.session.async_payment_failed':
-        console.log('Async payment failed for checkout session:', dataObject.id);
+      case 'checkout.session.expired':
+        console.log('Checkout session expired:', dataObject.id);
+        // Clean up abandoned checkouts if needed
         break;
         
       default:
         console.log(`Unhandled event type: ${event.type}`);
     }
 
-    // Return a 200 response to acknowledge receipt of the event
+    // Return success response
     res.json({ received: true });
+    
   } catch (err) {
-    console.error(`Error processing webhook event:`, err);
+    console.error(`Error processing webhook:`, err);
     res.status(500).send(`Webhook processing error: ${err.message}`);
   }
 });
 
 /**
- * @route   GET /api/payment-test
- * @desc    Test endpoint to verify payment routes are working
- * @access  Public
- */
-router.get('/payment-test', (req, res) => {
-  try {
-    res.json({ 
-      message: 'Payment routes are working!',
-      stripeConfigured: Boolean(stripeKey),
-      webhookConfigured: Boolean(webhookSecret)
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-
-/**
- * @route   GET /api/payment-status/:id
- * @desc    Check status of a payment intent
- * @access  Public
- */
-router.get('/payment-status/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    
-    if (!id) {
-      return res.status(400).json({ error: 'Payment ID is required' });
-    }
-    
-    const paymentIntent = await stripe.paymentIntents.retrieve(id);
-    
-    res.status(200).json({
-      id: paymentIntent.id,
-      status: paymentIntent.status,
-      amount: paymentIntent.amount / 100,
-      currency: paymentIntent.currency
-    });
-  } catch (error) {
-    console.error('Error checking payment status:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-/**
- * @route   GET /api/verify-session
+ * @route   GET /api/payments/verify-session
  * @desc    Verify a checkout session status
  * @access  Public
  */
@@ -276,12 +330,42 @@ router.get('/verify-session', async (req, res) => {
       status: session.payment_status,
       customer_email: session.customer_details?.email,
       amount_total: session.amount_total / 100,
-      currency: session.currency
+      currency: session.currency,
+      metadata: session.metadata
     });
   } catch (error) {
     console.error('Error verifying session:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ 
+      error: 'Failed to verify session',
+      message: isProduction ? 'Verification failed' : error.message
+    });
   }
+});
+
+/**
+ * @route   GET /api/payments/config
+ * @desc    Get Stripe configuration for frontend
+ * @access  Public
+ */
+router.get('/config', (req, res) => {
+  res.json({
+    publishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
+    mode: isTestKey ? 'test' : 'live'
+  });
+});
+
+/**
+ * @route   GET /api/payments/health
+ * @desc    Health check endpoint
+ * @access  Public
+ */
+router.get('/health', (req, res) => {
+  res.json({ 
+    status: 'healthy',
+    mode: isTestKey ? 'test' : 'live',
+    webhookConfigured: !!webhookSecret,
+    environment: process.env.NODE_ENV
+  });
 });
 
 module.exports = router;

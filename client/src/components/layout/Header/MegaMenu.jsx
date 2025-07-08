@@ -1,5 +1,5 @@
 // src/components/layout/Header/MegaMenu.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { hommeCategories, femmeCategories } from './menuData'; // Static data fallback
@@ -13,10 +13,17 @@ const MegaMenu = ({ activeMegaMenu }) => {
     activeMegaMenu === 'homme' ? 'chaussures' : 
     activeMegaMenu === 'femme' ? 'chaussures' : null
   );
+  
+  // New state for product management
+  const [expandedSubcategory, setExpandedSubcategory] = useState(null);
+  const [subcategoryProducts, setSubcategoryProducts] = useState({});
+  const [loadingProducts, setLoadingProducts] = useState(false);
+  const [productCache, setProductCache] = useState({});
+  
+  const megaMenuTimeoutRef = useRef(null);
 
   // Update active category when menu changes
   useEffect(() => {
-    // Reset active category when menu changes based on current menu
     if (activeMegaMenu === 'homme') {
       setActiveCategory('chaussures');
     } else if (activeMegaMenu === 'femme') {
@@ -24,6 +31,10 @@ const MegaMenu = ({ activeMegaMenu }) => {
     } else {
       setActiveCategory(null);
     }
+    
+    // Clear expanded state when menu changes
+    setExpandedSubcategory(null);
+    setSubcategoryProducts({});
   }, [activeMegaMenu]);
 
   // Fetch categories from API
@@ -31,7 +42,6 @@ const MegaMenu = ({ activeMegaMenu }) => {
     const fetchCategories = async () => {
       try {
         console.log(`Fetching categories for all`);
-        // Fetch all categories without gender filter to ensure we get everything
         const allCategoriesData = await productService.getCategories();
         console.log('All categories loaded:', allCategoriesData);
         setCategories(allCategoriesData);
@@ -48,11 +58,9 @@ const MegaMenu = ({ activeMegaMenu }) => {
 
   // Function to ensure all subcategories are visible
   useEffect(() => {
-    // When menu changes, force a reload of products to ensure all are visible
     if (activeMegaMenu) {
       const fetchGenderProducts = async () => {
         try {
-          // Ping the products endpoint to warm up cache for this gender's products
           await productService.getProducts({ 
             gender: activeMegaMenu,
             limit: 100
@@ -69,7 +77,6 @@ const MegaMenu = ({ activeMegaMenu }) => {
 
   // Filter menu categories based on current menu
   const getMenuCategoriesForCurrentMenu = () => {
-    // Always use the static category data which contains all subcategories
     if (activeMegaMenu === 'homme') {
       return hommeCategories;
     } else if (activeMegaMenu === 'femme') {
@@ -85,29 +92,113 @@ const MegaMenu = ({ activeMegaMenu }) => {
   const handleCategoryHover = (categoryId) => {
     console.log(`Hovering on category: ${categoryId}`);
     
-    // If not a valid category ID for current menu, don't update state
     const isValidCategory = menuCategories.some(cat => cat.id === categoryId);
     if (!isValidCategory) {
       console.warn(`Invalid category ID for ${activeMegaMenu}: ${categoryId}`);
       return;
     }
     
-    // Update state with valid category
     setActiveCategory(categoryId);
+    // Clear expanded subcategory when changing category
+    setExpandedSubcategory(null);
+  };
+
+  // NEW: Handle subcategory click to expand/collapse products
+  const handleSubcategoryClick = async (e, subcategoryId) => {
+    e.preventDefault();
+    
+    // If already expanded, collapse it
+    if (expandedSubcategory === subcategoryId) {
+      setExpandedSubcategory(null);
+      return;
+    }
+    
+    // Expand this subcategory
+    setExpandedSubcategory(subcategoryId);
+    
+    // Fetch products if not already cached
+    await fetchSubcategoryProducts(subcategoryId);
+  };
+
+  // NEW: Handle direct navigation to category page
+  const handleViewAllClick = (subcategoryId) => {
+    window.location.href = `/category/${activeCategory}?subcategory=${subcategoryId}&gender=${activeMegaMenu}`;
+  };
+
+  // NEW: Fetch products for a subcategory
+  const fetchSubcategoryProducts = async (subcategoryId) => {
+    const cacheKey = `${activeMegaMenu}-${activeCategory}-${subcategoryId}`;
+    
+    // Check cache first (5 minutes expiry)
+    if (productCache[cacheKey] && Date.now() - productCache[cacheKey].timestamp < 300000) {
+      console.log(`Using cached products for ${cacheKey}`);
+      setSubcategoryProducts(prev => ({
+        ...prev,
+        [subcategoryId]: productCache[cacheKey].data
+      }));
+      return;
+    }
+
+    try {
+      setLoadingProducts(true);
+      console.log(`Fetching products for ${activeMegaMenu} > ${activeCategory} > ${subcategoryId}`);
+      
+      const response = await productService.getProducts({
+        category: activeCategory,
+        subcategory: subcategoryId,
+        gender: activeMegaMenu,
+        limit: 5, // Max 5 products as requested
+        sort: 'newest'
+      });
+
+      const products = response.data?.data || response.data || response || [];
+      
+      // Filter only in-stock products
+      const inStockProducts = products.filter(product => 
+        product.inStock === true || product.inStock === undefined
+      );
+
+      // Take only first 5 in-stock products
+      const limitedProducts = inStockProducts.slice(0, 5);
+
+      console.log(`Found ${limitedProducts.length} in-stock products for ${subcategoryId}`);
+
+      // Update state
+      setSubcategoryProducts(prev => ({
+        ...prev,
+        [subcategoryId]: limitedProducts
+      }));
+
+      // Cache the results
+      setProductCache(prev => ({
+        ...prev,
+        [cacheKey]: {
+          data: limitedProducts,
+          timestamp: Date.now()
+        }
+      }));
+
+    } catch (error) {
+      console.error(`Error fetching products for ${subcategoryId}:`, error);
+      setSubcategoryProducts(prev => ({
+        ...prev,
+        [subcategoryId]: []
+      }));
+    } finally {
+      setLoadingProducts(false);
+    }
   };
 
   // Get current category data
   const getCurrentCategory = () => {
     if (!activeCategory) return null;
     
-    // Always use static data for gender-specific menus
     if (activeMegaMenu === 'homme') {
       return hommeCategories.find(cat => cat.id === activeCategory);
     } else if (activeMegaMenu === 'femme') {
       return femmeCategories.find(cat => cat.id === activeCategory);
     }
     
-    // Fall back to API data for other menus
     const apiCategory = categories.find(cat => cat.category === activeCategory);
     if (apiCategory) {
       return {
@@ -208,9 +299,7 @@ const MegaMenu = ({ activeMegaMenu }) => {
   const getFilteredSubcategories = (category) => {
     if (!category || !category.subcategories) return [];
     
-    // Use different logic based on gender menu
     if (activeMegaMenu === 'homme') {
-      // For men's menu, we want to show all subcategories from static data
       if (category.id === 'chaussures') {
         return hommeCategories.find(cat => cat.id === 'chaussures')?.subcategories || [];
       }
@@ -218,19 +307,77 @@ const MegaMenu = ({ activeMegaMenu }) => {
         return hommeCategories.find(cat => cat.id === 'accessoires')?.subcategories || [];
       }
     } else if (activeMegaMenu === 'femme') {
-      // For women's menu, we show the women's subcategories
       if (category.id === 'chaussures') {
         return femmeCategories.find(cat => cat.id === 'chaussures')?.subcategories || [];
       }
     }
     
-    // Default to the provided category's subcategories
     return category.subcategories;
+  };
+
+  // NEW: Render individual products for a subcategory
+  const renderSubcategoryProducts = (subcategoryId) => {
+    const products = subcategoryProducts[subcategoryId] || [];
+    
+    if (loadingProducts && expandedSubcategory === subcategoryId) {
+      return (
+        <div className="mega-menu__products-loading">
+          <div className="mega-menu__loading-spinner"></div>
+          <span>Chargement des produits...</span>
+        </div>
+      );
+    }
+
+    if (products.length === 0 && expandedSubcategory === subcategoryId) {
+      return (
+        <div className="mega-menu__no-products">
+          <span>Aucun produit disponible</span>
+        </div>
+      );
+    }
+
+    return (
+      <div className="mega-menu__products-container">
+        <div className="mega-menu__products-list">
+          {products.map((product) => {
+            const defaultColor = product.colors?.[0] || {};
+            return (
+              <Link
+                key={product._id || product.id}
+                href={`/products/${product._id || product.id}?color=${encodeURIComponent(defaultColor.name || 'default')}&colorIndex=0`}
+                className="mega-menu__product-link"
+              >
+                <div className="mega-menu__product-item">
+                  <div className="mega-menu__product-image">
+                    {defaultColor.images?.[0] && (
+                      <img
+                        src={defaultColor.images[0]}
+                        alt={product.name}
+                        loading="lazy"
+                      />
+                    )}
+                  </div>
+                  <div className="mega-menu__product-info">
+                    <span className="mega-menu__product-name">{product.name}</span>
+                    <span className="mega-menu__product-price">{product.price} MAD</span>
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+        <button
+          onClick={() => handleViewAllClick(subcategoryId)}
+          className="mega-menu__view-all-btn"
+        >
+          Voir tous les {subcategoryId}
+        </button>
+      </div>
+    );
   };
 
   // Render the standard category grid used by both homme and femme menus
   const renderCategoryGrid = () => {
-    // Filter subcategories for gender
     const filteredSubcategories = currentCategory ? 
       getFilteredSubcategories(currentCategory) : [];
     
@@ -258,7 +405,7 @@ const MegaMenu = ({ activeMegaMenu }) => {
         {/* Divider */}
         <div className="mega-menu__divider"></div>
         
-        {/* Subcategories section - SIMPLIFIED */}
+        {/* Subcategories section - ENHANCED with clickable products */}
         <div className="mega-menu__subcategories">
           {currentCategory && (
             <>
@@ -267,14 +414,30 @@ const MegaMenu = ({ activeMegaMenu }) => {
               </h3>
               <ul className="mega-menu__subcategory-list">
                 {filteredSubcategories.map((subcategory) => (
-                  <li key={subcategory.id} className="mega-menu__subcategory-item">
-                    <Link 
-                      href={`/category/${currentCategory.id}?subcategory=${subcategory.id}&gender=${activeMegaMenu}`} 
-                      className="mega-menu__subcategory-link"
-                    >
-                      {subcategory.name} {subcategory.count ? `(${subcategory.count})` : ''}
-                    </Link>
-                    {/* No individual product items displayed */}
+                  <li 
+                    key={subcategory.id} 
+                    className={`mega-menu__subcategory-item ${expandedSubcategory === subcategory.id ? 'mega-menu__subcategory-item--expanded' : ''}`}
+                  >
+                    <div className="mega-menu__subcategory-header">
+                      <button
+                        onClick={(e) => handleSubcategoryClick(e, subcategory.id)}
+                        className="mega-menu__subcategory-button"
+                      >
+                        <span className="mega-menu__subcategory-name">
+                          {subcategory.name} {subcategory.count ? `(${subcategory.count})` : ''}
+                        </span>
+                        <span className={`mega-menu__expand-icon ${expandedSubcategory === subcategory.id ? 'mega-menu__expand-icon--expanded' : ''}`}>
+                          +
+                        </span>
+                      </button>
+                    </div>
+                    
+                    {/* NEW: Show products when subcategory is expanded */}
+                    {expandedSubcategory === subcategory.id && (
+                      <div className="mega-menu__subcategory-products">
+                        {renderSubcategoryProducts(subcategory.id)}
+                      </div>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -298,7 +461,6 @@ const MegaMenu = ({ activeMegaMenu }) => {
                   <h4 className="mega-menu__featured-title">{currentCategory.name}</h4>
                 </div>
               </div>
-              {/* Standardized category URL with gender parameter */}
               <Link 
                 href={`/category/${currentCategory.id}?gender=${activeMegaMenu}`}
                 className="mega-menu__featured-link"

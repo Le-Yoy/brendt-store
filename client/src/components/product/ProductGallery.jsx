@@ -8,15 +8,25 @@ import styles from './ProductGallery.module.css';
 export default function ProductGallery({ images, productName }) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-  const [zoomedImage, setZoomedImage] = useState(null);
   const [wishlist, setWishlist] = useState(false);
   const galleryRef = useRef(null);
   
-  // Enhanced touch handling with stricter thresholds
-  const touchStartRef = useRef({ x: 0, y: 0, time: 0 });
-  const touchMoveRef = useRef({ x: 0, y: 0 });
-  const isSwipeInProgress = useRef(false);
-  const swipeDirection = useRef(null); // 'horizontal', 'vertical', or null
+  // ✨ INTELLIGENT GESTURE DETECTION - Natural thresholds (20% slower)
+  const touchStartRef = useRef(null);
+  const touchMoveRef = useRef(null);
+  const gestureStateRef = useRef({
+    isDetecting: false,
+    direction: null,
+    velocity: 0,
+    startTime: 0,
+    hasCommitted: false
+  });
+  
+  // ✨ SMART CAROUSEL COMMUNICATION
+  const [carouselState, setCarouselState] = useState({
+    isActive: false,
+    isCommitted: false
+  });
   
   // Ensure we have at least 6 images (duplicate if needed)
   const normalizedImages = images && images.length > 0 
@@ -34,71 +44,128 @@ export default function ProductGallery({ images, productName }) {
     return () => window.removeEventListener('resize', checkIsMobile);
   }, []);
   
-  // Perfect touch handlers for mobile carousel
+  // ✨ INTELLIGENT TOUCH START - Light Detection
   const onTouchStart = (e) => {
     const touch = e.touches[0];
+    const now = Date.now();
+    
     touchStartRef.current = {
       x: touch.clientX,
       y: touch.clientY,
-      time: Date.now()
+      time: now
     };
+    
     touchMoveRef.current = {
       x: touch.clientX,
       y: touch.clientY
     };
-    isSwipeInProgress.current = false;
-    swipeDirection.current = null;
+    
+    // Reset gesture state
+    gestureStateRef.current = {
+      isDetecting: true,
+      direction: null,
+      velocity: 0,
+      startTime: now,
+      hasCommitted: false
+    };
+    
+    // Light carousel state - not blocking anything yet
+    setCarouselState({
+      isActive: true,
+      isCommitted: false
+    });
   };
   
+  // ✨ SMART GESTURE DETECTION - 20% Slower Thresholds
   const onTouchMove = (e) => {
-    if (!touchStartRef.current) return;
+    if (!touchStartRef.current || !gestureStateRef.current.isDetecting) return;
     
     const touch = e.touches[0];
-    touchMoveRef.current = {
-      x: touch.clientX,
-      y: touch.clientY
-    };
+    const deltaX = touch.clientX - touchStartRef.current.x;
+    const deltaY = touch.clientY - touchStartRef.current.y;
+    const absDeltaX = Math.abs(deltaX);
+    const absDeltaY = Math.abs(deltaY);
+    const now = Date.now();
+    const deltaTime = now - touchStartRef.current.time;
     
-    const deltaX = Math.abs(touch.clientX - touchStartRef.current.x);
-    const deltaY = Math.abs(touch.clientY - touchStartRef.current.y);
+    // Calculate real-time velocity (pixels per ms)
+    const currentVelocity = deltaTime > 0 ? absDeltaX / deltaTime : 0;
+    gestureStateRef.current.velocity = currentVelocity;
     
-    // Determine swipe direction only once with strict thresholds
-    if (!swipeDirection.current && (deltaX > 15 || deltaY > 15)) {
-      if (deltaX > deltaY && deltaX > 20) {
-        // Clear horizontal swipe detected
-        swipeDirection.current = 'horizontal';
-        isSwipeInProgress.current = true;
-        // Only prevent default for horizontal swipes
-        e.preventDefault();
-      } else if (deltaY > deltaX && deltaY > 15) {
-        // Vertical scroll detected
-        swipeDirection.current = 'vertical';
-        isSwipeInProgress.current = false;
-        // Allow natural scroll - don't prevent default
+    // Update current position
+    touchMoveRef.current = { x: touch.clientX, y: touch.clientY };
+    
+    // ✨ SLOWER DETECTION THRESHOLDS - 20% higher values for more deliberate gestures
+    if (!gestureStateRef.current.direction && (absDeltaX > 15 || absDeltaY > 15)) {
+      // Horizontal gesture criteria: SLOWER - more deliberate horizontal bias
+      if (absDeltaX > absDeltaY * 2.6 && absDeltaX > 25) { // Was 2.2 and 18
+        gestureStateRef.current.direction = 'horizontal';
+        
+        // ✨ SLOWER COMMITMENT CRITERIA - Higher thresholds for more intentional swipes
+        const hasHighVelocity = currentVelocity > 0.5; // Was 0.4
+        const hasSignificantDistance = absDeltaX > 45; // Was 35
+        const hasHorizontalIntent = absDeltaX > absDeltaY * 3.5; // Was 3
+        
+        if (hasHighVelocity || hasSignificantDistance || hasHorizontalIntent) {
+          gestureStateRef.current.hasCommitted = true;
+          setCarouselState({
+            isActive: true,
+            isCommitted: true
+          });
+          // ✨ ONLY NOW prevent default - selective and intelligent
+          e.preventDefault();
+        }
+      } 
+      // Vertical gesture - immediately allow natural scrolling
+      else if (absDeltaY > absDeltaX * 2.0 && absDeltaY > 18) { // Was 1.8 and 15
+        gestureStateRef.current.direction = 'vertical';
+        gestureStateRef.current.isDetecting = false;
+        setCarouselState({
+          isActive: false,
+          isCommitted: false
+        });
+        // ✨ CRITICAL: Don't prevent - allow natural scroll
+        return;
       }
     }
     
-    // Continue preventing default only for horizontal swipes
-    if (swipeDirection.current === 'horizontal') {
+    // ✨ CONTINUE PREVENTION ONLY FOR COMMITTED HORIZONTAL GESTURES
+    if (gestureStateRef.current.hasCommitted && gestureStateRef.current.direction === 'horizontal') {
       e.preventDefault();
     }
   };
   
+  // ✨ INTELLIGENT GESTURE COMPLETION - Slower thresholds
   const onTouchEnd = (e) => {
-    if (!touchStartRef.current || !touchMoveRef.current) return;
+    if (!touchStartRef.current || !touchMoveRef.current) {
+      resetGestureState();
+      return;
+    }
     
     const deltaX = touchStartRef.current.x - touchMoveRef.current.x;
     const deltaY = Math.abs(touchStartRef.current.y - touchMoveRef.current.y);
+    const swipeDistance = Math.abs(deltaX);
     const swipeTime = Date.now() - touchStartRef.current.time;
+    const avgVelocity = gestureStateRef.current.velocity;
     
-    // STRICTER CRITERIA - Only process horizontal swipes with higher threshold
-    if (swipeDirection.current === 'horizontal' && 
-        Math.abs(deltaX) > 100 && 
-        deltaY < 25 && 
-        swipeTime < 350) {
-      
+    // ✨ SLOWER SWIPE CRITERIA - 20% higher thresholds for more deliberate swipes
+    const meetsDistanceThreshold = swipeDistance > 85; // Was 70
+    const meetsVelocityThreshold = avgVelocity > 0.4; // Was 0.3
+    const meetsTimeThreshold = swipeTime < 700; // Was 600
+    const meetsVerticalLimit = deltaY < 70; // Was 60
+    const wasCommitted = gestureStateRef.current.hasCommitted;
+    const wasHorizontal = gestureStateRef.current.direction === 'horizontal';
+    
+    const isValidSwipe = wasCommitted && 
+                        wasHorizontal && 
+                        (meetsDistanceThreshold || meetsVelocityThreshold) &&
+                        meetsTimeThreshold && 
+                        meetsVerticalLimit;
+    
+    if (isValidSwipe) {
       e.preventDefault();
       
+      // ✨ SMOOTH IMAGE TRANSITION
       if (deltaX > 0) {
         // Swipe left - next image
         setCurrentImageIndex(prev => 
@@ -112,34 +179,39 @@ export default function ProductGallery({ images, productName }) {
       }
     }
     
-    // Reset all touch tracking
-    touchStartRef.current = null;
-    touchMoveRef.current = null;
-    isSwipeInProgress.current = false;
-    swipeDirection.current = null;
+    // ✨ CLEAN RESET - No sticky states
+    resetGestureState();
   };
   
-  // Zoom functionality with swipe protection
-  const openZoom = (src, e) => {
-    // Don't zoom if user was swiping
-    if (isSwipeInProgress.current || swipeDirection.current === 'horizontal') {
-      return;
-    }
-    
-    if (e) e.preventDefault();
-    setZoomedImage(src);
-    document.body.style.overflow = 'hidden';
+  // ✨ CLEAN STATE RESET
+  const resetGestureState = () => {
+    setTimeout(() => {
+      touchStartRef.current = null;
+      touchMoveRef.current = null;
+      gestureStateRef.current = {
+        isDetecting: false,
+        direction: null,
+        velocity: 0,
+        startTime: 0,
+        hasCommitted: false
+      };
+      setCarouselState({
+        isActive: false,
+        isCommitted: false
+      });
+    }, 50);
   };
   
-  const closeZoom = () => {
-    setZoomedImage(null);
-    document.body.style.overflow = 'auto';
-  };
-  
-  // Wishlist functionality
+  // ✨ WISHLIST with gesture protection
   const toggleWishlist = (e) => {
     e.stopPropagation();
     e.preventDefault();
+    
+    // Don't trigger during gestures
+    if (gestureStateRef.current.isDetecting || gestureStateRef.current.hasCommitted) {
+      return;
+    }
+    
     setWishlist(!wishlist);
     
     if (!wishlist) {
@@ -149,6 +221,18 @@ export default function ProductGallery({ images, productName }) {
     }
   };
   
+  // ✨ SMART CAROUSEL STATE COMMUNICATION
+  useEffect(() => {
+    const carouselEvent = new CustomEvent('carouselInteraction', {
+      detail: { 
+        isActive: carouselState.isActive,
+        isCommitted: carouselState.isCommitted,
+        direction: gestureStateRef.current.direction
+      }
+    });
+    window.dispatchEvent(carouselEvent);
+  }, [carouselState]);
+  
   if (isMobile) {
     return (
       <div 
@@ -156,20 +240,19 @@ export default function ProductGallery({ images, productName }) {
         onTouchStart={onTouchStart}
         onTouchMove={onTouchMove}
         onTouchEnd={onTouchEnd}
+        data-carousel-active={carouselState.isActive}
+        data-carousel-committed={carouselState.isCommitted}
       >
         <div 
           className={styles.mobileCarousel}
           style={{ 
             transform: `translateX(-${currentImageIndex * 100}%)`,
-            transition: isSwipeInProgress.current ? 'none' : 'transform 0.25s ease-out'
+            transition: gestureStateRef.current.hasCommitted ? 'none' : 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)' // Was 0.4s
           }}
         >
           {normalizedImages.map((src, index) => (
             <div className={styles.mobileCarouselItem} key={`mobile-img-${index}`}>
-              <div 
-                className={styles.imageWrapper} 
-                onClick={(e) => openZoom(src, e)}
-              >
+              <div className={styles.imageWrapper}>
                 <Image 
                   src={src}
                   alt={`${productName} - Image ${index + 1}`}
@@ -211,64 +294,39 @@ export default function ProductGallery({ images, productName }) {
   }
   
   return (
-    <>
-      <div className={styles.galleryContainer} ref={galleryRef}>
-        <div className={styles.imageGrid}>
-          {normalizedImages.map((src, index) => (
-            <div 
-              className={styles.imageCell}
-              key={`desktop-img-${index}`}
-            >
-              <div 
-                className={styles.imageWrapper}
-                onClick={(e) => openZoom(src, e)}
-              >
-                <Image
-                  src={src}
-                  alt={`${productName} - Image ${index + 1}`}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 32.5vw"
-                  priority={index < 2}
-                  className={styles.productImage}
-                  draggable={false}
-                />
-                {index === 0 && (
-                  <button 
-                    className={styles.wishlistButton} 
-                    onClick={toggleWishlist}
-                    aria-label={wishlist ? "Retirer des favoris" : "Ajouter aux favoris"}
-                  >
-                    {wishlist ? 
-                      <IoHeart className={styles.wishlistIcon} /> : 
-                      <IoHeartOutline className={styles.wishlistIcon} />
-                    }
-                  </button>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-      
-      {/* Image zoom overlay */}
-      {zoomedImage && (
-        <div className={styles.zoomOverlay} onClick={closeZoom}>
-          <div className={styles.zoomContent}>
-            <button className={styles.closeZoom} onClick={closeZoom}>×</button>
-            <div className={styles.zoomedImageContainer}>
+    <div className={styles.galleryContainer} ref={galleryRef}>
+      <div className={styles.imageGrid}>
+        {normalizedImages.map((src, index) => (
+          <div 
+            className={styles.imageCell}
+            key={`desktop-img-${index}`}
+          >
+            <div className={styles.imageWrapper}>
               <Image
-                src={zoomedImage}
-                alt={productName}
+                src={src}
+                alt={`${productName} - Image ${index + 1}`}
                 fill
-                sizes="100vw"
-                className={styles.zoomedImage}
-                priority
+                sizes="(max-width: 768px) 100vw, 32.5vw"
+                priority={index < 2}
+                className={styles.productImage}
                 draggable={false}
               />
+              {index === 0 && (
+                <button 
+                  className={styles.wishlistButton} 
+                  onClick={toggleWishlist}
+                  aria-label={wishlist ? "Retirer des favoris" : "Ajouter aux favoris"}
+                >
+                  {wishlist ? 
+                    <IoHeart className={styles.wishlistIcon} /> : 
+                    <IoHeartOutline className={styles.wishlistIcon} />
+                  }
+                </button>
+              )}
             </div>
           </div>
-        </div>
-      )}
-    </>
+        ))}
+      </div>
+    </div>
   );
 }

@@ -58,7 +58,8 @@ export default function CategoryPage({ params }) {
       return [
         ...baseTabs,
         { id: 'babouches', name: 'BABOUCHES' },
-        { id: 'mocassins', name: 'MOCASSINS' }
+        { id: 'mocassins', name: 'MOCASSINS' },
+        { id: 'sandales', name: 'SANDALES' }
       ];
     }
     

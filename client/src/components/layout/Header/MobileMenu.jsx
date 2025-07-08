@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { FiChevronRight, FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { hommeCategories, femmeCategories } from './menuData';
+import productService from '@/services/productService';
 import './MobileMenu.css';
 
 const MobileMenu = ({ onClose }) => {
@@ -10,6 +11,11 @@ const MobileMenu = ({ onClose }) => {
   const [activeCategory, setActiveCategory] = useState(null);
   const [activeSubcategory, setActiveSubcategory] = useState(null);
   const [animationComplete, setAnimationComplete] = useState(false);
+  
+  // NEW: Product management state
+  const [subcategoryProducts, setSubcategoryProducts] = useState({});
+  const [loadingProducts, setLoadingProducts] = useState(false);
+  const [productCache, setProductCache] = useState({});
   
   // Animation sequence for menu items
   useEffect(() => {
@@ -29,9 +35,79 @@ const MobileMenu = ({ onClose }) => {
     setActiveSubcategory(null);
   };
 
-  // Toggle subcategory
-  const toggleSubcategory = (subcategory) => {
-    setActiveSubcategory(activeSubcategory === subcategory ? null : subcategory);
+  // NEW: Enhanced toggle subcategory with product fetching
+  const toggleSubcategory = async (subcategory) => {
+    const newActiveSubcategory = activeSubcategory === subcategory ? null : subcategory;
+    setActiveSubcategory(newActiveSubcategory);
+    
+    // Fetch products if expanding subcategory
+    if (newActiveSubcategory && activeSection && activeCategory) {
+      await fetchSubcategoryProducts(newActiveSubcategory);
+    }
+  };
+
+  // NEW: Fetch products for a subcategory
+  const fetchSubcategoryProducts = async (subcategoryId) => {
+    const cacheKey = `${activeSection}-${activeCategory}-${subcategoryId}`;
+    
+    // Check cache first (5 minutes expiry)
+    if (productCache[cacheKey] && Date.now() - productCache[cacheKey].timestamp < 300000) {
+      console.log(`Using cached products for ${cacheKey}`);
+      setSubcategoryProducts(prev => ({
+        ...prev,
+        [subcategoryId]: productCache[cacheKey].data
+      }));
+      return;
+    }
+
+    try {
+      setLoadingProducts(true);
+      console.log(`Fetching products for ${activeSection} > ${activeCategory} > ${subcategoryId}`);
+      
+      const response = await productService.getProducts({
+        category: activeCategory,
+        subcategory: subcategoryId,
+        gender: activeSection,
+        limit: 5, // Max 5 products for mobile
+        sort: 'newest'
+      });
+
+      const products = response.data?.data || response.data || response || [];
+      
+      // Filter only in-stock products
+      const inStockProducts = products.filter(product => 
+        product.inStock === true || product.inStock === undefined
+      );
+
+      // Take only first 5 in-stock products
+      const limitedProducts = inStockProducts.slice(0, 5);
+
+      console.log(`Found ${limitedProducts.length} in-stock products for ${subcategoryId}`);
+
+      // Update state
+      setSubcategoryProducts(prev => ({
+        ...prev,
+        [subcategoryId]: limitedProducts
+      }));
+
+      // Cache the results
+      setProductCache(prev => ({
+        ...prev,
+        [cacheKey]: {
+          data: limitedProducts,
+          timestamp: Date.now()
+        }
+      }));
+
+    } catch (error) {
+      console.error(`Error fetching products for ${subcategoryId}:`, error);
+      setSubcategoryProducts(prev => ({
+        ...prev,
+        [subcategoryId]: []
+      }));
+    } finally {
+      setLoadingProducts(false);
+    }
   };
 
   // Get the appropriate categories based on active section
@@ -42,6 +118,64 @@ const MobileMenu = ({ onClose }) => {
       return femmeCategories;
     }
     return [];
+  };
+
+  // NEW: Render products for mobile
+  const renderMobileProducts = (subcategoryId) => {
+    const products = subcategoryProducts[subcategoryId] || [];
+    
+    if (loadingProducts && activeSubcategory === subcategoryId) {
+      return (
+        <div className="mobile-menu__products-loading">
+          <span>Chargement...</span>
+        </div>
+      );
+    }
+
+    if (products.length === 0 && activeSubcategory === subcategoryId) {
+      return null;
+    }
+
+    return (
+      <ul className="mobile-menu__products">
+        {products.map((product) => {
+          const defaultColor = product.colors?.[0] || {};
+          return (
+            <li key={product._id || product.id} className="mobile-menu__product">
+              <Link
+                href={`/products/${product._id || product.id}?color=${encodeURIComponent(defaultColor.name || 'default')}&colorIndex=0`}
+                className="mobile-menu__product-link"
+                onClick={onClose}
+              >
+                <div className="mobile-menu__product-image">
+                  {defaultColor.images?.[0] && (
+                    <img
+                      src={defaultColor.images[0]}
+                      alt={product.name}
+                      loading="lazy"
+                    />
+                  )}
+                </div>
+                <div className="mobile-menu__product-info">
+                  <span className="mobile-menu__product-name">{product.name}</span>
+                  <span className="mobile-menu__product-price">{product.price} MAD</span>
+                </div>
+                <FiChevronRight className="mobile-menu__product-arrow" />
+              </Link>
+            </li>
+          );
+        })}
+        <li className="mobile-menu__view-all">
+          <Link
+            href={`/category/${activeCategory}?subcategory=${subcategoryId}&gender=${activeSection}`}
+            className="mobile-menu__view-all-link"
+            onClick={onClose}
+          >
+            Voir tous les {subcategoryId}
+          </Link>
+        </li>
+      </ul>
+    );
   };
 
   // Render section categories
@@ -81,32 +215,20 @@ const MobileMenu = ({ onClose }) => {
                       >
                         {subcategory.name}
                       </Link>
-                      {subcategory.items && subcategory.items.length > 0 && (
-                        <button 
-                          className="mobile-menu__toggle-btn mobile-menu__toggle-btn--small"
-                          onClick={() => toggleSubcategory(subcategory.id)}
-                          aria-label={activeSubcategory === subcategory.id ? "Cacher les produits" : "Afficher les produits"}
-                        >
-                          {activeSubcategory === subcategory.id ? <FiChevronUp /> : <FiChevronDown />}
-                        </button>
-                      )}
+                      <button 
+                        className="mobile-menu__toggle-btn mobile-menu__toggle-btn--small"
+                        onClick={() => toggleSubcategory(subcategory.id)}
+                        aria-label={activeSubcategory === subcategory.id ? "Cacher les produits" : "Afficher les produits"}
+                      >
+                        {activeSubcategory === subcategory.id ? <FiChevronUp /> : <FiChevronDown />}
+                      </button>
                     </div>
                     
-                    {activeSubcategory === subcategory.id && subcategory.items && (
-                      <ul className="mobile-menu__items">
-                        {subcategory.items.map((item, itemIdx) => (
-                          <li key={item.id} className="mobile-menu__item" style={{ animationDelay: `${0.1 + (itemIdx * 0.03)}s` }}>
-                            <Link 
-                              href={`/category/${category.id}?subcategory=${subcategory.id}&item=${item.id}&gender=${section}`}
-                              className="mobile-menu__item-link"
-                              onClick={onClose}
-                            >
-                              {item.name}
-                              <FiChevronRight />
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
+                    {/* NEW: Show products when subcategory is expanded */}
+                    {activeSubcategory === subcategory.id && (
+                      <div className="mobile-menu__products-container">
+                        {renderMobileProducts(subcategory.id)}
+                      </div>
                     )}
                   </li>
                 ))}
