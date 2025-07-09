@@ -138,18 +138,18 @@ const Footer = () => {
       </li>
     </ul>
     
-    <h4 className="pre-footer__links-heading">Mentions légales & Cookies</h4>
-    <ul className="pre-footer__links-list">
-      <li className="pre-footer__links-item">
-        <Link href="/compliance" className="pre-footer__link">Compliance</Link>
-      </li>
-      <li className="pre-footer__links-item">
-        <Link href="/privacy" className="pre-footer__link">Privacy & Cookie</Link>
-      </li>
-      <li className="pre-footer__links-item">
-        <Link href="/accessibilite" className="pre-footer__link">Accessibilité</Link>
-      </li>
-    </ul>
+<h4 className="pre-footer__links-heading">Mentions légales & Cookies</h4>
+<ul className="pre-footer__links-list">
+  <li className="pre-footer__links-item">
+    <Link href="/privacy-policy" className="pre-footer__link">Politique de Confidentialité</Link>
+  </li>
+  <li className="pre-footer__links-item">
+    <Link href="/terms-of-service" className="pre-footer__link">Conditions Générales de Vente</Link>
+  </li>
+  <li className="pre-footer__links-item">
+    <Link href="/support" className="pre-footer__link">Service Client</Link>
+  </li>
+</ul>
   </div>
 </div>
           </div>
