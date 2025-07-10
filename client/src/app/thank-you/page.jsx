@@ -9,6 +9,7 @@ import OrderStatus from './OrderStatus';
 import RecommendedProducts from './RecommendedProducts';
 import CartContext from '@/contexts/CartContext';
 import useCart from '@/hooks/useCart';
+import { trackPurchase } from '@/utils/facebookPixel'; // ADD THIS LINE
 
 function ThankYouPageContent() {
   const searchParams = useSearchParams();
@@ -212,7 +213,14 @@ function ThankYouPageContent() {
             };
             
             setOrderDetails(order);
-            
+            // Track Facebook Pixel Purchase event
+if (order && order.isPaid) {
+  trackPurchase({
+    totalPrice: order.totalPrice,
+    currency: 'MAD', // Your main currency
+    items: order.orderItems || []
+  });
+}
             // Save for future reference
             try {
               sessionStorage.setItem('recent-order', JSON.stringify(order));

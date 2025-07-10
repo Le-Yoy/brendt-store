@@ -2,6 +2,7 @@
 'use client';
 
 import { createContext, useReducer, useEffect, useState } from 'react';
+import { trackAddToCart } from '../utils/facebookPixel'; // ADD THIS IMPORT
 
 const CartContext = createContext(null);
 
@@ -43,6 +44,14 @@ function cartReducer(state, action) {
             quantity: newQuantity
           };
         }
+
+        // TRACK FACEBOOK PIXEL EVENT FOR UPDATED QUANTITY
+        trackAddToCart({
+          _id: action.payload.productId,
+          name: action.payload.name,
+          price: action.payload.price,
+          category: action.payload.category
+        }, newQuantity);
         
         return {
           ...state,
@@ -56,6 +65,14 @@ function cartReducer(state, action) {
       const newQuantity = parseInt(action.payload.quantity, 10) || 1;
       const newItem = { ...action.payload, quantity: newQuantity };
       const newItems = [...state.items, newItem];
+
+      // TRACK FACEBOOK PIXEL EVENT FOR NEW ITEM
+      trackAddToCart({
+        _id: action.payload.productId,
+        name: action.payload.name,
+        price: action.payload.price,
+        category: action.payload.category
+      }, newQuantity);
       
       return {
         ...state,

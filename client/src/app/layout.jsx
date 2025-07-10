@@ -2,7 +2,7 @@
 'use client';
 
 import { Cormorant, Inter } from 'next/font/google';
-import { AuthProvider } from '../hooks/useAuth'; // Use the hooks version
+import { AuthProvider } from '../hooks/useAuth';
 import { CartProvider } from '../contexts/CartContext';
 import Header from '../components/layout/Header/Header';
 import Footer from '../components/layout/Footer/Footer';
@@ -30,6 +30,30 @@ export default function RootLayout({ children }) {
   const isAccountPage = pathname.startsWith('/account');
   const isAdminPage = pathname.startsWith('/admin');
 
+  // Facebook Pixel initialization
+  useEffect(() => {
+    // Initialize Facebook Pixel
+    !(function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js'));
+
+    // Initialize with your Pixel ID
+    window.fbq('init', '1745370408995219');
+    window.fbq('track', 'PageView');
+  }, []);
+
+  // Track page views on route changes
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'PageView');
+    }
+  }, [pathname]);
+
   // Check server status when component mounts
   useEffect(() => {
     // Small delay to ensure DOM is ready
@@ -44,6 +68,18 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="fr" className={`${cormorant.variable} ${inter.variable}`}>
+      <head>
+        {/* Facebook Pixel noscript fallback */}
+        <noscript>
+          <img 
+            height="1" 
+            width="1" 
+            style={{display: 'none'}}
+            src="https://www.facebook.com/tr?id=1745370408995219&ev=PageView&noscript=1"
+            alt=""
+          />
+        </noscript>
+      </head>
       <body className={isAccountPage ? 'account-body' : ''}>
         <AuthProvider>
           <CartProvider>

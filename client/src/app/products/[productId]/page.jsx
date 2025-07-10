@@ -8,6 +8,7 @@ import ProductGallery from '@/components/product/ProductGallery';
 import ProductInfo from '@/components/product/ProductInfo';
 import ProductAdditionalInfo from '@/components/product/ProductAdditionalInfo';
 import RelatedProducts from '@/components/product/RelatedProducts';
+import { trackViewContent } from '@/utils/facebookPixel'; // ADD THIS LINE
 
 // Import the product service
 import productService from '@/services/productService';
@@ -106,6 +107,10 @@ export default function ProductPage({ params }) {
           if (isMounted) {
             setSelectedColor(targetColor);
           }
+          // Track Facebook Pixel ViewContent event
+if (isMounted && resolvedProduct) {
+  trackViewContent(resolvedProduct);
+}
         }
         
       } catch (apiError) {

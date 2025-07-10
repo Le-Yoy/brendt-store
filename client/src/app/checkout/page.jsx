@@ -12,6 +12,7 @@ import orderService from '@/services/orderService';
 import addressService from '@/services/addressService';
 import CartContext from '@/contexts/CartContext';
 import { useContext } from 'react';
+import { trackInitiateCheckout } from '@/utils/facebookPixel'; // ADD THIS LINE
 
 const CART_STORAGE_KEY = 'brendt-cart';
 
@@ -804,6 +805,15 @@ localStorage.setItem('thank-you-data', JSON.stringify(createdOrder));
     );
   }
   
+  useEffect(() => {
+  if (cart.items && cart.items.length > 0) {
+    trackInitiateCheckout({ 
+      items: cart.items, 
+      total: cart.total 
+    });
+  }
+}, [cart.items, cart.total]);
+
   const items = cart.items || [];
   const total = cart.total || 0;
   const itemCount = cart.itemCount || 0;
