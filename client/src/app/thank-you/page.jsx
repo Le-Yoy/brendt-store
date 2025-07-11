@@ -9,7 +9,7 @@ import OrderStatus from './OrderStatus';
 import RecommendedProducts from './RecommendedProducts';
 import CartContext from '@/contexts/CartContext';
 import useCart from '@/hooks/useCart';
-import { trackPurchase } from '@/utils/facebookPixel'; // ADD THIS LINE
+import { trackPurchase } from '@/utils/facebookPixel'; // FB PIXEL
 
 function ThankYouPageContent() {
   const searchParams = useSearchParams();

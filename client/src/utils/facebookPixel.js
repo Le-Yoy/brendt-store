@@ -1,5 +1,21 @@
 // client/src/utils/facebookPixel.js
 
+// Check consent before tracking (GDPR compliance)
+export const checkConsentBeforeTracking = () => {
+  if (typeof window === 'undefined') return false;
+  
+  try {
+    const consent = localStorage.getItem('brendt-cookie-consent');
+    if (!consent) return true; // If no consent stored, allow (non-EU users)
+    
+    const consentData = JSON.parse(consent);
+    return consentData.accepted && consentData.analytics;
+  } catch (error) {
+    console.error('Error checking consent:', error);
+    return true; // Fallback to allow
+  }
+};
+
 // Currency mapping for Morocco context
 const getCurrency = (price) => {
   // Default to MAD for Moroccan customers, but can be EUR or USD
@@ -16,6 +32,12 @@ const normalizePrice = (price, currency = 'MAD') => {
 };
 
 export const trackEvent = (eventName, parameters = {}) => {
+  // Check consent first
+  if (!checkConsentBeforeTracking()) {
+    console.log(`[FB Pixel] Tracking blocked - no consent for ${eventName}`);
+    return;
+  }
+
   if (typeof window !== 'undefined' && window.fbq) {
     // Add default currency if not specified
     if (parameters.value && !parameters.currency) {
@@ -29,6 +51,9 @@ export const trackEvent = (eventName, parameters = {}) => {
 
 // E-commerce specific events for BRENDT Morocco
 export const trackPurchase = (orderData) => {
+  // Check consent first
+  if (!checkConsentBeforeTracking()) return;
+
   const currency = orderData.currency || 'MAD';
   const value = normalizePrice(orderData.totalPrice, currency);
   
@@ -45,6 +70,9 @@ export const trackPurchase = (orderData) => {
 };
 
 export const trackAddToCart = (product, quantity = 1, currency = 'MAD') => {
+  // Check consent first
+  if (!checkConsentBeforeTracking()) return;
+
   const value = normalizePrice(product.price * quantity, currency);
   
   trackEvent('AddToCart', {
@@ -60,6 +88,9 @@ export const trackAddToCart = (product, quantity = 1, currency = 'MAD') => {
 };
 
 export const trackViewContent = (product, currency = 'MAD') => {
+  // Check consent first
+  if (!checkConsentBeforeTracking()) return;
+
   const value = normalizePrice(product.price, currency);
   
   trackEvent('ViewContent', {
@@ -73,6 +104,9 @@ export const trackViewContent = (product, currency = 'MAD') => {
 };
 
 export const trackInitiateCheckout = (cartData, currency = 'MAD') => {
+  // Check consent first
+  if (!checkConsentBeforeTracking()) return;
+
   const totalValue = cartData.items ? 
     cartData.items.reduce((sum, item) => sum + (normalizePrice(item.price) * (item.quantity || 1)), 0) : 
     normalizePrice(cartData.total || 0);
@@ -87,6 +121,9 @@ export const trackInitiateCheckout = (cartData, currency = 'MAD') => {
 };
 
 export const trackSearch = (searchTerm) => {
+  // Check consent first
+  if (!checkConsentBeforeTracking()) return;
+
   trackEvent('Search', {
     search_string: searchTerm,
     content_category: 'Shoes'
@@ -95,6 +132,9 @@ export const trackSearch = (searchTerm) => {
 
 // Lead tracking for Morocco
 export const trackLead = (leadType = 'general') => {
+  // Check consent first
+  if (!checkConsentBeforeTracking()) return;
+
   trackEvent('Lead', {
     content_name: `BRENDT ${leadType} Lead`,
     content_category: 'Lead Generation'
@@ -103,6 +143,9 @@ export const trackLead = (leadType = 'general') => {
 
 // Custom events for BRENDT
 export const trackNewsletterSignup = () => {
+  // Check consent first
+  if (!checkConsentBeforeTracking()) return;
+
   trackEvent('CompleteRegistration', {
     content_name: 'Newsletter Signup',
     content_category: 'Engagement'
@@ -110,6 +153,9 @@ export const trackNewsletterSignup = () => {
 };
 
 export const trackContactForm = () => {
+  // Check consent first
+  if (!checkConsentBeforeTracking()) return;
+
   trackEvent('Contact', {
     content_name: 'Contact Form',
     content_category: 'Customer Service'
