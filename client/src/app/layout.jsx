@@ -11,6 +11,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { checkServerStatus } from '../utils/serverCheck';
 import '../styles/globals.css';
+import { initGA } from '../utils/googleAnalytics';
 
 // Initialize the fonts
 const cormorant = Cormorant({
@@ -72,6 +73,11 @@ export default function RootLayout({ children }) {
 
     return () => clearTimeout(timer);
   }, []);
+  
+// Add useEffect after existing ones
+useEffect(() => {
+  initGA();
+}, []);
 
   return (
     <html lang="fr" className={`${cormorant.variable} ${inter.variable}`}>
