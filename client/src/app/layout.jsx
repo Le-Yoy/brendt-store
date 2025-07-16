@@ -33,10 +33,10 @@ export default function RootLayout({ children }) {
   const isAdminPage = pathname.startsWith('/admin');
   const pixelInitialized = useRef(false); // Prevent multiple initializations
 
-  // Facebook Pixel initialization - ONLY ONCE
+  // Enhanced Facebook Pixel initialization for campaign optimization
   useEffect(() => {
     if (typeof window !== 'undefined' && !pixelInitialized.current && !window.fbq) {
-      // Initialize Facebook Pixel
+      // Initialize Facebook Pixel with advanced settings
       !(function(f,b,e,v,n,t,s)
       {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
       n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -46,19 +46,61 @@ export default function RootLayout({ children }) {
       s.parentNode.insertBefore(t,s)}(window, document,'script',
       'https://connect.facebook.net/en_US/fbevents.js'));
 
-      // Initialize with your Pixel ID
-      window.fbq('init', '1745370408995219');
+      // Initialize with your Pixel ID and enhanced settings
+      window.fbq('init', '1745370408995219', {
+        // Enable automatic advanced matching for better attribution
+        external_id: null,
+        // Enhanced attribution settings
+        agent: 'plbrendtshoes',
+      });
+      
+      // Track initial page view
       window.fbq('track', 'PageView');
       
+      // Track WhatsApp campaign traffic immediately
+      if (typeof window !== 'undefined' && window.location.search.includes('utm_source=whatsapp')) {
+        window.fbq('trackCustom', 'WhatsAppTraffic', {
+          source: 'whatsapp',
+          campaign: 'morocco2025',
+          content_category: 'shoes'
+        });
+      }
+      
+      // Track Morocco-specific audience data
+      window.fbq('trackCustom', 'MoroccoVisitor', {
+        market: 'morocco',
+        brand: 'brendt',
+        category: 'luxury_shoes'
+      });
+      
       pixelInitialized.current = true; // Mark as initialized
+      console.log('🔥 Facebook Pixel initialized for campaign optimization');
     }
   }, []); // Empty dependency array - run only once
 
-  // Track page views on route changes (but not initial load)
+  // Enhanced page view tracking on route changes
   useEffect(() => {
     if (typeof window !== 'undefined' && window.fbq && pixelInitialized.current) {
-      // Only track PageView if pixel is already initialized and this is a route change
+      // Track page view with additional context
       window.fbq('track', 'PageView');
+      
+      // Track specific page types for better audience building
+      if (pathname.includes('/product/')) {
+        window.fbq('trackCustom', 'ProductPageView', {
+          page_type: 'product',
+          content_category: 'shoes'
+        });
+      } else if (pathname.includes('/category/')) {
+        window.fbq('trackCustom', 'CategoryPageView', {
+          page_type: 'category',
+          content_category: 'shoes'
+        });
+      } else if (pathname.includes('/checkout')) {
+        window.fbq('trackCustom', 'CheckoutPageView', {
+          page_type: 'checkout',
+          intent: 'high'
+        });
+      }
     }
   }, [pathname]);
 
@@ -74,14 +116,22 @@ export default function RootLayout({ children }) {
     return () => clearTimeout(timer);
   }, []);
   
-// Add useEffect after existing ones
-useEffect(() => {
-  initGA();
-}, []);
+  // Add useEffect after existing ones
+  useEffect(() => {
+    initGA();
+  }, []);
 
   return (
     <html lang="fr" className={`${cormorant.variable} ${inter.variable}`}>
       <head>
+        {/* 🔥 Facebook Domain Verification for Campaign Trust */}
+        <meta name="facebook-domain-verification" content="ypxs2rf849bqvwbo6j0ytdkwdsgrgu" />
+        
+        {/* Enhanced meta tags for better Facebook attribution */}
+        <meta property="og:site_name" content="BRENDT" />
+        <meta property="og:type" content="website" />
+        <meta property="fb:app_id" content="1745370408995219" />
+        
         {/* Facebook Pixel noscript fallback */}
         <noscript>
           <img 
