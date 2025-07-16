@@ -9,7 +9,7 @@ import OrderStatus from './OrderStatus';
 import RecommendedProducts from './RecommendedProducts';
 import CartContext from '@/contexts/CartContext';
 import useCart from '@/hooks/useCart';
-import { trackPurchase } from '@/utils/facebookPixel'; // FB PIXEL
+import { trackPurchase } from '@/utils/facebookPixel';
 
 function ThankYouPageContent() {
   const searchParams = useSearchParams();
@@ -18,8 +18,69 @@ function ThankYouPageContent() {
   
   const [orderDetails, setOrderDetails] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [purchaseTracked, setPurchaseTracked] = useState(false);
   const cartContext = useContext(CartContext);
   const cart = useCart();
+  
+  // Enhanced Purchase Tracking
+  useEffect(() => {
+    if (orderDetails && !purchaseTracked && !canceled && orderDetails.totalPrice > 0) {
+      const trackPurchaseEvent = () => {
+        try {
+          console.log('🔥 TRACKING FACEBOOK PURCHASE:', orderDetails);
+          
+          if (typeof window !== 'undefined' && window.fbq) {
+            // Enhanced Purchase event
+            window.fbq('track', 'Purchase', {
+              value: parseFloat(orderDetails.totalPrice) || 0,
+              currency: 'MAD',
+              content_ids: (orderDetails.orderItems || []).map(item => 
+                item.product || item._id || `item_${Date.now()}`
+              ),
+              content_type: 'product',
+              num_items: (orderDetails.orderItems || []).length,
+              content_name: 'BRENDT Shoes Purchase',
+              content_category: 'shoes'
+            });
+            
+            // Backup method using existing function
+            trackPurchase({
+              totalPrice: orderDetails.totalPrice,
+              currency: 'MAD',
+              items: orderDetails.orderItems || []
+            });
+            
+            // WhatsApp attribution
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('utm_source') === 'whatsapp') {
+              window.fbq('trackCustom', 'WhatsAppPurchase', {
+                value: parseFloat(orderDetails.totalPrice) || 0,
+                currency: 'MAD',
+                campaign: 'morocco2025',
+                payment_method: orderDetails.paymentMethod || 'unknown'
+              });
+            }
+            
+            // Payment method tracking
+            window.fbq('trackCustom', 'PaymentMethodUsed', {
+              payment_method: orderDetails.paymentMethod || 'unknown',
+              value: parseFloat(orderDetails.totalPrice) || 0,
+              currency: 'MAD'
+            });
+            
+            setPurchaseTracked(true);
+            console.log('🔥 PURCHASE TRACKING COMPLETED');
+          }
+        } catch (error) {
+          console.error('Purchase tracking error:', error);
+        }
+      };
+      
+      // Small delay to ensure page is fully loaded
+      const timer = setTimeout(trackPurchaseEvent, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [orderDetails, purchaseTracked, canceled]);
   
   // Clear cart after successful checkout
   useEffect(() => {
@@ -53,7 +114,7 @@ function ThankYouPageContent() {
     return () => clearTimeout(timer);
   }, [cartContext, cart, canceled]);
   
-  // Format date for consistent delivery estimation
+  // Format delivery date
   const getEstimatedDelivery = () => {
     const now = new Date();
     const currentHour = now.getHours();
@@ -75,10 +136,9 @@ function ThankYouPageContent() {
     };
   };
   
+  // Load order data
   useEffect(() => {
-    // First try to get from checkout data persisted to sessionStorage
     const getOrderFromStorage = () => {
-      // Try thank-you-data first (explicitly set for thank-you page)
       try {
         const thankyouData = sessionStorage.getItem('thank-you-data') || localStorage.getItem('thank-you-data');
         if (thankyouData) {
@@ -90,13 +150,11 @@ function ThankYouPageContent() {
         console.warn('[THANK-YOU] Could not retrieve thank-you data:', e);
       }
       
-      // Try cart data next
       try {
         const cartData = sessionStorage.getItem('cart') || localStorage.getItem('cart');
         if (cartData) {
           const parsedCart = JSON.parse(cartData);
           
-          // Try to get checkout form data too
           let shippingAddress = {};
           try {
             const checkoutData = sessionStorage.getItem('checkout-form') || localStorage.getItem('checkout-form');
@@ -116,7 +174,7 @@ function ThankYouPageContent() {
           
           return {
             _id: 'pending',
-            orderNumber: null, // No random generation
+            orderNumber: null,
             createdAt: new Date().toISOString(),
             paymentStatus: sessionId ? 'paid' : 'pending',
             paymentMethod: sessionId ? 'card' : 'cash',
@@ -129,7 +187,8 @@ function ThankYouPageContent() {
               quantity: item.quantity,
               size: item.size,
               color: item.color,
-              image: item.image
+              image: item.image,
+              product: item.productId || item.id
             })),
             shippingAddress
           };
@@ -138,7 +197,6 @@ function ThankYouPageContent() {
         console.warn('[THANK-YOU] Could not retrieve cart data:', e);
       }
       
-      // Try recent order
       try {
         const recentOrder = sessionStorage.getItem('recent-order') || localStorage.getItem('recent-order');
         if (recentOrder) {
@@ -148,11 +206,9 @@ function ThankYouPageContent() {
         console.warn('[THANK-YOU] Could not retrieve recent order:', e);
       }
       
-      // No data found
       return null;
     };
     
-    // If payment was canceled, show that specific state
     if (canceled) {
       setOrderDetails({
         _id: 'canceled',
@@ -168,15 +224,11 @@ function ThankYouPageContent() {
       return;
     }
     
-    // Process order information
     const processOrder = async () => {
-      // First try to get from storage
       let orderData = getOrderFromStorage();
       
-      // If we have a session ID, try to verify it (for Stripe payments)
       if (sessionId) {
         try {
-          // Try to verify the session directly
           const apiBase = process.env.NEXT_PUBLIC_API_URL || 'https://brendt-store-production-d6ef.up.railway.app/api';
           const response = await fetch(`${apiBase}/payments/verify-session?session_id=${sessionId}`);
           
@@ -184,15 +236,12 @@ function ThankYouPageContent() {
             const stripeData = await response.json();
             console.log('[THANK-YOU] Stripe session verified:', stripeData);
             
-            // If order ID is in session metadata, fetch order directly
             if (stripeData.metadata?.orderId) {
               try {
                 const orderResponse = await fetch(`${apiBase}/orders/${stripeData.metadata.orderId}`);
                 if (orderResponse.ok) {
                   const order = await orderResponse.json();
                   console.log('[THANK-YOU] Order fetched from API:', order);
-                  
-                  // Use this order data
                   orderData = order;
                 }
               } catch (error) {
@@ -200,11 +249,10 @@ function ThankYouPageContent() {
               }
             }
             
-            // Merge with existing order data
             const order = {
               ...orderData,
               _id: stripeData.metadata?.orderId || (orderData && orderData._id),
-              orderNumber: (orderData && orderData.orderNumber) || null, // Use order number from database
+              orderNumber: (orderData && orderData.orderNumber) || null,
               paymentStatus: 'paid',
               paymentMethod: 'card',
               isPaid: true,
@@ -213,15 +261,7 @@ function ThankYouPageContent() {
             };
             
             setOrderDetails(order);
-            // Track Facebook Pixel Purchase event
-if (order && order.isPaid) {
-  trackPurchase({
-    totalPrice: order.totalPrice,
-    currency: 'MAD', // Your main currency
-    items: order.orderItems || []
-  });
-}
-            // Save for future reference
+            
             try {
               sessionStorage.setItem('recent-order', JSON.stringify(order));
               localStorage.setItem('recent-order', JSON.stringify(order));
@@ -230,19 +270,17 @@ if (order && order.isPaid) {
             }
           } else {
             console.warn('[THANK-YOU] Session verification failed, using stored data or showing fallback');
-            setOrderDetails(orderData || { orderNumber: null });
+            setOrderDetails(orderData || { orderNumber: null, totalPrice: 0 });
           }
         } catch (error) {
           console.error('[THANK-YOU] Error in session verification:', error);
-          setOrderDetails(orderData || { orderNumber: null });
+          setOrderDetails(orderData || { orderNumber: null, totalPrice: 0 });
         }
       } else {
-        // No session ID, use order from storage
         if (orderData) {
           setOrderDetails(orderData);
         } else {
-          // Show loading state or error if no order data available
-          setOrderDetails({ orderNumber: null });
+          setOrderDetails({ orderNumber: null, totalPrice: 0 });
         }
       }
       
@@ -264,7 +302,6 @@ if (order && order.isPaid) {
   }
   
   const deliveryDates = getEstimatedDelivery();
-  // Show order number only if available from backend - no generation
   const orderNumber = orderDetails?.orderNumber || '';
   
   return (
@@ -376,6 +413,7 @@ if (order && order.isPaid) {
     </div>
   );
 }
+
 export default function ThankYouPage() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
