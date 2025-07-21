@@ -159,6 +159,62 @@
     color: var(--color-accent, #9d5247);
   }
   
+  /* Business Information Section */
+  .pre-footer__business-info {
+    margin-top: var(--spacing-8, 4rem);
+    padding-top: var(--spacing-6, 3rem);
+    border-top: 1px solid var(--color-light-gray, #e5e5e5);
+  }
+  
+  .pre-footer__business-content {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .pre-footer__business-details {
+    max-width: 600px;
+    text-align: center;
+  }
+  
+  .pre-footer__business-heading {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-lg, 1.125rem);
+    font-weight: var(--font-weight-light, 300);
+    letter-spacing: var(--letter-spacing-wide, 0.05em);
+    color: var(--color-dark, #1a1a1a);
+    margin-bottom: var(--spacing-4, 2rem);
+  }
+  
+  .pre-footer__business-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-2, 0.5rem);
+    margin-bottom: var(--spacing-2, 0.75rem);
+    font-family: var(--font-primary);
+    font-size: var(--font-size-sm, 0.875rem);
+    color: var(--color-mid-gray, #666);
+  }
+  
+  .pre-footer__business-label {
+    font-weight: var(--font-weight-medium, 500);
+    color: var(--color-dark, #1a1a1a);
+  }
+  
+  .pre-footer__business-value {
+    color: var(--color-mid-gray, #666);
+  }
+  
+  .pre-footer__business-link {
+    color: var(--color-mid-gray, #666);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .pre-footer__business-link:hover {
+    color: var(--color-accent, #9d5247);
+  }
+  
   /* Main Footer */
   .footer {
     background-color: var(--color-white, #fff);
@@ -256,6 +312,16 @@
     .pre-footer__links {
       grid-template-columns: 1fr;
       gap: var(--spacing-4, 2rem);
+    }
+    
+    .pre-footer__business-details {
+      text-align: left;
+    }
+    
+    .pre-footer__business-item {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--spacing-1, 0.25rem);
     }
     
     .footer__content {

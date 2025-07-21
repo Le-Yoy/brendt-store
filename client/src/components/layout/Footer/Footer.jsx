@@ -1,7 +1,6 @@
 import './Footer.css';
-import './Footer.css';
 // src/components/layout/Footer/Footer.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -10,6 +9,31 @@ const Footer = () => {
   const [isChecked, setIsChecked] = useState(false);
   const [subscribed, setSubscribed] = useState(false);
   const [error, setError] = useState('');
+  const [isMorocco, setIsMorocco] = useState(false);
+  const [geoChecked, setGeoChecked] = useState(false);
+
+  // Check user's location
+  useEffect(() => {
+    const checkLocation = async () => {
+      try {
+        // Try to get location from IP
+        const response = await fetch('https://ipapi.co/json/');
+        if (response.ok) {
+          const data = await response.json();
+          // Check if user is in Morocco (country code MA)
+          setIsMorocco(data.country_code === 'MA' || data.country === 'Morocco');
+        }
+      } catch (error) {
+        // If geolocation fails, default to showing new footer (non-Morocco)
+        console.log('Geolocation check failed, defaulting to international footer');
+        setIsMorocco(false);
+      } finally {
+        setGeoChecked(true);
+      }
+    };
+
+    checkLocation();
+  }, []);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -45,6 +69,11 @@ const Footer = () => {
       setSubscribed(false);
     }, 5000);
   };
+
+  // Wait for geo check to complete before rendering
+  if (!geoChecked) {
+    return null; // Or a loading spinner if you prefer
+  }
 
   return (
     <>
@@ -90,69 +119,100 @@ const Footer = () => {
             </div>
             
             <div className="pre-footer__links">
-  <div className="pre-footer__links-column">
-    <h4 className="pre-footer__links-heading">Nous contacter</h4>
-    <ul className="pre-footer__links-list">
-      <li className="pre-footer__links-item">
-        <Link href="/contact" className="pre-footer__link">Nous contacter</Link>
-      </li>
-      <li className="pre-footer__links-item">
-        <Link href="/faq?category=garantie" className="pre-footer__link">Garantie</Link>
-      </li>
-    </ul>
-    
-    <h4 className="pre-footer__links-heading">La Maison</h4>
-    <ul className="pre-footer__links-list">
-      <li className="pre-footer__links-item">
-        <Link href="/savoir-faire" className="pre-footer__link">Notre Savoir Faire</Link>
-      </li>
-      <li className="pre-footer__links-item">
-        <Link href="/cadeaux-pour-lui" className="pre-footer__link">Gift Guide</Link>
-      </li>
-      <li className="pre-footer__links-item">
-        <Link href="/textile-universe" className="pre-footer__link">BRENDT Textile</Link>
-      </li>
-      <li className="pre-footer__links-item">
-        <Link href="/interieurs" className="pre-footer__link">Intérieurs BRENDT</Link>
-      </li>
-    </ul>
-  </div>
-  
-  <div className="pre-footer__links-column">
-    <h4 className="pre-footer__links-heading">Services</h4>
-    <ul className="pre-footer__links-list">
-      <li className="pre-footer__links-item">
-        <Link href="/faq?category=achat-produits" className="pre-footer__link">Achat de Nos Produits</Link>
-      </li>
-      <li className="pre-footer__links-item">
-        <Link href="/faq?category=gift-card" className="pre-footer__link">Gift Cards</Link>
-      </li>
-      <li className="pre-footer__links-item">
-        <Link href="/faq?category=retours-echanges" className="pre-footer__link">Retours et échanges</Link>
-      </li>
-      <li className="pre-footer__links-item">
-        <Link href="/faq?category=achat-cadeaux" className="pre-footer__link">Achat De Cadeaux</Link>
-      </li>
-      <li className="pre-footer__links-item">
-        <Link href="/faq?category=emballage-expedition" className="pre-footer__link">Livraisons</Link>
-      </li>
-    </ul>
-    
-<h4 className="pre-footer__links-heading">Mentions légales & Cookies</h4>
-<ul className="pre-footer__links-list">
-  <li className="pre-footer__links-item">
-    <Link href="/privacy-policy" className="pre-footer__link">Politique de Confidentialité</Link>
-  </li>
-  <li className="pre-footer__links-item">
-    <Link href="/terms-of-service" className="pre-footer__link">Conditions Générales de Vente</Link>
-  </li>
-  <li className="pre-footer__links-item">
-    <Link href="/support" className="pre-footer__link">Service Client</Link>
-  </li>
-</ul>
-  </div>
-</div>
+              <div className="pre-footer__links-column">
+                <h4 className="pre-footer__links-heading">Nous contacter</h4>
+                <ul className="pre-footer__links-list">
+                  <li className="pre-footer__links-item">
+                    <Link href="/contact" className="pre-footer__link">Nous contacter</Link>
+                  </li>
+                  <li className="pre-footer__links-item">
+                    <Link href="/faq?category=garantie" className="pre-footer__link">Garantie</Link>
+                  </li>
+                </ul>
+                
+                <h4 className="pre-footer__links-heading">La Maison</h4>
+                <ul className="pre-footer__links-list">
+                  <li className="pre-footer__links-item">
+                    <Link href="/savoir-faire" className="pre-footer__link">Notre Savoir Faire</Link>
+                  </li>
+                  <li className="pre-footer__links-item">
+                    <Link href="/cadeaux-pour-lui" className="pre-footer__link">Gift Guide</Link>
+                  </li>
+                  <li className="pre-footer__links-item">
+                    <Link href="/textile-universe" className="pre-footer__link">BRENDT Textile</Link>
+                  </li>
+                  <li className="pre-footer__links-item">
+                    <Link href="/interieurs" className="pre-footer__link">Intérieurs BRENDT</Link>
+                  </li>
+                </ul>
+              </div>
+              
+              <div className="pre-footer__links-column">
+                <h4 className="pre-footer__links-heading">Services</h4>
+                <ul className="pre-footer__links-list">
+                  <li className="pre-footer__links-item">
+                    <Link href="/faq?category=achat-produits" className="pre-footer__link">Achat de Nos Produits</Link>
+                  </li>
+                  <li className="pre-footer__links-item">
+                    <Link href="/faq?category=gift-card" className="pre-footer__link">Gift Cards</Link>
+                  </li>
+                  <li className="pre-footer__links-item">
+                    <Link href="/faq?category=retours-echanges" className="pre-footer__link">Retours et échanges</Link>
+                  </li>
+                  <li className="pre-footer__links-item">
+                    <Link href="/faq?category=achat-cadeaux" className="pre-footer__link">Achat De Cadeaux</Link>
+                  </li>
+                  <li className="pre-footer__links-item">
+                    <Link href="/faq?category=emballage-expedition" className="pre-footer__link">Livraisons</Link>
+                  </li>
+                </ul>
+                
+                <h4 className="pre-footer__links-heading">Mentions légales & Cookies</h4>
+                <ul className="pre-footer__links-list">
+                  <li className="pre-footer__links-item">
+                    <Link href="/privacy-policy" className="pre-footer__link">Politique de Confidentialité</Link>
+                  </li>
+                  <li className="pre-footer__links-item">
+                    <Link href="/terms-of-service" className="pre-footer__link">Conditions Générales de Vente</Link>
+                  </li>
+                  <li className="pre-footer__links-item">
+                    <Link href="/support" className="pre-footer__link">Service Client</Link>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
+
+          {/* Business Information Section - Only show outside Morocco */}
+          {!isMorocco && (
+            <div className="pre-footer__business-info">
+              <div className="pre-footer__business-content">
+                <div className="pre-footer__business-details">
+                  <h4 className="pre-footer__business-heading">BRENDT Service Client</h4>
+                  <div className="pre-footer__business-item">
+                    <span className="pre-footer__business-label">Société:</span>
+                    <span className="pre-footer__business-value">BOUTALEB LLC</span>
+                  </div>
+                  <div className="pre-footer__business-item">
+                    <span className="pre-footer__business-label">Adresse:</span>
+                    <span className="pre-footer__business-value">30 N GOULD ST STE N, SHERIDAN, WY 82801, USA</span>
+                  </div>
+                  <div className="pre-footer__business-item">
+                    <span className="pre-footer__business-label">Email:</span>
+                    <a href="mailto:support@brendtshoes.com" className="pre-footer__business-link">support@brendtshoes.com</a>
+                  </div>
+                  <div className="pre-footer__business-item">
+                    <span className="pre-footer__business-label">Téléphone:</span>
+                    <a href="tel:+16469802449" className="pre-footer__business-link">+1 646 980 2449</a>
+                  </div>
+                  <div className="pre-footer__business-item">
+                    <span className="pre-footer__business-label">Horaires:</span>
+                    <span className="pre-footer__business-value">Lun-Ven 9h00-17h00 EST</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </section>
       
