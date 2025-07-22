@@ -11,7 +11,6 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 import { checkServerStatus } from '../utils/serverCheck';
 import '../styles/globals.css';
-import { initGA } from '../utils/googleAnalytics';
 
 // Initialize the fonts
 const cormorant = Cormorant({
@@ -115,16 +114,29 @@ export default function RootLayout({ children }) {
 
     return () => clearTimeout(timer);
   }, []);
-  
-  // Add useEffect after existing ones
-  useEffect(() => {
-    initGA();
-  }, []);
 
   return (
     <html lang="fr" className={`${cormorant.variable} ${inter.variable}`}>
       <head>
-        {/* 🔥 Facebook Domain Verification for Campaign Trust */}
+        {/* Google Analytics 4 - Direct Script Integration */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQQBFRN2E0"></script>
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-YQQBFRN2E0', {
+              country: 'MA',
+              currency: 'MAD',
+              custom_map: {
+                'custom_parameter_1': 'morocco_campaign'
+              }
+            });
+            console.log('📊 Google Analytics 4 loaded for Morocco campaign');
+          `
+        }} />
+        
+        {/* Facebook Domain Verification for Campaign Trust */}
         <meta name="facebook-domain-verification" content="ypxs2rf849bqvwbo6j0ytdkwdsgrgu" />
         
         {/* Enhanced meta tags for better Facebook attribution */}
