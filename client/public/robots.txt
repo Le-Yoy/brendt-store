@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Block admin and account pages
+Disallow: /admin/
+Disallow: /account/
+
+# Sitemap location
+Sitemap: https://brendtshoes.com/sitemap.xml
