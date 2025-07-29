@@ -4,6 +4,7 @@ const Product = require('../models/Product');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 const Counter = require('../models/Counter');
+const { sendPurchaseEvent } = require('../utils/facebookConversionsAPI');
 
 // Initialize order counter on startup
 const initOrderCounter = async () => {
@@ -74,6 +75,22 @@ const createOrder = catchAsync(async (req, res, next) => {
     
     // Stock deduction is handled by middleware
     // If we reach this point, stock was successfully deducted
+    
+    // 🔥 FACEBOOK CONVERSIONS API - Send Purchase Event
+    try {
+      await sendPurchaseEvent({
+        email: createdOrder.customer?.email || createdOrder.shippingAddress?.email || 'unknown@brendt.com',
+        phone: createdOrder.shippingAddress?.phoneNumber || '',
+        firstName: createdOrder.customer?.firstName || createdOrder.shippingAddress?.firstName || 'Customer',
+        lastName: createdOrder.customer?.lastName || createdOrder.shippingAddress?.lastName || '',
+        totalAmount: createdOrder.total || createdOrder.totalPrice || 0,
+        orderId: createdOrder.orderNumber || createdOrder._id.toString()
+      });
+      console.log('✅ Facebook Conversions API - Purchase event sent successfully');
+    } catch (fbError) {
+      console.error('⚠️ Facebook Conversions API failed (order still created):', fbError.message);
+      // Don't fail the order creation if Facebook API fails
+    }
     
     res.status(201).json(createdOrder);
   } catch (error) {
