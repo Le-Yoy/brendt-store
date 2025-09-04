@@ -185,7 +185,7 @@ const Footer = () => {
 
           {/* Business Information Section - Only show outside Morocco */}
           {!isMorocco && (
-            <div className="pre-footer__business-info">
+            <div className="pre-footer__business-info" style={{ display: 'none' }}>
               <div className="pre-footer__business-content">
                 <div className="pre-footer__business-details">
                   <h4 className="pre-footer__business-heading">BRENDT Service Client</h4>
