@@ -12,7 +12,7 @@ const Footer = () => {
   const [isMorocco, setIsMorocco] = useState(false);
   const [geoChecked, setGeoChecked] = useState(false);
 
-  // Check user's location
+// Check user's location
   useEffect(() => {
     const checkLocation = async () => {
       try {
@@ -22,6 +22,8 @@ const Footer = () => {
           const data = await response.json();
           // Check if user is in Morocco (country code MA)
           setIsMorocco(data.country_code === 'MA' || data.country === 'Morocco');
+        } else {
+          throw new Error('API request failed');
         }
       } catch (error) {
         // If geolocation fails, default to showing new footer (non-Morocco)

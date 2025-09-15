@@ -62,14 +62,19 @@ const CookieConsent = () => {
   useEffect(() => {
     const checkLocationAndConsent = async () => {
       // Check if user already gave consent
-      const existingConsent = localStorage.getItem('brendt-cookie-consent');
-      if (existingConsent) {
-        return; // Don't show banner if already consented
+      if (typeof window !== 'undefined') {
+        const existingConsent = localStorage.getItem('brendt-cookie-consent');
+        if (existingConsent) {
+          return; // Don't show banner if already consented
+        }
       }
 
       try {
         // Get user's country using a free IP geolocation service
         const response = await fetch('https://ipapi.co/json/');
+        if (!response.ok) {
+          throw new Error('Geolocation API failed');
+        }
         const data = await response.json();
         const userCountry = data.country_code;
 
@@ -89,9 +94,9 @@ const CookieConsent = () => {
         }
       } catch (error) {
         console.error('Error detecting location:', error);
-        // Fallback: show banner in English for safety
-        setShowBanner(true);
-        setLanguage('en');
+        // Fallback: show banner in English for safety (commented out to prevent showing unnecessarily)
+        // setShowBanner(true);
+        // setLanguage('en');
       }
     };
 
@@ -99,13 +104,15 @@ const CookieConsent = () => {
   }, []);
 
   const handleAccept = () => {
-    // Store consent
-    localStorage.setItem('brendt-cookie-consent', JSON.stringify({
-      accepted: true,
-      timestamp: new Date().toISOString(),
-      analytics: true,
-      marketing: true
-    }));
+    if (typeof window !== 'undefined') {
+      // Store consent
+      localStorage.setItem('brendt-cookie-consent', JSON.stringify({
+        accepted: true,
+        timestamp: new Date().toISOString(),
+        analytics: true,
+        marketing: true
+      }));
+    }
 
     // Enable tracking
     if (typeof window !== 'undefined' && window.fbq) {
@@ -122,13 +129,15 @@ const CookieConsent = () => {
   };
 
   const handleDecline = () => {
-    // Store declined consent
-    localStorage.setItem('brendt-cookie-consent', JSON.stringify({
-      accepted: false,
-      timestamp: new Date().toISOString(),
-      analytics: false,
-      marketing: false
-    }));
+    if (typeof window !== 'undefined') {
+      // Store declined consent
+      localStorage.setItem('brendt-cookie-consent', JSON.stringify({
+        accepted: false,
+        timestamp: new Date().toISOString(),
+        analytics: false,
+        marketing: false
+      }));
+    }
 
     // Disable tracking
     if (typeof window !== 'undefined' && window.fbq) {
@@ -145,8 +154,10 @@ const CookieConsent = () => {
   };
 
   const handleManage = () => {
-    // For now, redirect to privacy policy
-    window.open('/privacy-policy', '_blank');
+    if (typeof window !== 'undefined') {
+      // For now, redirect to privacy policy
+      window.open('/privacy-policy', '_blank');
+    }
   };
 
   // Only render if should show banner and is EU

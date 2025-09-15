@@ -1,0 +1,13 @@
+Package             Current    Wanted    Latest  Location                         Depended by
+axios                 1.9.0    1.12.2    1.12.2  node_modules/axios               client
+dotenv               16.5.0    16.6.1    17.2.2  node_modules/dotenv              client
+eslint               9.27.0    9.35.0    9.35.0  node_modules/eslint              client
+eslint-config-next   15.1.5    15.1.5    15.5.3  node_modules/eslint-config-next  client
+framer-motion       12.14.0  12.23.12  12.23.12  node_modules/framer-motion       client
+mongoose             8.15.1    8.18.1    8.18.1  node_modules/mongoose            client
+next                 15.1.5    15.1.5    15.5.3  node_modules/next                client
+postcss               8.5.3     8.5.6     8.5.6  node_modules/postcss             client
+react                19.1.0    19.1.1    19.1.1  node_modules/react               client
+react-dom            19.1.0    19.1.1    19.1.1  node_modules/react-dom           client
+recharts             2.15.3    2.15.4     3.2.0  node_modules/recharts            client
+tailwindcss          3.4.17    3.4.17    4.1.13  node_modules/tailwindcss         client

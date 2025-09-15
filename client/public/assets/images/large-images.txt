@@ -1,0 +1,21 @@
+-rw-r--r--@ 1 almostaphasmart  staff    12M Jul 30 18:59 ./products/brendt-new/Homme/chaussures/mocassins/Tarhazout/Raffia-Marron-&-Beige/4.jpg
+-rw-r--r--@ 1 almostaphasmart  staff    13M Jul 30 18:59 ./products/brendt-new/Homme/chaussures/mocassins/Tarhazout/Raffia-Marron-&-Beige/3.jpg
+-rw-r--r--@ 1 almostaphasmart  staff    13M Jul 30 19:03 ./products/brendt-new/Homme/chaussures/mocassins/Tarhazout/Raffia-Bleu-&-Beige/2.jpg
+-rw-r--r--@ 1 almostaphasmart  staff    11M Jul 30 19:03 ./products/brendt-new/Homme/chaussures/mocassins/Tarhazout/Raffia-Bleu-&-Beige/3.jpg
+-rw-r--r--@ 1 almostaphasmart  staff    12M Jul 30 19:03 ./products/brendt-new/Homme/chaussures/mocassins/Tarhazout/Raffia-Bleu-&-Beige/1.jpg
+-rw-r--r--@ 1 almostaphasmart  staff   554K Jun 11 20:43 ./products/brendt-new/Homme/chaussures/mocassins/Lecce-loafer/Vert/4.jpg
+-rw-r--r--@ 1 almostaphasmart  staff   711K Jun 11 20:43 ./products/brendt-new/Homme/chaussures/mocassins/Lecce-loafer/Vert/3.jpg
+-rwxr-xr-x@ 1 almostaphasmart  staff   593K Mar 12  2025 ./products/brendt-new/Homme/chaussures/mocassins/Penny-loafer/Marron/3.png
+-rw-r--r--@ 1 almostaphasmart  staff   844K Jul 30 20:54 ./products/brendt-new/Homme/chaussures/mocassins/Agafay-Walk/Vert-Croco/1.jpeg
+-rw-r--r--@ 1 almostaphasmart  staff   812K Jul 30 20:55 ./products/brendt-new/Homme/chaussures/mocassins/Agafay-Walk/Vert-Croco/6.jpeg
+-rw-r--r--@ 1 almostaphasmart  staff   844K Jul 30 20:54 ./products/brendt-new/Homme/chaussures/mocassins/Agafay-Walk/Vert-Croco/1 copy.jpeg
+-rw-r--r--@ 1 almostaphasmart  staff   832K Jul 30 20:54 ./products/brendt-new/Homme/chaussures/mocassins/Agafay-Walk/Vert-Croco/4.jpeg
+-rw-r--r--@ 1 almostaphasmart  staff   801K Jul 30 20:54 ./products/brendt-new/Homme/chaussures/mocassins/Agafay-Walk/Vert-Croco/5.jpeg
+-rw-r--r--@ 1 almostaphasmart  staff   893K Jul 30 20:54 ./products/brendt-new/Homme/chaussures/mocassins/Agafay-Walk/Vert-Croco/2.jpeg
+-rw-r--r--@ 1 almostaphasmart  staff   1.0M Jul 30 20:54 ./products/brendt-new/Homme/chaussures/mocassins/Agafay-Walk/Vert-Croco/3.jpeg
+-rw-r--r--@ 1 almostaphasmart  staff   1.3M Mar 23 00:53 ./savoir/84.webp
+-rw-r--r--@ 1 almostaphasmart  staff   1.9M Mar 23 00:54 ./savoir/82.webp
+-rwxr-xr-x@ 1 almostaphasmart  staff   1.1M Mar 13  2025 ./trioimages/4.png
+-rwxr-xr-x@ 1 almostaphasmart  staff   1.2M Mar 13  2025 ./trioimages/2.png
+-rwxr-xr-x@ 1 almostaphasmart  staff   910K Mar 13  2025 ./trioimages/3.png
+-rwxr-xr-x@ 1 almostaphasmart  staff   904K Mar 13  2025 ./trioimages/1.png

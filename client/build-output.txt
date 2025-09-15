@@ -1,0 +1,63 @@
+
+> client@0.1.0 build
+> next build
+
+   ▲ Next.js 15.1.5
+   - Environments: .env.local, .env.production, .env
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+ ⨯ ESLint: Cannot serialize key "parse" in parser: Function values are not supported.
+   Collecting page data ...
+   Generating static pages (0/31) ...
+   Generating static pages (7/31) 
+   Generating static pages (15/31) 
+   Generating static pages (23/31) 
+ ✓ Generating static pages (31/31)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    6.03 kB         123 kB
+├ ○ /_not-found                          148 B           106 kB
+├ ○ /account                             6.5 kB          128 kB
+├ ○ /account/addresses                   2.88 kB         126 kB
+├ ○ /account/orders                      2.75 kB         130 kB
+├ ƒ /account/orders/[orderId]            8.01 kB         123 kB
+├ ○ /account/profile                     5.81 kB         123 kB
+├ ○ /admin                               102 kB          219 kB
+├ ○ /admin/analytics                     3.87 kB         113 kB
+├ ○ /admin/forms                         3.54 kB         125 kB
+├ ○ /admin/inventory                     423 B           106 kB
+├ ○ /admin/notifications                 3.79 kB         126 kB
+├ ○ /admin/orders                        10.2 kB         127 kB
+├ ƒ /admin/orders/[orderId]              148 B           106 kB
+├ ○ /admin/products                      8.53 kB         136 kB
+├ ○ /admin/users                         2.75 kB         124 kB
+├ ƒ /admin/users/[userId]                148 B           106 kB
+├ ○ /cadeaux-pour-lui                    12.6 kB         130 kB
+├ ○ /cart                                4.06 kB         138 kB
+├ ƒ /category/[categoryId]               4.57 kB         122 kB
+├ ○ /checkout                            10.4 kB         131 kB
+├ ○ /components                          186 B           106 kB
+├ ○ /faq                                 5.69 kB         140 kB
+├ ○ /login                               2.51 kB         112 kB
+├ ○ /privacy-policy                      2.13 kB         108 kB
+├ ƒ /products/[productId]                10.4 kB         132 kB
+├ ○ /register                            2.65 kB         112 kB
+├ ○ /support                             3.37 kB         109 kB
+├ ○ /terms-of-service                    2.68 kB         109 kB
+├ ○ /test                                551 B           109 kB
+├ ○ /test-api                            1.41 kB         117 kB
+├ ○ /textile-universe                    7.98 kB         119 kB
+└ ○ /thank-you                           6.89 kB         119 kB
++ First Load JS shared by all            106 kB
+  ├ chunks/1517-5857e632f18a4675.js      50.7 kB
+  ├ chunks/4bd1b696-9b72a1d382fc048f.js  53 kB
+  └ other shared chunks (total)          2.13 kB
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

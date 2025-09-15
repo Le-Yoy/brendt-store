@@ -9,13 +9,13 @@ const Hero = () => {
   const [touchEnd, setTouchEnd] = useState(0);
   const intervalRef = useRef(null);
   
-  const images = [
-    '/assets/images/trioimages/1.png',
-    '/assets/images/trioimages/2.png',
-    '/assets/images/trioimages/3.png',
-    '/assets/images/trioimages/4.png',
-    '/assets/images/trioimages/5.png'
-  ];
+const images = [
+  '/assets/images/trioimages/1.webp',
+  '/assets/images/trioimages/2.webp',
+  '/assets/images/trioimages/3.webp',
+  '/assets/images/trioimages/4.webp',
+  '/assets/images/trioimages/5.webp'
+];
 
   useEffect(() => {
     // Set up automatic slideshow

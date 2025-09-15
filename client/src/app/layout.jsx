@@ -30,60 +30,53 @@ export default function RootLayout({ children }) {
   const pathname = usePathname() || '';
   const isAccountPage = pathname.startsWith('/account');
   const isAdminPage = pathname.startsWith('/admin');
-  const pixelInitialized = useRef(false); // Prevent multiple initializations
+  const pixelInitialized = useRef(false);
 
-  // Enhanced Facebook Pixel initialization for campaign optimization
+  // Facebook Pixel - ACTIVE for ads tracking
   useEffect(() => {
     if (typeof window !== 'undefined' && !pixelInitialized.current && !window.fbq) {
-      // Initialize Facebook Pixel with advanced settings
-      !(function(f,b,e,v,n,t,s)
-      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-      n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)}(window, document,'script',
-      'https://connect.facebook.net/en_US/fbevents.js'));
+      // Delay FB pixel to avoid blocking initial render
+      setTimeout(() => {
+        !(function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js'));
 
-      // Initialize with your Pixel ID and enhanced settings
-      window.fbq('init', '1745370408995219', {
-        // Enable automatic advanced matching for better attribution
-        external_id: null,
-        // Enhanced attribution settings
-        agent: 'plbrendtshoes',
-      });
-      
-      // Track initial page view
-      window.fbq('track', 'PageView');
-      
-      // Track WhatsApp campaign traffic immediately
-      if (typeof window !== 'undefined' && window.location.search.includes('utm_source=whatsapp')) {
-        window.fbq('trackCustom', 'WhatsAppTraffic', {
-          source: 'whatsapp',
-          campaign: 'morocco2025',
-          content_category: 'shoes'
+        window.fbq('init', '1745370408995219', {
+          external_id: null,
+          agent: 'plbrendtshoes',
         });
-      }
-      
-      // Track Morocco-specific audience data
-      window.fbq('trackCustom', 'MoroccoVisitor', {
-        market: 'morocco',
-        brand: 'brendt',
-        category: 'luxury_shoes'
-      });
-      
-      pixelInitialized.current = true; // Mark as initialized
-      console.log('🔥 Facebook Pixel initialized for campaign optimization');
+        
+        window.fbq('track', 'PageView');
+        
+        if (window.location.search.includes('utm_source=whatsapp')) {
+          window.fbq('trackCustom', 'WhatsAppTraffic', {
+            source: 'whatsapp',
+            campaign: 'morocco2025',
+            content_category: 'shoes'
+          });
+        }
+        
+        window.fbq('trackCustom', 'MoroccoVisitor', {
+          market: 'morocco',
+          brand: 'brendt',
+          category: 'luxury_shoes'
+        });
+        
+        pixelInitialized.current = true;
+      }, 1000);
     }
-  }, []); // Empty dependency array - run only once
+  }, []);
 
-  // Enhanced page view tracking on route changes
+  // Facebook page tracking on route changes - ACTIVE
   useEffect(() => {
     if (typeof window !== 'undefined' && window.fbq && pixelInitialized.current) {
-      // Track page view with additional context
       window.fbq('track', 'PageView');
       
-      // Track specific page types for better audience building
       if (pathname.includes('/product/')) {
         window.fbq('trackCustom', 'ProductPageView', {
           page_type: 'product',
@@ -103,9 +96,8 @@ export default function RootLayout({ children }) {
     }
   }, [pathname]);
 
-  // Check server status when component mounts
+  // Check server status
   useEffect(() => {
-    // Small delay to ensure DOM is ready
     const timer = setTimeout(() => {
       if (typeof checkServerStatus === 'function') {
         checkServerStatus();
@@ -118,7 +110,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="fr" className={`${cormorant.variable} ${inter.variable}`}>
       <head>
-        {/* Google Analytics 4 - Direct Script Integration */}
+        {/* COMMENTED OUT - Google Analytics 4 - Uncomment to restore */}
+        {/*
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQQBFRN2E0"></script>
         <script dangerouslySetInnerHTML={{
           __html: `
@@ -135,16 +128,18 @@ export default function RootLayout({ children }) {
             console.log('📊 Google Analytics 4 loaded for Morocco campaign');
           `
         }} />
+        */}
         
-        {/* Facebook Domain Verification for Campaign Trust */}
+        {/* Facebook Domain Verification - ACTIVE */}
         <meta name="facebook-domain-verification" content="ypxs2rf849bqvwbo6j0ytdkwdsgrgu" />
         
-        {/* Enhanced meta tags for better Facebook attribution */}
+        {/* Facebook meta tags - ACTIVE */}
         <meta property="og:site_name" content="BRENDT" />
         <meta property="og:type" content="website" />
         <meta property="fb:app_id" content="1745370408995219" />
         
-        {/* Voiceflow Chat Widget */}
+        {/* COMMENTED OUT - Voiceflow Chat Widget - Uncomment to restore */}
+        {/*
         <script dangerouslySetInnerHTML={{
           __html: `
             (function(d, t) {
@@ -163,8 +158,9 @@ export default function RootLayout({ children }) {
             })(document, 'script');
           `
         }} />
+        */}
         
-        {/* Facebook Pixel noscript fallback */}
+        {/* Facebook Pixel noscript fallback - ACTIVE */}
         <noscript>
           <img 
             height="1" 
