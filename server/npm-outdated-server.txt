@@ -1,0 +1,12 @@
+Package             Current    Wanted    Latest  Location                         Depended by
+bcryptjs              2.4.3     2.4.3     3.0.2  node_modules/bcryptjs            server
+dotenv               16.4.7    16.6.1    17.2.2  node_modules/dotenv              server
+express              4.21.2    4.21.2     5.1.0  node_modules/express             server
+express-rate-limit    7.4.1     7.5.1     8.1.0  node_modules/express-rate-limit  server
+helmet                8.0.0     8.1.0     8.1.0  node_modules/helmet              server
+mongoose             8.12.1    8.18.1    8.18.1  node_modules/mongoose            server
+morgan               1.10.0    1.10.1    1.10.1  node_modules/morgan              server
+nodemon               3.1.9    3.1.10    3.1.10  node_modules/nodemon             server
+recharts             2.15.3    2.15.4     3.2.0  node_modules/recharts            server
+stripe               17.7.0    17.7.0    18.5.0  node_modules/stripe              server
+validator           13.12.0  13.15.15  13.15.15  node_modules/validator           server

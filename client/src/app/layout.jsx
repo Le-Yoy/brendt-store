@@ -110,6 +110,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="fr" className={`${cormorant.variable} ${inter.variable}`}>
       <head>
+        {/* Preconnect hints for performance */}
+        <link rel="preconnect" href="https://connect.facebook.net" />
+        <link rel="dns-prefetch" href="https://www.facebook.com" />
+        
         {/* COMMENTED OUT - Google Analytics 4 - Uncomment to restore */}
         {/*
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-YQQBFRN2E0"></script>
