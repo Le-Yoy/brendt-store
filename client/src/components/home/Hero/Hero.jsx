@@ -136,7 +136,7 @@ const images = [
       </div>
 
       <div className={styles.content}>
-        <h2 className={styles.title}>TIMELESS ELEGANCE</h2>
+        <h2 className={styles.title}>REFINED LUXURY</h2>
         <Button 
           variant="dark" 
           className={styles.discoverButton}
