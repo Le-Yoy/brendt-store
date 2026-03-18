@@ -21,6 +21,7 @@ const ProductCard = ({ product, isFeatured = false }) => {
     _id,
     name,
     price,
+    previousPrice,
     description,
     category,
     colors = [],
@@ -31,7 +32,8 @@ const ProductCard = ({ product, isFeatured = false }) => {
     displayImage,
     selectedColor,
     displayColorIndex,
-    inStock = true
+    inStock = true,
+    _priority = false
   } = product;
   
   // Get the first color variant and its first image
@@ -84,12 +86,7 @@ const ProductCard = ({ product, isFeatured = false }) => {
   // Check if any colors are available
   const hasAvailableColors = colors.some(color => color.inStock !== false);
   
-  // Prevent click when out of stock or no colors available
-  const handleClick = (e) => {
-    if (!inStock || !hasAvailableColors) {
-      e.preventDefault();
-    }
-  };
+  const handleClick = () => {};
   
   // Format price in MAD
   const formatPrice = (price) => {
@@ -135,18 +132,26 @@ const ProductCard = ({ product, isFeatured = false }) => {
           onMouseEnter={() => setHovered(true)}
           onMouseLeave={() => setHovered(false)}
         >
-          {/* Product image with error handling */}
+          {/* Product image with CLS optimization */}
           <Image
             src={displayImg}
             alt={name}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            width={300}
+            height={400}
+            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 216px"
             className={styles.productImage}
-            priority={false}
+            priority={_priority}
+            loading={_priority ? "eager" : "lazy"}
+            placeholder="blur"
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCABaAEMDASIAAhEBAxEB/8QAGwABAAIDAQEAAAAAAAAAAAAAAAQFAQIDAAb/xAAuEAACAgIBAwEGBgMAAAAAAAABAgADBBEFEiExBhMiQVFhgRQyUnGRoSNCsf/EABYBAQEBAAAAAAAAAAAAAAAAAAABAv/EABYRAQEBAAAAAAAAAAAAAAAAAAARAf/aAAwDAQACEQMRAD8A+zREQEREBERAREQEREBERARE8TAz5jUTPTAREQEREBERAREQEREBERAREQERED//2Q=="
+            style={{ 
+              objectFit: 'cover',
+              width: '100%',
+              height: 'auto'
+            }}
             onError={(e) => {
               console.warn(`Image failed to load: ${displayImg}`);
               setImageError(true);
-              e.target.src = '/assets/images/placeholder.jpg';
             }}
           />
           
@@ -189,7 +194,12 @@ const ProductCard = ({ product, isFeatured = false }) => {
             <div className={styles.colorName}>{selectedColor.name}</div>
           )}
           
-          <span className={styles.productPrice}>{getDisplayPrice()}</span>
+          <div className={styles.priceWrapper}>
+            <span className={styles.productPrice}>{getDisplayPrice()}</span>
+            {previousPrice && previousPrice > price && (
+              <span className={styles.previousPrice}>{previousPrice.toLocaleString()} MAD</span>
+            )}
+          </div>
           
           {/* Out of stock notice */}
           {!isProductAvailable && (

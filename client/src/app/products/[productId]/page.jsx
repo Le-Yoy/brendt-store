@@ -8,7 +8,7 @@ import ProductGallery from '@/components/product/ProductGallery';
 import ProductInfo from '@/components/product/ProductInfo';
 import ProductAdditionalInfo from '@/components/product/ProductAdditionalInfo';
 import RelatedProducts from '@/components/product/RelatedProducts';
-import { trackViewContent } from '@/utils/facebookPixel'; // ADD THIS LINE
+import { trackViewContent } from '@/utils/facebookPixel';
 
 // Import the product service
 import productService from '@/services/productService';
@@ -19,9 +19,114 @@ export default function ProductPage({ params }) {
   const router = useRouter();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [usingMockData, setUsingMockData] = useState(false);
+
+  // Enhanced SEO meta tags for product pages targeting Morocco keywords
+  useEffect(() => {
+    if (product) {
+      // Title with Morocco location and price
+      const title = `${product.name} Maroc - ${product.subcategory || 'Chaussures'} ${product.gender || ''} ${product.price} MAD | BRENDT`;
+      document.title = title;
+      
+      // Rich description with Morocco cities and delivery info
+      const description = `${product.name} au Maroc ✓ Prix: ${product.price} MAD ✓ ${product.subcategory} ${product.gender} de luxe ✓ Livraison gratuite Casablanca, Rabat, Marrakech ✓ Paiement cash à la livraison`;
+      
+      let metaDesc = document.querySelector('meta[name="description"]');
+      if (!metaDesc) {
+        metaDesc = document.createElement('meta');
+        metaDesc.name = 'description';
+        document.head.appendChild(metaDesc);
+      }
+      metaDesc.content = description;
+
+      // Product-specific Morocco keywords
+      let metaKeywords = document.querySelector('meta[name="keywords"]');
+      if (!metaKeywords) {
+        metaKeywords = document.createElement('meta');
+        metaKeywords.name = 'keywords';
+        document.head.appendChild(metaKeywords);
+      }
+      const keywords = `${product.name} maroc, ${product.subcategory} ${product.gender} maroc, chaussures maroc, brendt maroc, ${product.subcategory} ${product.price} mad, livraison gratuite maroc`;
+      metaKeywords.content = keywords;
+
+      // Open Graph for social sharing with Morocco focus
+      let ogTitle = document.querySelector('meta[property="og:title"]');
+      if (!ogTitle) {
+        ogTitle = document.createElement('meta');
+        ogTitle.setAttribute('property', 'og:title');
+        document.head.appendChild(ogTitle);
+      }
+      ogTitle.content = `${product.name} - ${product.price} MAD | BRENDT Maroc`;
+
+      let ogDescription = document.querySelector('meta[property="og:description"]');
+      if (!ogDescription) {
+        ogDescription = document.createElement('meta');
+        ogDescription.setAttribute('property', 'og:description');
+        document.head.appendChild(ogDescription);
+      }
+      ogDescription.content = description;
+
+      // Enhanced structured data for Google Shopping and Morocco market
+      const productSchema = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": product.name,
+        "description": product.description || `${product.subcategory} ${product.gender} de luxe disponible au Maroc`,
+        "brand": {
+          "@type": "Brand",
+          "name": "BRENDT"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": product.price,
+          "priceCurrency": "MAD",
+          "availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+          "seller": {
+            "@type": "Organization",
+            "name": "BRENDT",
+            "address": {
+              "@type": "PostalAddress",
+              "addressCountry": "MA"
+            }
+          },
+          "shippingDetails": {
+            "@type": "OfferShippingDetails",
+            "shippingRate": {
+              "@type": "MonetaryAmount",
+              "value": "0",
+              "currency": "MAD"
+            },
+            "deliveryTime": {
+              "@type": "ShippingDeliveryTime",
+              "businessDays": {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+              }
+            }
+          }
+        },
+        "category": product.category,
+        "color": product.colors ? product.colors.map(c => c.name).join(", ") : "",
+        "material": "Cuir italien",
+        "manufacturer": {
+          "@type": "Organization",
+          "name": "BRENDT"
+        }
+      };
+
+      const scriptTag = document.getElementById('product-schema') || document.createElement('script');
+      scriptTag.id = 'product-schema';
+      scriptTag.type = 'application/ld+json';
+      scriptTag.innerHTML = JSON.stringify(productSchema);
+      if (!document.getElementById('product-schema')) {
+        document.head.appendChild(scriptTag);
+      }
+    }
+  }, [product]);
 
   // ✨ FIXED: Smooth URL update without reload
   const updateURL = useCallback((color, colorIndex) => {
@@ -57,15 +162,16 @@ export default function ProductPage({ params }) {
     }
   }, [product, updateURL]);
 
-  // ✨ Initial product fetch - only once
+  // ✨ Initial product fetch - retries on user request
   useEffect(() => {
     let isMounted = true;
-    
+
     async function fetchProduct() {
       if (!productId) return;
-      
+
       try {
         setLoading(true);
+        setFetchError(false);
         
         // First try to get the product from the API
         const productData = await productService.getProduct(productId);
@@ -107,57 +213,17 @@ export default function ProductPage({ params }) {
           if (isMounted) {
             setSelectedColor(targetColor);
           }
-          // Track Facebook Pixel ViewContent event
-if (isMounted && resolvedProduct) {
-  trackViewContent(resolvedProduct);
-}
+        }
+
+        // Track Facebook Pixel ViewContent event
+        if (isMounted && resolvedProduct) {
+          trackViewContent(resolvedProduct);
         }
         
       } catch (apiError) {
-        console.warn('API fetch failed, falling back to mock data:', apiError);
-        
-        if (!isMounted) return;
-        
-        try {
-          // Fallback to mock data if API fails
-          const mockData = await productService.getMockProduct(productId);
-          
-          if (!isMounted) return;
-          
-          setProduct(mockData);
-          setUsingMockData(true);
-          
-          // Set initial color for mock data
-          if (mockData.colors && mockData.colors.length > 0) {
-            const colorIndexParam = searchParams.get('colorIndex');
-            const colorParam = searchParams.get('color');
-            
-            let targetColor = null;
-            
-            if (colorIndexParam !== null) {
-              const colorIndex = parseInt(colorIndexParam);
-              if (colorIndex >= 0 && colorIndex < mockData.colors.length) {
-                targetColor = mockData.colors[colorIndex];
-              }
-            }
-            
-            if (!targetColor && colorParam) {
-              targetColor = mockData.colors.find(color => 
-                color.name?.toLowerCase() === colorParam.toLowerCase()
-              );
-            }
-            
-            if (!targetColor) {
-              targetColor = mockData.colors[0];
-            }
-            
-            if (isMounted) {
-              setSelectedColor(targetColor);
-            }
-          }
-          
-        } catch (mockError) {
-          console.error('Error fetching product:', mockError);
+        console.error('Error fetching product:', apiError);
+        if (isMounted) {
+          setFetchError(true);
         }
       } finally {
         if (isMounted) {
@@ -171,7 +237,7 @@ if (isMounted && resolvedProduct) {
     return () => {
       isMounted = false;
     };
-  }, [productId]); // ✨ CRITICAL: Only depend on productId, not searchParams
+  }, [productId, retryCount]);
 
   // ✨ SMOOTH: Reset scroll only when productId changes, not on color change
   useEffect(() => {
@@ -190,7 +256,13 @@ if (isMounted && resolvedProduct) {
     return (
       <div className={styles.errorContainer}>
         <h2>Produit non trouvé</h2>
-        <p>Nous n'avons pas pu trouver le produit demandé.</p>
+        <p>Nous n'avons pas pu charger ce produit. Vérifiez votre connexion et réessayez.</p>
+        <button
+          onClick={() => { setProduct(null); setRetryCount(c => c + 1); }}
+          style={{ marginTop: '1rem', padding: '0.75rem 1.5rem', cursor: 'pointer', background: '#000', color: '#fff', border: 'none' }}
+        >
+          Réessayer
+        </button>
       </div>
     );
   }
