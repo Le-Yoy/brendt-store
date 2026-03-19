@@ -1,4 +1,5 @@
 // src/app/layout.jsx
+
 'use client';
 
 import { Cormorant, Inter } from 'next/font/google';
@@ -25,6 +26,7 @@ const inter = Inter({
   display: 'swap',
   variable: '--font-inter'
 });
+
 
 export default function RootLayout({ children }) {
   const pathname = usePathname() || '';
@@ -107,12 +109,35 @@ export default function RootLayout({ children }) {
     return () => clearTimeout(timer);
   }, []);
 
+  // Keep Railway server alive - ping every 10 minutes to prevent cold starts
+  useEffect(() => {
+    const ping = () => {
+      fetch('https://brendt-store-production-d6ef.up.railway.app/api/products?limit=1')
+        .catch(() => {}); // Silent - just keeping the server warm
+    };
+
+    const interval = setInterval(ping, 10 * 60 * 1000); // Every 10 minutes
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <html lang="fr" className={`${cormorant.variable} ${inter.variable}`}>
-      <head>
+     <head>
+        {/* Static SEO Meta Tags */}
+        <title>BRENDT Maroc - Chaussures Luxe Homme & Femme | Livraison Gratuite</title>
+        <meta name="description" content="BRENDT - Chaussures de luxe Maroc. Mocassins homme, boots, chaussures femme. Livraison gratuite Casablanca, Rabat, Marrakech. À partir de 1299 MAD." />
+        <meta name="keywords" content="chaussures maroc, mocassin homme maroc, chaussure femme maroc, brendt, boots maroc" />
+        
+        {/* Open Graph */}
+        <meta property="og:title" content="BRENDT - Chaussures de Luxe Maroc" />
+        <meta property="og:description" content="Collection exclusive de chaussures haut de gamme. Livraison gratuite au Maroc." />
+        <meta property="og:url" content="https://www.brendtshoes.com" />
+        
         {/* Preconnect hints for performance */}
         <link rel="preconnect" href="https://connect.facebook.net" />
         <link rel="dns-prefetch" href="https://www.facebook.com" />
+        <link rel="preconnect" href="https://brendt-store-production-d6ef.up.railway.app" />
+        <link rel="dns-prefetch" href="https://brendt-store-production-d6ef.up.railway.app" />
         
         {/* COMMENTED OUT - Google Analytics 4 - Uncomment to restore */}
         {/*
@@ -187,6 +212,7 @@ export default function RootLayout({ children }) {
           </CartProvider>
         </AuthProvider>
       </body>
+
     </html>
   );
 }
