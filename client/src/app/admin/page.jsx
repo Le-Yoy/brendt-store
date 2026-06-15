@@ -19,46 +19,82 @@ export default function AdminDashboard() {
   const { showError } = useNotification();
   
   const [stats, setStats] = useState(null);
+  const [recentOrders, setRecentOrders] = useState([]);
+  const [loadError, setLoadError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  
+
+  // Format a month-over-month growth value as a signed percentage,
+  // or null when no value is available (hides the badge entirely).
+  const formatChange = (value) =>
+    value === null || value === undefined ? null : `${value >= 0 ? '+' : ''}${value}%`;
+  const changeTypeFor = (value) => (value >= 0 ? 'increase' : 'decrease');
+
+  // Relative French time label for an order's createdAt, with an absolute fallback.
+  const formatRelativeDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '';
+    const diffMs = Date.now() - date.getTime();
+    const diffMin = Math.floor(diffMs / 60000);
+    if (diffMin < 1) return "À l'instant";
+    if (diffMin < 60) return `Il y a ${diffMin} min`;
+    const diffH = Math.floor(diffMin / 60);
+    if (diffH < 24) return `Il y a ${diffH} h`;
+    const diffD = Math.floor(diffH / 24);
+    if (diffD < 7) return `Il y a ${diffD} j`;
+    return date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+  };
+
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         setIsLoading(true);
+        setLoadError(null);
         console.log('[ADMIN] Initiating dashboard data fetch');
-        
+
         // Skip token validation and rely on useAuth hook
         if (!user || user.role !== 'admin') {
           console.error('[ADMIN] User is not admin or not authenticated');
           router.push('/login?redirect=/admin');
           return;
         }
-        
+
         // Try to get real data from the API
         const response = await adminService.getDashboardStats();
         console.log('[ADMIN] Dashboard data received:', response);
-        
+
         // Validate the structure of the response
         if (!response || !response.salesSummary) {
           console.error('[ADMIN] Invalid response structure:', response);
           throw new Error('Invalid response structure from API');
         }
-        
+
         setStats(response);
+
+        // Fetch the most recent orders for the "Activité récente" feed.
+        // This is non-critical: a failure here must not break the dashboard.
+        try {
+          const ordersResponse = await adminService.getOrders();
+          const orders = Array.isArray(ordersResponse?.data) ? ordersResponse.data : [];
+          setRecentOrders(orders.slice(0, 5));
+        } catch (ordersError) {
+          console.error('[ADMIN] Could not load recent orders:', ordersError);
+          setRecentOrders([]);
+        }
       } catch (error) {
         console.error('[ADMIN] Error fetching dashboard data:', error);
-        
-        // If API fails, use mock data but log detailed error
-        const mockData = adminService.getMockAnalyticsData();
-        setStats(mockData);
-        
-        // Show more informative error message
+
+        // Never fabricate numbers — show an honest error state instead.
+        setStats(null);
         if (error.status === 401) {
+          setLoadError('Session expirée. Veuillez vous reconnecter.');
           showError('Session expirée. Veuillez vous reconnecter.');
         } else if (error.status === 403) {
+          setLoadError('Vous n\'avez pas les permissions nécessaires pour accéder à cette page.');
           showError('Vous n\'avez pas les permissions nécessaires pour accéder à cette page.');
         } else {
-          showError('Impossible de charger les données en temps réel. Affichage des données de démonstration.');
+          setLoadError('Impossible de charger les données du tableau de bord. Vérifiez votre connexion et réessayez.');
+          showError('Impossible de charger les données du tableau de bord.');
         }
       } finally {
         setIsLoading(false);
@@ -104,6 +140,19 @@ export default function AdminDashboard() {
           <div className="flex justify-center py-8">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent"></div>
           </div>
+        ) : loadError ? (
+          <div className={styles.errorState} style={{ textAlign: 'center', padding: '3rem 1rem' }}>
+            <p style={{ fontSize: '1.1rem', marginBottom: '1rem', color: 'var(--color-error, #dc2626)' }}>
+              {loadError}
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className={styles.quickActionButton}
+              style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+              Réessayer
+            </button>
+          </div>
         ) : (
           <>
             {/* Stats Cards */}
@@ -117,8 +166,8 @@ export default function AdminDashboard() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                   </svg>
                 }
-                change={`+${stats?.salesSummary?.salesGrowth || 0}%`}
-                changeType="increase"
+                change={formatChange(stats?.salesSummary?.salesGrowth)}
+                changeType={changeTypeFor(stats?.salesSummary?.salesGrowth)}
               />
               <StatsCard
                 title="Chiffre d'affaires"
@@ -129,8 +178,8 @@ export default function AdminDashboard() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 }
-                change={`+${stats?.salesSummary?.salesGrowth || 0}%`}
-                changeType="increase"
+                change={formatChange(stats?.salesSummary?.salesGrowth)}
+                changeType={changeTypeFor(stats?.salesSummary?.salesGrowth)}
               />
               <StatsCard
                 title="Clients"
@@ -141,8 +190,8 @@ export default function AdminDashboard() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                 }
-                change={`+${stats?.customerMetrics?.customerGrowth || 0}%`}
-                changeType="increase"
+                change={formatChange(stats?.customerMetrics?.customerGrowth)}
+                changeType={changeTypeFor(stats?.customerMetrics?.customerGrowth)}
               />
               <StatsCard
                 title="Panier moyen"
@@ -153,8 +202,6 @@ export default function AdminDashboard() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                 }
-                change={`+${(stats?.salesSummary?.averageOrderValue / (stats?.salesSummary?.averageOrderValue - 25) * 100 - 100).toFixed(1) || 0}%`}
-                changeType="increase"
               />
             </div>
 
@@ -245,30 +292,43 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Recent Activity */}
+            {/* Recent Activity — real most-recent orders */}
             <div className={styles.recentActivityCard}>
-              <h2 className={styles.recentActivityTitle}>Activité récente</h2>
+              <h2 className={styles.recentActivityTitle}>Commandes récentes</h2>
               <div className={styles.activityList}>
-                <div className={`${styles.activityItem} ${styles.activityItemActive}`}>
-                  <div className={styles.activityTitle}>Nouvelle commande #12345</div>
-                  <div className={styles.activityTime}>Il y a 2 heures</div>
-                </div>
-                <div className={`${styles.activityItem} ${styles.activityItemInactive}`}>
-                  <div className={styles.activityTitle}>Stock faible pour "Mocassin Cuir Brun"</div>
-                  <div className={styles.activityTime}>Il y a 5 heures</div>
-                </div>
-                <div className={`${styles.activityItem} ${styles.activityItemInactive}`}>
-                  <div className={styles.activityTitle}>Nouveau compte client créé</div>
-                  <div className={styles.activityTime}>Il y a 1 jour</div>
-                </div>
-                <div className={`${styles.activityItem} ${styles.activityItemInactive}`}>
-                  <div className={styles.activityTitle}>Commande #12344 terminée</div>
-                  <div className={styles.activityTime}>Il y a 1 jour</div>
-                </div>
+                {recentOrders.length > 0 ? (
+                  recentOrders.map((order, index) => {
+                    const total = typeof order.totalPrice === 'number'
+                      ? `${order.totalPrice.toLocaleString('fr-FR')} DH`
+                      : '';
+                    const customer = order.user?.name || order.shippingAddress?.fullName || 'Client';
+                    return (
+                      <button
+                        key={order._id}
+                        onClick={() => router.push('/admin/orders')}
+                        className={`${styles.activityItem} ${index === 0 ? styles.activityItemActive : styles.activityItemInactive}`}
+                        style={{ display: 'block', width: '100%', textAlign: 'left', border: 'none', background: 'none', cursor: 'pointer' }}
+                      >
+                        <div className={styles.activityTitle}>
+                          Commande #{order.orderNumber || order._id.substr(-6)} — {customer} {total && `· ${total}`}
+                        </div>
+                        <div className={styles.activityTime}>{formatRelativeDate(order.createdAt)}</div>
+                      </button>
+                    );
+                  })
+                ) : (
+                  <div className={styles.activityItem}>
+                    <div className={styles.activityTitle}>Aucune commande récente</div>
+                  </div>
+                )}
               </div>
-              <a href="#" className={styles.viewAllLink}>
-                Voir toute l'activité →
-              </a>
+              <button
+                onClick={() => router.push('/admin/orders')}
+                className={styles.viewAllLink}
+                style={{ border: 'none', background: 'none', cursor: 'pointer' }}
+              >
+                Voir toutes les commandes →
+              </button>
             </div>
           </>
         )}

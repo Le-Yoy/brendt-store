@@ -1224,17 +1224,23 @@ const getProductsWithColorDetails = catchAsync(async (req, res, next) => {
   const products = await Product.find({})
     .sort({ createdAt: -1 });
 
-  // Transform products to include color variant details
-  const productsWithDetails = products.map(product => ({
-    ...product.toObject(),
-    colors: product.colors.map((color, index) => ({
-      ...color,
-      index,
-      effectivePrice: color.price || product.price,
-      stock: color.stock || 0,
-      inStock: color.inStock !== false
-    }))
-  }));
+  // Transform products to include color variant details.
+  // Convert to a plain object FIRST — spreading a Mongoose subdocument
+  // ({ ...color }) drops the schema fields (name, code, images), which would
+  // render blank color rows in the admin StockManager.
+  const productsWithDetails = products.map(product => {
+    const obj = product.toObject();
+    return {
+      ...obj,
+      colors: obj.colors.map((color, index) => ({
+        ...color,
+        index,
+        effectivePrice: color.price || obj.price,
+        stock: color.stock || 0,
+        inStock: color.inStock !== false
+      }))
+    };
+  });
 
   res.status(200).json({
     status: 'success',

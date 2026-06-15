@@ -15,6 +15,21 @@ API          : https://brendt-store-production-d6ef.up.railway.app/api
 Live site    : https://brendtshoes.com
 Git remote   : https://github.com/Le-Yoy/brendt-store.git
 ```
+
+### Railway (backend host) — account & service details
+```
+Railway account : "Le-Yoy's Projects" (login = leboutaleb@gmail.com / Google)
+Project name    : sublime-purpose   ← THIS is brendt (random Railway name; the other project "vigilant-determination" is NOT ours)
+Environment     : production
+Service         : brendt-store  (GitHub-linked → auto-deploys on push to main)
+Public domain   : brendt-store-production-d6ef.up.railway.app
+Plan            : Hobby — $5/mo (billed monthly via Stripe, Visa …3426)
+```
+**Suspension diagnostic (learned Jun 2026):** if the API returns `HTTP 404` with header
+`x-railway-fallback: true`, the service is NOT running (no container bound) — almost
+always a billing/trial issue, not a code bug. Frontend (Vercel) stays up, so the login
+page loads but every API call fails with "Login failed". Fix: Railway dashboard →
+sublime-purpose → brendt-store → ensure plan active + Redeploy. NOT a credentials problem.
 ```
 Root  : /Users/almostaphasmart/Desktop/brendt-project/
 Client: /Users/almostaphasmart/Desktop/brendt-project/client/

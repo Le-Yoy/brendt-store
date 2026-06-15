@@ -1,20 +1,13 @@
 'use client';
 
-import React, { Suspense } from 'react';
-
-function AdminInventoryContent() {
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold text-gray-800">Admin Inventory</h1>
-      <p>This page is temporarily simplified for deployment.</p>
-    </div>
-  );
-}
+import React from 'react';
+import AdminLayout from '@/components/admin/AdminLayout';
+import StockManager from '@/components/admin/StockManager';
 
 export default function AdminInventoryPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <AdminInventoryContent />
-    </Suspense>
+    <AdminLayout>
+      <StockManager />
+    </AdminLayout>
   );
 }
