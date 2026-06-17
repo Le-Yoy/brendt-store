@@ -1,0 +1,197 @@
+/* ============================================================
+   BRENDT Admin — Minimal Monochrome Design System
+   Scoped to .admin-shell so the storefront is never affected.
+   No brand colors / no Cormorant. System sans, grayscale surfaces.
+   Functional color (muted red/green) is used ONLY for status.
+   ============================================================ */
+
+.admin-shell {
+  /* Grayscale palette */
+  --adm-bg: #f7f7f8;
+  --adm-surface: #ffffff;
+  --adm-surface-2: #f4f4f5;
+  --adm-border: #e7e7ea;
+  --adm-border-strong: #d6d6da;
+  --adm-text: #18181b;
+  --adm-text-muted: #6b6b73;
+  --adm-text-faint: #9b9ba3;
+  --adm-ink: #111113;            /* near-black: primary buttons, emphasis */
+  --adm-ink-hover: #2a2a2e;
+
+  /* Functional status only */
+  --adm-ok: #15803d;
+  --adm-ok-bg: #eef6f0;
+  --adm-warn: #92600a;
+  --adm-warn-bg: #f7f1e6;
+  --adm-danger: #b42318;
+  --adm-danger-bg: #fbeeec;
+
+  --adm-radius: 12px;
+  --adm-radius-sm: 8px;
+  --adm-shadow: 0 1px 2px rgba(16,16,18,.04), 0 1px 3px rgba(16,16,18,.06);
+  --adm-shadow-md: 0 4px 12px rgba(16,16,18,.06), 0 2px 4px rgba(16,16,18,.04);
+  --adm-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, Helvetica, Arial, sans-serif;
+
+  font-family: var(--adm-font);
+  color: var(--adm-text);
+  background: var(--adm-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+.admin-shell *,
+.admin-shell *::before,
+.admin-shell *::after { box-sizing: border-box; }
+
+/* Kill the storefront's fixed-header offset on admin pages */
+.admin-main { padding-top: 0 !important; padding-bottom: 0 !important; margin-top: 0 !important; }
+
+/* ---------- Page header ---------- */
+.adm-page-header { margin-bottom: 1.5rem; }
+.adm-page-title {
+  font-family: var(--adm-font);
+  font-size: 1.5rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--adm-text);
+  margin: 0;
+}
+.adm-page-sub { font-size: .9rem; color: var(--adm-text-muted); margin: .35rem 0 0; }
+
+/* ---------- Cards ---------- */
+.adm-card {
+  background: var(--adm-surface);
+  border: 1px solid var(--adm-border);
+  border-radius: var(--adm-radius);
+  box-shadow: var(--adm-shadow);
+}
+.adm-card-pad { padding: 1.25rem; }
+.adm-card-title { font-size: 1rem; font-weight: 600; margin: 0 0 1rem; color: var(--adm-text); }
+
+/* ---------- Stat tiles ---------- */
+.adm-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.adm-stat {
+  background: var(--adm-surface);
+  border: 1px solid var(--adm-border);
+  border-radius: var(--adm-radius);
+  padding: 1.1rem 1.25rem;
+  box-shadow: var(--adm-shadow);
+}
+.adm-stat-label { font-size: .78rem; font-weight: 500; color: var(--adm-text-muted); text-transform: uppercase; letter-spacing: .04em; }
+.adm-stat-value { font-size: 1.7rem; font-weight: 680; letter-spacing: -0.02em; margin: .5rem 0 .15rem; color: var(--adm-text); }
+.adm-stat-desc { font-size: .8rem; color: var(--adm-text-faint); }
+.adm-stat-delta { font-size: .78rem; font-weight: 600; margin-top: .6rem; display: inline-flex; align-items: center; gap: .2rem; }
+.adm-stat-delta.up { color: var(--adm-ok); }
+.adm-stat-delta.down { color: var(--adm-danger); }
+.adm-stat-delta.flat { color: var(--adm-text-faint); }
+
+/* ---------- Buttons ---------- */
+.adm-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .45rem;
+  font-family: var(--adm-font); font-size: .875rem; font-weight: 550;
+  padding: .55rem .9rem; border-radius: var(--adm-radius-sm);
+  border: 1px solid var(--adm-border-strong); background: var(--adm-surface); color: var(--adm-text);
+  cursor: pointer; transition: background .12s ease, border-color .12s ease, opacity .12s ease;
+  white-space: nowrap; text-decoration: none; line-height: 1.1;
+}
+.adm-btn:hover { background: var(--adm-surface-2); }
+.adm-btn:disabled { opacity: .5; cursor: not-allowed; }
+.adm-btn--primary { background: var(--adm-ink); border-color: var(--adm-ink); color: #fff; }
+.adm-btn--primary:hover { background: var(--adm-ink-hover); }
+.adm-btn--danger { background: var(--adm-surface); border-color: var(--adm-border-strong); color: var(--adm-danger); }
+.adm-btn--danger:hover { background: var(--adm-danger-bg); }
+.adm-btn--ghost { border-color: transparent; background: transparent; color: var(--adm-text-muted); }
+.adm-btn--ghost:hover { background: var(--adm-surface-2); color: var(--adm-text); }
+.adm-btn--sm { padding: .35rem .6rem; font-size: .8rem; }
+
+/* ---------- Badges (status) ---------- */
+.adm-badge {
+  display: inline-flex; align-items: center; gap: .35rem;
+  font-size: .75rem; font-weight: 600; padding: .2rem .55rem;
+  border-radius: 999px; border: 1px solid var(--adm-border-strong);
+  background: var(--adm-surface-2); color: var(--adm-text-muted);
+  white-space: nowrap;
+}
+.adm-badge--ok { background: var(--adm-ok-bg); color: var(--adm-ok); border-color: transparent; }
+.adm-badge--warn { background: var(--adm-warn-bg); color: var(--adm-warn); border-color: transparent; }
+.adm-badge--danger { background: var(--adm-danger-bg); color: var(--adm-danger); border-color: transparent; }
+.adm-badge--muted { background: var(--adm-surface-2); color: var(--adm-text-faint); border-color: transparent; }
+.adm-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+/* ---------- Inputs ---------- */
+.adm-input, .adm-select, .adm-textarea {
+  font-family: var(--adm-font); font-size: .875rem; color: var(--adm-text);
+  background: var(--adm-surface); border: 1px solid var(--adm-border-strong);
+  border-radius: var(--adm-radius-sm); padding: .55rem .7rem; width: 100%;
+  transition: border-color .12s ease, box-shadow .12s ease;
+}
+.adm-input:focus, .adm-select:focus, .adm-textarea:focus {
+  outline: none; border-color: var(--adm-ink);
+  box-shadow: 0 0 0 3px rgba(17,17,19,.08);
+}
+.adm-label { display: block; font-size: .8rem; font-weight: 550; color: var(--adm-text-muted); margin-bottom: .35rem; }
+.adm-field { margin-bottom: 1rem; }
+
+/* ---------- Toolbar / filters ---------- */
+.adm-toolbar {
+  display: flex; flex-wrap: wrap; gap: .75rem; align-items: center;
+  margin-bottom: 1.25rem;
+}
+.adm-toolbar .adm-input, .adm-toolbar .adm-select { width: auto; min-width: 180px; flex: 0 1 auto; }
+.adm-toolbar-spacer { flex: 1 1 auto; }
+
+/* ---------- Tables ---------- */
+.adm-table-wrap {
+  background: var(--adm-surface); border: 1px solid var(--adm-border);
+  border-radius: var(--adm-radius); box-shadow: var(--adm-shadow);
+  overflow-x: auto;
+}
+.adm-table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+.adm-table thead th {
+  text-align: left; font-weight: 600; font-size: .76rem; text-transform: uppercase; letter-spacing: .04em;
+  color: var(--adm-text-faint); padding: .8rem 1rem; border-bottom: 1px solid var(--adm-border);
+  background: var(--adm-surface-2); position: sticky; top: 0; white-space: nowrap;
+}
+.adm-table tbody td { padding: .85rem 1rem; border-bottom: 1px solid var(--adm-border); color: var(--adm-text); vertical-align: middle; }
+.adm-table tbody tr:last-child td { border-bottom: none; }
+.adm-table tbody tr:hover { background: var(--adm-surface-2); }
+.adm-table .adm-cell-strong { font-weight: 600; }
+.adm-table .adm-cell-muted { color: var(--adm-text-muted); }
+
+/* ---------- Empty / loading / error states ---------- */
+.adm-empty { text-align: center; padding: 3rem 1rem; color: var(--adm-text-muted); }
+.adm-empty-title { font-size: 1rem; font-weight: 600; color: var(--adm-text); margin-bottom: .4rem; }
+.adm-error { text-align: center; padding: 3rem 1rem; }
+.adm-error-msg { font-size: 1rem; color: var(--adm-danger); margin-bottom: 1rem; }
+.adm-spinner {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 3px solid var(--adm-border); border-top-color: var(--adm-ink);
+  animation: adm-spin .7s linear infinite; margin: 2.5rem auto;
+}
+@keyframes adm-spin { to { transform: rotate(360deg); } }
+
+/* ---------- Layout helpers ---------- */
+.adm-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.adm-row { display: flex; align-items: center; gap: .6rem; }
+.adm-stack { display: flex; flex-direction: column; gap: .35rem; }
+.adm-mb-lg { margin-bottom: 1.5rem; }
+
+/* color swatch chip used in stock/products */
+.adm-swatch { width: 16px; height: 16px; border-radius: 4px; border: 1px solid var(--adm-border-strong); display: inline-block; flex: 0 0 auto; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+  .adm-stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .adm-grid-2 { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .adm-stats-grid { grid-template-columns: 1fr 1fr; gap: .6rem; }
+  .adm-stat { padding: .85rem .9rem; }
+  .adm-stat-value { font-size: 1.3rem; }
+  .adm-page-title { font-size: 1.25rem; }
+  .adm-toolbar .adm-input, .adm-toolbar .adm-select { width: 100%; min-width: 0; flex: 1 1 100%; }
+}

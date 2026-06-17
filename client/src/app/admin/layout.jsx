@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import useAuth from '@/hooks/useAuth';
+import '@/styles/admin-theme.css';
 
 export default function AdminPageLayout({ children }) {
   const { user, isAuthenticated, loading, isAdmin } = useAuth();

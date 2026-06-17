@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNotification } from '@/contexts/NotificationContext';
 import adminService from '@/services/adminService';
-import styles from './StockManager.module.css';
 
 const StockManager = () => {
   const { showSuccess, showError } = useNotification();
@@ -13,7 +12,6 @@ const StockManager = () => {
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [stockAlert, setStockAlert] = useState(10); // Low stock threshold
 
-  // Fetch products with color details
   const fetchProducts = async () => {
     try {
       setLoading(true);
@@ -31,321 +29,201 @@ const StockManager = () => {
     fetchProducts();
   }, []);
 
-  // Filter products
-  const filteredProducts = products.filter(product => {
-    const matchesSearch = !searchTerm || 
-      product.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = categoryFilter === 'all' || 
-      product.category === categoryFilter;
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch = !searchTerm || product.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = categoryFilter === 'all' || product.category === categoryFilter;
     return matchesSearch && matchesCategory;
   });
 
-  // Get unique categories
-  const categories = [...new Set(products.map(p => p.category))];
+  const categories = [...new Set(products.map((p) => p.category))].filter(Boolean);
 
-  // Calculate stock statistics
   const stockStats = {
     totalProducts: products.length,
-    inStock: products.filter(p => p.colors.some(c => c.inStock && c.stock > 0)).length,
-    lowStock: products.filter(p => 
-      p.colors.some(c => c.inStock && c.stock > 0 && c.stock <= stockAlert)
-    ).length,
-    outOfStock: products.filter(p => p.colors.every(c => !c.inStock || c.stock === 0)).length,
-    totalItems: products.reduce((total, product) => 
-      total + product.colors.reduce((sum, color) => sum + (color.stock || 0), 0), 0
-    )
+    inStock: products.filter((p) => p.colors.some((c) => c.inStock && c.stock > 0)).length,
+    lowStock: products.filter((p) => p.colors.some((c) => c.inStock && c.stock > 0 && c.stock <= stockAlert)).length,
+    outOfStock: products.filter((p) => p.colors.every((c) => !c.inStock || c.stock === 0)).length,
+    totalItems: products.reduce((total, product) => total + product.colors.reduce((sum, color) => sum + (color.stock || 0), 0), 0),
   };
 
-  // Update stock for a specific color
   const updateStock = async (productId, colorIndex, newStock) => {
     try {
       await adminService.updateColorStockNumber(productId, colorIndex, newStock);
       showSuccess('Stock mis à jour avec succès');
-      fetchProducts(); // Refresh data
+      fetchProducts();
     } catch (error) {
       console.error('Error updating stock:', error);
       showError('Erreur lors de la mise à jour du stock');
     }
   };
 
-  // Bulk update stocks
-  const bulkUpdateStocks = async (updates) => {
-    try {
-      for (const update of updates) {
-        await adminService.updateColorStockNumber(
-          update.productId, 
-          update.colorIndex, 
-          update.stock
-        );
-      }
-      showSuccess(`${updates.length} stocks mis à jour avec succès`);
-      fetchProducts();
-    } catch (error) {
-      console.error('Error in bulk update:', error);
-      showError('Erreur lors de la mise à jour groupée');
-    }
-  };
-
-  const formatPrice = (price) => {
-    return price?.toLocaleString('fr-FR', {
-      style: 'currency',
-      currency: 'MAD'
-    }) || '0,00 MAD';
-  };
-
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
-        <h1 className={styles.pageTitle}>Gestion des stocks</h1>
-        <p className={styles.pageDescription}>
-          Surveillez et gérez les stocks de tous vos produits et leurs variantes
-        </p>
+    <div>
+      <div className="adm-page-header">
+        <h1 className="adm-page-title">Inventaire</h1>
+        <p className="adm-page-sub">Surveillez et ajustez le stock de chaque variante de couleur.</p>
       </div>
 
-      {/* Stock Statistics */}
-      <div className={styles.statsGrid}>
-        <div className={styles.statCard}>
-          <div className={styles.statValue}>{stockStats.totalProducts}</div>
-          <div className={styles.statLabel}>Produits totaux</div>
+      {/* Stats */}
+      <div className="adm-stats-grid">
+        <div className="adm-stat">
+          <div className="adm-stat-label">Produits</div>
+          <div className="adm-stat-value">{stockStats.totalProducts}</div>
         </div>
-        <div className={styles.statCard}>
-          <div className={styles.statValue}>{stockStats.totalItems}</div>
-          <div className={styles.statLabel}>Articles totaux</div>
+        <div className="adm-stat">
+          <div className="adm-stat-label">Articles en stock</div>
+          <div className="adm-stat-value">{stockStats.totalItems}</div>
         </div>
-        <div className={styles.statCard}>
-          <div className={styles.statValue}>{stockStats.inStock}</div>
-          <div className={styles.statLabel}>En stock</div>
-          <div className={styles.statColor} style={{backgroundColor: 'var(--color-success)'}}></div>
+        <div className="adm-stat">
+          <div className="adm-stat-label">Stock faible</div>
+          <div className="adm-stat-value">{stockStats.lowStock}</div>
+          <div className="adm-stat-desc">≤ {stockAlert} unités</div>
         </div>
-        <div className={styles.statCard}>
-          <div className={styles.statValue}>{stockStats.lowStock}</div>
-          <div className={styles.statLabel}>Stock faible</div>
-          <div className={styles.statColor} style={{backgroundColor: 'var(--color-warning)'}}></div>
-        </div>
-        <div className={styles.statCard}>
-          <div className={styles.statValue}>{stockStats.outOfStock}</div>
-          <div className={styles.statLabel}>Rupture</div>
-          <div className={styles.statColor} style={{backgroundColor: 'var(--color-error)'}}></div>
+        <div className="adm-stat">
+          <div className="adm-stat-label">En rupture</div>
+          <div className="adm-stat-value">{stockStats.outOfStock}</div>
         </div>
       </div>
 
-      {/* Filters and Controls */}
-      <div className={styles.filterSection}>
-        <div className={styles.searchRow}>
+      {/* Filters */}
+      <div className="adm-toolbar">
+        <input
+          type="text"
+          className="adm-input"
+          placeholder="Rechercher un produit…"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <select className="adm-select" value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
+          <option value="all">Toutes les catégories</option>
+          {categories.map((category) => (
+            <option key={category} value={category}>{category}</option>
+          ))}
+        </select>
+        <div className="adm-row" style={{ gap: '.4rem' }}>
+          <span className="adm-label" style={{ margin: 0 }}>Seuil stock faible</span>
           <input
-            type="text"
-            placeholder="Rechercher des produits..."
-            className={styles.searchInput}
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            type="number"
+            min="0"
+            className="adm-input"
+            style={{ width: 80 }}
+            value={stockAlert}
+            onChange={(e) => setStockAlert(parseInt(e.target.value) || 0)}
           />
-          
-          <select
-            className={styles.filterSelect}
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-          >
-            <option value="all">Toutes les catégories</option>
-            {categories.map(category => (
-              <option key={category} value={category}>
-                {category}
-              </option>
-            ))}
-          </select>
-
-          <div className={styles.stockAlertControl}>
-            <label>Seuil stock faible:</label>
-            <input
-              type="number"
-              min="0"
-              value={stockAlert}
-              onChange={(e) => setStockAlert(parseInt(e.target.value) || 0)}
-              className={styles.numberInput}
-            />
-          </div>
         </div>
       </div>
 
-      {/* Stock Table */}
-      <div className={styles.tableContainer}>
-        {loading ? (
-          <div className={styles.loadingSpinner}>
-            <div className={styles.spinner}></div>
-          </div>
-        ) : (
-          <table className={styles.stockTable}>
+      {/* Table */}
+      {loading ? (
+        <div className="adm-spinner" />
+      ) : filteredProducts.length === 0 ? (
+        <div className="adm-card"><div className="adm-empty"><div className="adm-empty-title">Aucun produit</div>Aucun produit ne correspond à votre recherche.</div></div>
+      ) : (
+        <div className="adm-table-wrap">
+          <table className="adm-table">
             <thead>
               <tr>
                 <th>Produit</th>
                 <th>Catégorie</th>
                 <th>Prix</th>
-                <th>Couleurs & Stock</th>
-                <th>Statut</th>
-                <th>Actions</th>
+                <th>Couleurs &amp; stock</th>
+                <th>Total</th>
               </tr>
             </thead>
             <tbody>
-              {filteredProducts.map(product => (
-                <ProductStockRow
-                  key={product._id}
-                  product={product}
-                  stockAlert={stockAlert}
-                  onUpdateStock={updateStock}
-                  formatPrice={formatPrice}
-                />
+              {filteredProducts.map((product) => (
+                <ProductStockRow key={product._id} product={product} stockAlert={stockAlert} onUpdateStock={updateStock} />
               ))}
             </tbody>
           </table>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
 
-// Product Stock Row Component
-const ProductStockRow = ({ product, stockAlert, onUpdateStock, formatPrice }) => {
-  const [editingStock, setEditingStock] = useState({});
+const formatPrice = (price) =>
+  typeof price === 'number'
+    ? `${price.toLocaleString('fr-FR', { minimumFractionDigits: 0, maximumFractionDigits: 2 })} DH`
+    : '—';
+
+const ProductStockRow = ({ product, stockAlert, onUpdateStock }) => {
+  const [editing, setEditing] = useState({});
   const [tempStocks, setTempStocks] = useState({});
 
-  const getStockStatus = (color) => {
-    if (!color.inStock || color.stock === 0) return 'out-of-stock';
-    if (color.stock <= stockAlert) return 'low-stock';
-    return 'in-stock';
+  const statusOf = (color) => {
+    if (!color.inStock || color.stock === 0) return { cls: 'adm-badge--danger', label: 'Rupture' };
+    if (color.stock <= stockAlert) return { cls: 'adm-badge--warn', label: 'Faible' };
+    return { cls: 'adm-badge--ok', label: 'En stock' };
   };
 
-  const handleStockEdit = (colorIndex, value) => {
-    setTempStocks(prev => ({
-      ...prev,
-      [`${product._id}-${colorIndex}`]: parseInt(value) || 0
-    }));
+  const startEdit = (index, current) => {
+    const key = `${product._id}-${index}`;
+    setTempStocks((p) => ({ ...p, [key]: current ?? 0 }));
+    setEditing((p) => ({ ...p, [key]: true }));
   };
 
-  const handleStockSave = async (colorIndex) => {
-    const key = `${product._id}-${colorIndex}`;
+  const save = async (index) => {
+    const key = `${product._id}-${index}`;
     const newStock = tempStocks[key];
-    
     if (newStock !== undefined) {
-      await onUpdateStock(product._id, colorIndex, newStock);
-      setEditingStock(prev => ({...prev, [key]: false}));
-      setTempStocks(prev => {
-        const newTemp = {...prev};
-        delete newTemp[key];
-        return newTemp;
-      });
+      await onUpdateStock(product._id, index, newStock);
+      setEditing((p) => ({ ...p, [key]: false }));
     }
   };
 
-  const handleStockCancel = (colorIndex) => {
-    const key = `${product._id}-${colorIndex}`;
-    setEditingStock(prev => ({...prev, [key]: false}));
-    setTempStocks(prev => {
-      const newTemp = {...prev};
-      delete newTemp[key];
-      return newTemp;
-    });
+  const cancel = (index) => {
+    const key = `${product._id}-${index}`;
+    setEditing((p) => ({ ...p, [key]: false }));
   };
 
   const totalStock = product.colors.reduce((sum, color) => sum + (color.stock || 0), 0);
-  const hasLowStock = product.colors.some(color => 
-    color.inStock && color.stock > 0 && color.stock <= stockAlert
-  );
-  const hasOutOfStock = product.colors.some(color => !color.inStock || color.stock === 0);
 
   return (
-    <tr className={styles.productRow}>
-      <td className={styles.productCell}>
-        <div className={styles.productInfo}>
-          <h3 className={styles.productName}>{product.name}</h3>
-          <div className={styles.productMeta}>
-            ID: {product._id.substr(-6)}
-          </div>
-        </div>
+    <tr>
+      <td>
+        <div className="adm-cell-strong">{product.name}</div>
+        <div className="adm-cell-muted" style={{ fontSize: '.78rem' }}>ID: {product._id.substr(-6)}</div>
       </td>
-      <td className={styles.categoryCell}>
-        {product.categoryName}
-      </td>
-      <td className={styles.priceCell}>
-        {formatPrice(product.price)}
-      </td>
-      <td className={styles.colorsCell}>
-        <div className={styles.colorsList}>
+      <td className="adm-cell-muted">{product.categoryName || product.category || '—'}</td>
+      <td className="adm-cell-muted">{formatPrice(product.price)}</td>
+      <td>
+        <div className="adm-stack" style={{ gap: '.5rem' }}>
           {product.colors.map((color, index) => {
             const key = `${product._id}-${index}`;
-            const isEditing = editingStock[key];
-            const tempStock = tempStocks[key];
-            const stockStatus = getStockStatus(color);
-            
+            const isEditing = editing[key];
+            const status = statusOf(color);
             return (
-              <div key={index} className={styles.colorStockItem}>
-                <div className={styles.colorHeader}>
-                  <span
-                    className={styles.colorSwatch}
-                    style={{ backgroundColor: color.code }}
-                  ></span>
-                  <span className={styles.colorName}>{color.name}</span>
-                  <span className={`${styles.stockBadge} ${styles[stockStatus]}`}>
-                    {stockStatus === 'in-stock' ? 'En stock' : 
-                     stockStatus === 'low-stock' ? 'Stock faible' : 'Rupture'}
-                  </span>
+              <div key={index} className="adm-row" style={{ justifyContent: 'space-between', gap: '.75rem', flexWrap: 'wrap' }}>
+                <div className="adm-row" style={{ gap: '.5rem', minWidth: 0 }}>
+                  <span className="adm-swatch" style={{ backgroundColor: color.code }} />
+                  <span style={{ fontSize: '.85rem' }}>{color.name}</span>
+                  <span className={`adm-badge ${status.cls}`}>{status.label}</span>
                 </div>
-                <div className={styles.stockControls}>
-                  {isEditing ? (
-                    <div className={styles.stockEditControls}>
-                      <input
-                        type="number"
-                        min="0"
-                        value={tempStock !== undefined ? tempStock : color.stock || 0}
-                        onChange={(e) => handleStockEdit(index, e.target.value)}
-                        className={styles.stockInput}
-                      />
-                      <button
-                        className={styles.saveButton}
-                        onClick={() => handleStockSave(index)}
-                      >
-                        ✓
-                      </button>
-                      <button
-                        className={styles.cancelButton}
-                        onClick={() => handleStockCancel(index)}
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  ) : (
-                    <div className={styles.stockDisplay}>
-                      <span className={styles.stockNumber}>{color.stock || 0}</span>
-                      <button
-                        className={styles.editButton}
-                        onClick={() => setEditingStock(prev => ({...prev, [key]: true}))}
-                      >
-                        Modifier
-                      </button>
-                    </div>
-                  )}
-                </div>
+                {isEditing ? (
+                  <div className="adm-row" style={{ gap: '.35rem' }}>
+                    <input
+                      type="number"
+                      min="0"
+                      className="adm-input"
+                      style={{ width: 76 }}
+                      value={tempStocks[key] ?? 0}
+                      onChange={(e) => setTempStocks((p) => ({ ...p, [key]: parseInt(e.target.value) || 0 }))}
+                    />
+                    <button className="adm-btn adm-btn--primary adm-btn--sm" onClick={() => save(index)}>Enregistrer</button>
+                    <button className="adm-btn adm-btn--ghost adm-btn--sm" onClick={() => cancel(index)}>Annuler</button>
+                  </div>
+                ) : (
+                  <div className="adm-row" style={{ gap: '.5rem' }}>
+                    <span style={{ fontWeight: 600, fontSize: '.85rem', minWidth: 24, textAlign: 'right' }}>{color.stock || 0}</span>
+                    <button className="adm-btn adm-btn--sm" onClick={() => startEdit(index, color.stock)}>Modifier</button>
+                  </div>
+                )}
               </div>
             );
           })}
         </div>
       </td>
-      <td className={styles.statusCell}>
-        <div className={styles.stockSummary}>
-          <div className={styles.totalStock}>Total: {totalStock}</div>
-          {hasLowStock && <div className={styles.lowStockWarning}>Stock faible</div>}
-          {hasOutOfStock && <div className={styles.outOfStockWarning}>Rupture partielle</div>}
-        </div>
-      </td>
-      <td className={styles.actionsCell}>
-        <button
-          className={styles.actionButton}
-          onClick={() => {
-            // Implement quick restock functionality
-            console.log('Quick restock for product:', product._id);
-          }}
-        >
-          Réapprovisionner
-        </button>
-      </td>
+      <td className="adm-cell-strong">{totalStock}</td>
     </tr>
   );
 };

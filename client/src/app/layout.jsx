@@ -127,7 +127,15 @@ export default function RootLayout({ children }) {
         <title>BRENDT Maroc - Chaussures Luxe Homme & Femme | Livraison Gratuite</title>
         <meta name="description" content="BRENDT - Chaussures de luxe Maroc. Mocassins homme, boots, chaussures femme. Livraison gratuite Casablanca, Rabat, Marrakech. À partir de 1299 MAD." />
         <meta name="keywords" content="chaussures maroc, mocassin homme maroc, chaussure femme maroc, brendt, boots maroc" />
-        
+
+        {/* PWA / Add-to-Home-Screen (iOS + Android) */}
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <meta name="theme-color" content="#111113" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
         {/* Open Graph */}
         <meta property="og:title" content="BRENDT - Chaussures de Luxe Maroc" />
         <meta property="og:description" content="Collection exclusive de chaussures haut de gamme. Livraison gratuite au Maroc." />
@@ -204,7 +212,7 @@ export default function RootLayout({ children }) {
         <AuthProvider>
           <CartProvider>
             {!isAdminPage && <Header />}
-            <main className={`main-content ${isAccountPage ? 'account-main' : ''}`}>
+            <main className={`main-content ${isAccountPage ? 'account-main' : ''} ${isAdminPage ? 'admin-main' : ''}`}>
               {children}
             </main>
             {!isAdminPage && <Footer />}
