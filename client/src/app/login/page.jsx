@@ -36,10 +36,18 @@ function LoginPageContent() {
     try {
       console.log('[LOGIN] Attempting login with:', formData.email);
       const success = await login(formData.email, formData.password);
-      
+
       if (success) {
-        console.log('[LOGIN] Login successful, redirecting to:', redirect);
-        router.push(redirect);
+        // Route by role: admin → /admin, atelier (Simo) → /atelier, else the
+        // requested redirect. Read role from the freshly-stored user-data
+        // (context state hasn't updated synchronously yet).
+        let role = '';
+        try { role = JSON.parse(localStorage.getItem('user-data') || '{}').role || ''; } catch (e) {}
+        let destination = redirect;
+        if (role === 'admin') destination = redirect && redirect.startsWith('/admin') ? redirect : '/admin';
+        else if (role === 'atelier') destination = '/atelier';
+        console.log('[LOGIN] Login successful, redirecting to:', destination);
+        router.push(destination);
       } else {
         setError(authError || 'Login failed. Please check your credentials.');
       }

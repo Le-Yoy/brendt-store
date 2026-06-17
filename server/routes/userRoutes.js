@@ -10,6 +10,9 @@ const {
   updateShippingAddress,
   deleteShippingAddress,
   getUserStats,
+  createInvite,
+  getInvite,
+  acceptInvite,
   // verifyEmail, // Uncomment if you implement email verification
 } = require('../controllers/userController');
 
@@ -18,7 +21,11 @@ const { protect, authorize } = require('../middleware/authMiddleware');
 // Public routes
 router.route('/register').post(registerUser);
 router.route('/login').post(loginUser);
-// router.route('/verify/:token').get(verifyEmail); // Uncomment if you implement email verification
+
+// Invite-based signup (Simo / staff)
+router.route('/invites').post(protect, authorize('admin'), createInvite);
+router.route('/invite/:token').get(getInvite);
+router.route('/invite/:token/accept').post(acceptInvite);
 
 // Protected routes
 router.route('/').get(protect, authorize('admin'), getUsers);

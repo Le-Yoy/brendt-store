@@ -45,6 +45,7 @@ const categoryRoutes = require('./routes/categoryRoutes');
 const userRoutes = require('./routes/userRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const atelierRoutes = require('./routes/atelierRoutes');
 const statsRoutes = require('./routes/statsRoutes');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./middleware/errorMiddleware');
@@ -200,6 +201,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/atelier', atelierRoutes);
 
 // 404 handling - for undefined routes
 app.all('*', (req, res, next) => {

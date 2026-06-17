@@ -210,6 +210,42 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // Accept a signup invite (e.g. atelier staff). Creates the account with the
+  // invite's role and logs the user in. Returns the user object or null.
+  const acceptInvite = async (token, { name, email, password }) => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const response = await fetch(`https://brendt-store-production-d6ef.up.railway.app/api/users/invite/${token}/accept`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok || !responseData.success) {
+        throw new Error(responseData.error || "Échec de l'inscription");
+      }
+
+      if (responseData.token && responseData.data) {
+        safeLocalStorage.setItem('userToken', responseData.token);
+        safeLocalStorage.setItem('user-data', JSON.stringify(responseData.data));
+        setUser(responseData.data);
+        setIsAuthenticated(true);
+        return responseData.data;
+      }
+      throw new Error('Réponse invalide du serveur');
+    } catch (err) {
+      console.error('[AUTH] Accept invite error:', err);
+      setError(err.message || "Échec de l'inscription");
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Logout function
   const logout = () => {
     console.log('[AUTH] Logging out user');
@@ -302,9 +338,11 @@ export function AuthProvider({ children }) {
     login,
     logout,
     register,
+    acceptInvite,
     updateProfile,
     refreshUserData,
-    isAdmin: user?.role === 'admin'
+    isAdmin: user?.role === 'admin',
+    isAtelier: user?.role === 'atelier'
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -325,9 +363,11 @@ export function useAuth() {
       login: () => Promise.resolve(false),
       logout: () => {},
       register: () => Promise.resolve(false),
+      acceptInvite: () => Promise.resolve(null),
       updateProfile: () => Promise.resolve(false),
       refreshUserData: () => Promise.resolve(null),
-      isAdmin: false
+      isAdmin: false,
+      isAtelier: false
     };
   }
   

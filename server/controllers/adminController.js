@@ -336,7 +336,7 @@ const getOrderTimeline = catchAsync(async (req, res, next) => {
 // Add this to your adminController.js file, alongside other exported controller functions:
 // Update order status (admin only)
 const updateOrderStatus = catchAsync(async (req, res, next) => {
-  const { status, note } = req.body;
+  const { status, note, trackingNumber, carrier, trackingUrl } = req.body;
 
   if (!status) {
     return next(new AppError('Status is required', 400));
@@ -353,21 +353,37 @@ const updateOrderStatus = catchAsync(async (req, res, next) => {
     return next(new AppError('Order not found', 404));
   }
 
-  // Update order status fields
+  // Update order status fields.
+  // COD note: "processing" = order CONFIRMED, not paid. For cash-on-delivery,
+  // payment is collected on delivery, so isPaid is only set at "delivered".
+  // This keeps "realized revenue" (delivered OR paid) accurate.
   switch (status) {
-    case 'processing':
-      order.isPaid = true;
-      if (!order.paidAt) order.paidAt = Date.now();
+    case 'processing': // confirmed
+      order.isProcessing = true;
+      if (!order.processingAt) order.processingAt = Date.now();
+      break;
+    case 'packed': // prepared, ready to ship
+      order.isPacked = true;
+      if (!order.packedAt) order.packedAt = Date.now();
+      // packing implies it was confirmed
       order.isProcessing = true;
       if (!order.processingAt) order.processingAt = Date.now();
       break;
     case 'shipped':
       order.isShipped = true;
       order.shippedAt = Date.now();
+      if (trackingNumber) order.trackingNumber = trackingNumber;
+      if (carrier) order.carrier = carrier;
+      if (trackingUrl) order.trackingUrl = trackingUrl;
       break;
     case 'delivered':
       order.isDelivered = true;
       order.deliveredAt = Date.now();
+      // Cash collected on delivery → mark paid for COD orders.
+      if (order.paymentMethod === 'cash' && !order.isPaid) {
+        order.isPaid = true;
+        order.paidAt = Date.now();
+      }
       break;
     case 'cancelled':
       order.isCancelled = true;

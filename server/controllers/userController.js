@@ -322,6 +322,66 @@ const verifyEmail = catchAsync(async (req, res, next) => {
 */
 
 // Export all controller functions
+// ===================== INVITE-BASED SIGNUP =====================
+const Invite = require('../models/Invite');
+
+// Admin generates a single-use invite for a role (default 'atelier').
+const createInvite = catchAsync(async (req, res, next) => {
+  const { role = 'atelier', email, label } = req.body;
+  if (!['atelier', 'admin', 'user'].includes(role)) {
+    return next(new AppError('Invalid invite role', 400));
+  }
+  const token = crypto.randomBytes(24).toString('hex');
+  const expiresAt = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000); // 14 days
+  const invite = await Invite.create({
+    token, role, email, label,
+    createdBy: req.user._id,
+    expiresAt,
+  });
+  res.status(201).json({ success: true, data: { token: invite.token, role: invite.role, expiresAt: invite.expiresAt } });
+});
+
+// Public: validate an invite token (so the signup page can show role/email).
+const getInvite = catchAsync(async (req, res, next) => {
+  const invite = await Invite.findOne({ token: req.params.token });
+  if (!invite || !invite.isValid()) {
+    return res.status(404).json({ success: false, error: 'Invitation invalide ou expirée' });
+  }
+  res.json({ success: true, data: { role: invite.role, email: invite.email || '', label: invite.label || '' } });
+});
+
+// Public: accept an invite — creates the account with the invite's role and logs in.
+const acceptInvite = catchAsync(async (req, res, next) => {
+  const { name, password, email } = req.body;
+  const invite = await Invite.findOne({ token: req.params.token });
+
+  if (!invite || !invite.isValid()) {
+    return res.status(400).json({ success: false, error: 'Invitation invalide ou expirée', token: '[MISSING]' });
+  }
+  const finalEmail = (invite.email || email || '').toLowerCase().trim();
+  if (!name || !password || !finalEmail) {
+    return res.status(400).json({ success: false, error: 'Nom, email et mot de passe requis', token: '[MISSING]' });
+  }
+  const exists = await User.findOne({ email: finalEmail });
+  if (exists) {
+    return res.status(400).json({ success: false, error: 'Un compte existe déjà avec cet email', token: '[MISSING]' });
+  }
+
+  const user = await User.create({ name, email: finalEmail, password, role: invite.role });
+
+  invite.used = true;
+  invite.usedAt = new Date();
+  invite.usedBy = user._id;
+  await invite.save();
+
+  const token = generateToken(user._id);
+  res.status(201).json({
+    success: true,
+    data: { _id: user._id, name: user.name, email: user.email, role: user.role },
+    token,
+  });
+});
+
 module.exports = {
   registerUser,
   loginUser,
@@ -332,5 +392,8 @@ module.exports = {
   updateShippingAddress,
   deleteShippingAddress,
   getUserStats,
+  createInvite,
+  getInvite,
+  acceptInvite,
   // verifyEmail, // Uncomment if you implement email verification
 };

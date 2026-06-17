@@ -38,6 +38,45 @@ Server: /Users/almostaphasmart/Desktop/brendt-project/server/
 
 ---
 
+## TEAM, WORKSPACES & ROLES
+
+### Claude workspaces (terminal shortcuts)
+| Shortcut | Opens | Purpose |
+|---|---|---|
+| `brendt-admin` (or `brendt-project`) | `~/Desktop/brendt-project` | This code repo — engineering work |
+| `brendt-ads` | `~/Desktop/brendt-ads` | Marketing / Meta ads strategy (no code) |
+
+### People
+- **Owner / admin**: Mohamed Houssam Boutaleb — `brendt.contact@gmail.com` (full admin).
+- **Simo BALO** — *Atelier operator*. Runs the workshop (atelier) where the shoes are crafted
+  (his father owns it; friend of the owner). In practice he handles nearly all operations:
+  **crafts/prepares the merchandise, stocks it, manages stock, and ships orders** (owner sends
+  the transport; Simo's team packages with their own packaging). He gets his own restricted
+  account via a **self-signup invite link** (role `atelier`).
+
+### Role permissions (target design)
+**`atelier` (Simo)** can:
+- See orders + amounts (amounts needed for COD cash collection).
+- Advance order status: **confirm → prepare (packed) → ship** (with carrier + tracking number).
+- Add **comments/notes** on orders.
+- **Propose** stock changes — quantity edits AND new colors/products — which the **admin must
+  approve (yes/no)** before they go live (uses the existing inventory-approval flow).
+- See a **"stock to craft"** list (low/out-of-stock, sorted by sales velocity) and order urgency.
+
+`atelier` **cannot**: see revenue/analytics dashboards, manage users, change prices, or delete
+anything. All financial/business views stay admin-only.
+
+### Planned workstreams (decided June 2026)
+1. `atelier` role + Simo's focused operator view (action queue + stock-to-craft).
+2. Stock-change approval queue (Simo proposes → admin confirms).
+3. Notifications to Simo's iPhone (new order + urgent stock) — **Telegram bot** (easy/reliable) +
+   in-app toast/sound when the app is open.
+4. Self-signup invite link for the `atelier` role.
+5. Later: PayPal/card checkout for EU/USA; Meta ads (in the `brendt-ads` workspace). Analytics
+   already defines revenue as "delivered OR paid", so card/PayPal orders need no rework.
+
+---
+
 ## CRITICAL LESSONS (read before touching anything)
 
 ### 1. The index.jsx trap — ALREADY FIXED, DO NOT RECREATE

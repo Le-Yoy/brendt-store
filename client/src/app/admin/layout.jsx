@@ -8,13 +8,20 @@ import useAuth from '@/hooks/useAuth';
 import '@/styles/admin-theme.css';
 
 export default function AdminPageLayout({ children }) {
-  const { user, isAuthenticated, loading, isAdmin } = useAuth();
+  const { user, isAuthenticated, loading, isAdmin, isAtelier } = useAuth();
   const router = useRouter();
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
     // Wait for auth to finish loading
     if (loading) return;
+
+    // Atelier staff don't have admin access — send them to their own area
+    // (avoids a redirect loop to /login).
+    if (isAuthenticated && isAtelier && !isAdmin) {
+      router.push('/atelier');
+      return;
+    }
 
     // Check authentication and admin role
     if (!isAuthenticated || !isAdmin) {

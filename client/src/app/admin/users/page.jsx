@@ -4,11 +4,14 @@ import React, { useEffect, useState } from 'react';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { useNotification } from '@/contexts/NotificationContext';
 import adminService from '@/services/adminService';
+import atelierService from '@/services/atelierService';
 
 export default function AdminUsersPage() {
   const { showSuccess, showError } = useNotification();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [inviteLink, setInviteLink] = useState(null);
+  const [generatingInvite, setGeneratingInvite] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState('create'); // 'create' or 'edit'
   const [currentUser, setCurrentUser] = useState(null);
@@ -105,6 +108,32 @@ export default function AdminUsersPage() {
     }
   };
 
+  // Generate a single-use atelier invite link to send to staff (e.g. Simo).
+  const handleGenerateInvite = async () => {
+    try {
+      setGeneratingInvite(true);
+      const res = await atelierService.createInvite({ role: 'atelier', label: 'Atelier' });
+      const token = res?.data?.token;
+      if (!token) throw new Error('No token returned');
+      const link = `${window.location.origin}/signup/${token}`;
+      setInviteLink(link);
+    } catch (error) {
+      console.error('Error generating invite:', error);
+      showError("Erreur lors de la génération du lien d'invitation");
+    } finally {
+      setGeneratingInvite(false);
+    }
+  };
+
+  const copyInviteLink = async () => {
+    try {
+      await navigator.clipboard.writeText(inviteLink);
+      showSuccess('Lien copié');
+    } catch (e) {
+      window.prompt('Copiez ce lien :', inviteLink);
+    }
+  };
+
   // Form handlers
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -150,10 +179,27 @@ export default function AdminUsersPage() {
 
       <div className="adm-toolbar">
         <div className="adm-toolbar-spacer" />
+        <button className="adm-btn" onClick={handleGenerateInvite} disabled={generatingInvite}>
+          {generatingInvite ? 'Génération…' : "Inviter (Atelier)"}
+        </button>
         <button className="adm-btn adm-btn--primary" onClick={handleAddUser}>
           + Ajouter un utilisateur
         </button>
       </div>
+
+      {inviteLink && (
+        <div className="adm-card adm-card-pad adm-mb-lg">
+          <h3 className="adm-card-title">Lien d'invitation Atelier</h3>
+          <p className="adm-stat-desc" style={{ marginBottom: '.6rem' }}>
+            Envoyez ce lien à Simo. Il créera son compte (rôle Atelier). Lien à usage unique, valable 14 jours.
+          </p>
+          <div className="adm-row" style={{ gap: '.5rem', flexWrap: 'wrap' }}>
+            <input className="adm-input" readOnly value={inviteLink} style={{ flex: 1, minWidth: 220 }} onFocus={(e) => e.target.select()} />
+            <button className="adm-btn adm-btn--primary" onClick={copyInviteLink}>Copier</button>
+            <button className="adm-btn adm-btn--ghost" onClick={() => setInviteLink(null)}>Fermer</button>
+          </div>
+        </div>
+      )}
 
       {loading ? (
         <div className="adm-spinner" />
@@ -186,8 +232,8 @@ export default function AdminUsersPage() {
                   <td className="adm-cell-strong">{user.name || 'N/A'}</td>
                   <td className="adm-cell-muted">{user.email || 'N/A'}</td>
                   <td>
-                    <span className={`adm-badge ${user.role === 'admin' ? 'adm-badge--ok' : 'adm-badge--muted'}`}>
-                      {user.role === 'admin' ? 'Admin' : 'Utilisateur'}
+                    <span className={`adm-badge ${user.role === 'admin' ? 'adm-badge--ok' : user.role === 'atelier' ? 'adm-badge--warn' : 'adm-badge--muted'}`}>
+                      {user.role === 'admin' ? 'Admin' : user.role === 'atelier' ? 'Atelier' : 'Utilisateur'}
                     </span>
                   </td>
                   <td className="adm-cell-muted">{formatDate(user.createdAt)}</td>
@@ -294,6 +340,7 @@ export default function AdminUsersPage() {
                   className="adm-select"
                 >
                   <option value="user">Utilisateur</option>
+                  <option value="atelier">Atelier</option>
                   <option value="admin">Administrateur</option>
                 </select>
               </div>
