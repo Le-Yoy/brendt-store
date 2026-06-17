@@ -330,9 +330,9 @@ export default function AdminOrdersPage() {
                     </td>
                     <td className="adm-cell-muted">{formatDate(order.createdAt)}</td>
                     <td>
-                      <div className="adm-cell-strong">{order.user?.name || 'Client inconnu'}</div>
+                      <div className="adm-cell-strong">{order.user?.name || order.shippingAddress?.fullName || 'Client inconnu'}</div>
                       <div className="adm-cell-muted" style={{ fontSize: '.78rem' }}>
-                        {order.user?.email || ''}
+                        {order.user?.email || order.shippingAddress?.phoneNumber || ''}
                       </div>
                     </td>
                     <td className="adm-cell-strong">{formatPrice(order.totalPrice)}</td>

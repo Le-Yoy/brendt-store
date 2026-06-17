@@ -953,9 +953,11 @@ const getDashboardStats = catchAsync(async (req, res, next) => {
   // Get total orders count
   const ordersCount = await Order.countDocuments();
   
-  // Get total sales amount
+  // Get total sales amount. COD-aware: "realized" = delivered OR paid (not
+  // cancelled). For a cash-on-delivery store, isPaid alone hides most revenue.
+  const realizedMatch = { isCancelled: { $ne: true }, $or: [{ isDelivered: true }, { isPaid: true }] };
   const salesData = await Order.aggregate([
-    { $match: { isPaid: true } },
+    { $match: realizedMatch },
     { $group: { _id: null, totalSales: { $sum: "$totalPrice" } } }
   ]);
   const totalSales = salesData.length > 0 ? salesData[0].totalSales : 0;
@@ -971,7 +973,7 @@ const getDashboardStats = catchAsync(async (req, res, next) => {
   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
   
   const salesByPeriod = await Order.aggregate([
-    { $match: { createdAt: { $gte: sixMonthsAgo }, isPaid: true } },
+    { $match: { createdAt: { $gte: sixMonthsAgo }, isCancelled: { $ne: true } } },
     {
       $group: {
         _id: { 
@@ -1040,7 +1042,7 @@ const getDashboardStats = catchAsync(async (req, res, next) => {
   const currentMonthSales = await Order.aggregate([
     {
       $match: {
-        isPaid: true,
+        ...realizedMatch,
         createdAt: {
           $gte: new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1),
           $lt: new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)
@@ -1049,11 +1051,11 @@ const getDashboardStats = catchAsync(async (req, res, next) => {
     },
     { $group: { _id: null, total: { $sum: "$totalPrice" } } }
   ]);
-  
+
   const previousMonthSales = await Order.aggregate([
     {
       $match: {
-        isPaid: true,
+        ...realizedMatch,
         createdAt: {
           $gte: new Date(previousMonth.getFullYear(), previousMonth.getMonth(), 1),
           $lt: new Date(previousMonth.getFullYear(), previousMonth.getMonth() + 1, 1)
@@ -1249,8 +1251,133 @@ const getProductsWithColorDetails = catchAsync(async (req, res, next) => {
   });
 });
 
+/**
+ * Store analytics tailored to a COD (cash-on-delivery) shoe store.
+ *
+ * Key design choice: "realized" revenue = orders that are delivered OR paid
+ * (not cancelled). For COD this means delivered orders; for future card/PayPal
+ * orders an `isPaid` order counts immediately — so this metric extends to
+ * online payment without a rewrite. "Pending" = in-flight COD money not yet
+ * realized. This avoids the isPaid-only blind spot that hid most COD revenue.
+ */
+const getStoreAnalytics = catchAsync(async (req, res, next) => {
+  const now = new Date();
+  const twelveMonthsAgo = new Date(now.getFullYear(), now.getMonth() - 11, 1);
+  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+  // Aggregation expression: order has reached at least "confirmed" (processing+)
+  const reachedConfirmed = {
+    $and: [
+      { $ne: ['$isCancelled', true] },
+      { $or: [
+        { $eq: ['$isProcessing', true] }, { $eq: ['$isPaid', true] },
+        { $eq: ['$isPacked', true] }, { $eq: ['$isShipped', true] }, { $eq: ['$isDelivered', true] },
+      ] },
+    ],
+  };
+  const reachedShipped = { $and: [ { $ne: ['$isCancelled', true] }, { $or: [ { $eq: ['$isShipped', true] }, { $eq: ['$isDelivered', true] } ] } ] };
+  const reachedDelivered = { $and: [ { $ne: ['$isCancelled', true] }, { $eq: ['$isDelivered', true] } ] };
+  const isRealized = { $and: [ { $ne: ['$isCancelled', true] }, { $or: [ { $eq: ['$isDelivered', true] }, { $eq: ['$isPaid', true] } ] } ] };
+  const isPendingMoney = { $and: [ { $ne: ['$isCancelled', true] }, { $not: [ { $or: [ { $eq: ['$isDelivered', true] }, { $eq: ['$isPaid', true] } ] } ] } ] };
+
+  const [facet] = await Order.aggregate([
+    {
+      $facet: {
+        funnel: [{
+          $group: {
+            _id: null,
+            total: { $sum: 1 },
+            confirmed: { $sum: { $cond: [reachedConfirmed, 1, 0] } },
+            shipped: { $sum: { $cond: [reachedShipped, 1, 0] } },
+            delivered: { $sum: { $cond: [reachedDelivered, 1, 0] } },
+            cancelled: { $sum: { $cond: [{ $eq: ['$isCancelled', true] }, 1, 0] } },
+          },
+        }],
+        revenueTotals: [{
+          $group: {
+            _id: null,
+            realized: { $sum: { $cond: [isRealized, '$totalPrice', 0] } },
+            pending: { $sum: { $cond: [isPendingMoney, '$totalPrice', 0] } },
+            cancelled: { $sum: { $cond: [{ $eq: ['$isCancelled', true] }, '$totalPrice', 0] } },
+          },
+        }],
+        // Monthly order intake (value of non-cancelled orders placed). Realized
+        // deliveries are sparse/old, so intake is the meaningful activity trend.
+        revenueByMonth: [
+          { $match: { isCancelled: { $ne: true }, createdAt: { $gte: twelveMonthsAgo } } },
+          { $group: { _id: { y: { $year: '$createdAt' }, m: { $month: '$createdAt' } }, sales: { $sum: '$totalPrice' } } },
+          { $sort: { '_id.y': 1, '_id.m': 1 } },
+        ],
+        pendingAging: [
+          { $match: { isCancelled: { $ne: true }, isProcessing: { $ne: true }, isPaid: { $ne: true }, isPacked: { $ne: true }, isShipped: { $ne: true }, isDelivered: { $ne: true } } },
+          { $group: { _id: null, count: { $sum: 1 }, avgAgeMs: { $avg: { $subtract: [now, '$createdAt'] } }, over7days: { $sum: { $cond: [{ $lt: ['$createdAt', sevenDaysAgo] }, 1, 0] } } } },
+        ],
+        byCity: [
+          { $match: { isCancelled: { $ne: true } } },
+          { $group: { _id: { $ifNull: [{ $trim: { input: '$shippingAddress.city' } }, 'Inconnu'] }, orders: { $sum: 1 }, revenue: { $sum: '$totalPrice' } } },
+          { $sort: { orders: -1 } },
+          { $limit: 10 },
+        ],
+        cancelReasons: [
+          { $match: { isCancelled: true } },
+          { $group: { _id: { $ifNull: ['$cancelReason', 'Non spécifié'] }, count: { $sum: 1 } } },
+          { $sort: { count: -1 } },
+        ],
+        bySize: [
+          { $match: { isCancelled: { $ne: true } } },
+          { $unwind: '$orderItems' },
+          { $group: { _id: { $ifNull: ['$orderItems.size', '—'] }, units: { $sum: '$orderItems.quantity' }, revenue: { $sum: { $multiply: ['$orderItems.price', '$orderItems.quantity'] } } } },
+          { $sort: { units: -1 } },
+        ],
+        byColor: [
+          { $match: { isCancelled: { $ne: true } } },
+          { $unwind: '$orderItems' },
+          { $group: { _id: { $ifNull: ['$orderItems.color', '—'] }, units: { $sum: '$orderItems.quantity' }, revenue: { $sum: { $multiply: ['$orderItems.price', '$orderItems.quantity'] } } } },
+          { $sort: { units: -1 } },
+        ],
+      },
+    },
+  ]);
+
+  const monthsFr = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
+  const funnel = facet.funnel[0] || { total: 0, confirmed: 0, shipped: 0, delivered: 0, cancelled: 0 };
+  const revenueTotals = facet.revenueTotals[0] || { realized: 0, pending: 0, cancelled: 0 };
+  const aging = facet.pendingAging[0] || { count: 0, avgAgeMs: 0, over7days: 0 };
+
+  res.status(200).json({
+    funnel: {
+      received: funnel.total,
+      confirmed: funnel.confirmed,
+      shipped: funnel.shipped,
+      delivered: funnel.delivered,
+      cancelled: funnel.cancelled,
+      pending: {
+        count: aging.count,
+        avgAgeDays: aging.avgAgeMs ? Math.round(aging.avgAgeMs / (1000 * 60 * 60 * 24)) : 0,
+        over7days: aging.over7days,
+      },
+    },
+    revenue: {
+      realized: revenueTotals.realized,
+      pending: revenueTotals.pending,
+      cancelled: revenueTotals.cancelled,
+      byMonth: facet.revenueByMonth.map((r) => ({ period: monthsFr[r._id.m - 1], sales: r.sales })),
+    },
+    products: {
+      bySize: facet.bySize.map((s) => ({ key: s._id, units: s.units, revenue: s.revenue })),
+      byColor: facet.byColor.map((c) => ({ key: c._id, units: c.units, revenue: c.revenue })),
+    },
+    cities: facet.byCity.map((c) => ({ city: c._id, orders: c.orders, revenue: c.revenue })),
+    cancellations: {
+      total: funnel.cancelled,
+      reasons: facet.cancelReasons.map((r) => ({ reason: r._id, count: r.count })),
+    },
+  });
+});
+
 // Export all functions
 module.exports = {
+ getStoreAnalytics,
  getUsers,
  createUser,
  getUserById,

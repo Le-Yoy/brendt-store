@@ -223,6 +223,20 @@ const adminService = {
   },
 
   /**
+   * Get COD-aware store analytics (fulfillment funnel, realized vs pending
+   * revenue, products by size/color, orders by city, cancellations).
+   * @returns {Promise<Object>} Store analytics payload.
+   */
+  getStoreAnalytics: async () => {
+    try {
+      return await api.get('/admin/analytics/overview');
+    } catch (error) {
+      console.error('[ADMIN] Get store analytics error:', error);
+      throw error;
+    }
+  },
+
+  /**
    * Get sales analytics data.
    * @param {string} [period='monthly'] - Analytics period.
    * @returns {Promise<Object>} Sales analytics data.

@@ -12,6 +12,7 @@ router.use(authorize('admin'));
 router.route('/stats').get(adminController.getDashboardStats);
 
 // Analytics endpoints
+router.route('/analytics/overview').get(adminController.getStoreAnalytics);
 router.route('/analytics/checkout').get(adminController.getCheckoutAnalytics);
 router.route('/analytics/customer-insights').get(adminController.generateCustomerInsights);
 router.route('/analytics/customers').get(adminController.generateCustomerInsights);
