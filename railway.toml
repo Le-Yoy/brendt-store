@@ -1,10 +1,16 @@
+# Robust to either Railway "Root Directory" setting:
+#  - Root Directory = "" (repo root): a `server/` subdir exists → cd into it.
+#  - Root Directory = "server": already inside server/ (no `server/` subdir) →
+#    `cd server` fails quietly and we stay put.
+# Either way npm runs where server/package.json lives. This prevents the
+# "cd: server: No such file or directory" build failure.
 [build]
 builder = "nixpacks"
 
 [deploy]
-startCommand = "cd server && npm start"
+startCommand = "cd server 2>/dev/null; npm start"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 10
 
 [environments.production.build]
-buildCommand = "cd server && npm install"
+buildCommand = "cd server 2>/dev/null; npm install"
