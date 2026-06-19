@@ -30,6 +30,26 @@ Plan            : Hobby — $5/mo (billed monthly via Stripe, Visa …3426)
 always a billing/trial issue, not a code bug. Frontend (Vercel) stays up, so the login
 page loads but every API call fails with "Login failed". Fix: Railway dashboard →
 sublime-purpose → brendt-store → ensure plan active + Redeploy. NOT a credentials problem.
+
+**Build config & the `cd server` trap (learned Jun 2026):** The backend deploy is driven by
+`railway.toml` at the REPO ROOT (NOT a dashboard build command):
+```
+[deploy] startCommand = "cd server 2>/dev/null; npm start"
+[environments.production.build] buildCommand = "cd server 2>/dev/null; npm install"
+```
+Original config used a hard `cd server && …`, which ONLY works when Railway's **Root Directory
+is the repo root**. After the suspension/GitHub-reconnect, Railway's *Root Directory got set to
+`server`* → `cd server` then looked for `server/server` → **every build failed**
+(`cd: server: No such file or directory`) and nothing deployed for days. Fix shipped: `cd server
+2>/dev/null; …` cds into server/ only if that subdir exists, so it works whether Root Directory
+is `""` or `server`. If backend deploys ever stop landing again, check Railway → brendt-store →
+**Deployments** for a FAILED build, and **Settings → Source → Root Directory** + the GitHub
+connection ("GitHub Repo not found" = reconnect the repo).
+
+**Deploy-verification trick:** to confirm a backend deploy actually landed, hit a NEW route added
+in that deploy. `/api/admin/*` returns 401 on old AND new builds (the `protect` middleware runs
+before route matching), so it can't tell them apart. A brand-new top-level mount (e.g.
+`/api/atelier/orders`) returns **404 on the old build, 401 on the new** — an unambiguous signal.
 ```
 Root  : /Users/almostaphasmart/Desktop/brendt-project/
 Client: /Users/almostaphasmart/Desktop/brendt-project/client/
