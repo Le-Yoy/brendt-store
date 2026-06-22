@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { FiShoppingBag, FiSearch, FiX, FiHeart, FiUser, FiLogOut } from 'react-icons/fi';
 import useCart from '../../../hooks/useCart';
 import useAuth from '@/hooks/useAuth'; // FIXED: Use consistent import (removed destructuring)
+import { useRegion } from '@/contexts/RegionContext';
 import AccountWidget from '../Account/AccountWidget';
 import PreHeader from './PreHeader';
 import MegaMenu from './MegaMenu';
@@ -15,6 +16,7 @@ import './Header.css';
 const Header = () => {
   // Add auth hook
   const { isAuthenticated, user, logout } = useAuth();
+  const { region, setRegion } = useRegion();
   
   // Wrap the useCart hook in a try-catch to prevent errors during SSR or context issues
   let cartData = { itemCount: 0, isCartOpen: false, setCartOpen: () => {} };
@@ -250,8 +252,8 @@ const Header = () => {
                 </li>
                 <li className="header__nav-divider"></li>
                 <li className="header__nav-item">
-                  <Link href="/savoir-faire" className="header__nav-link">
-                    Savoir-Faire
+                  <Link href="/raffia" className="header__nav-link">
+                    Savoir-Faire Tarhazout
                   </Link>
                 </li>
                 <li className="header__nav-divider"></li>
@@ -266,7 +268,30 @@ const Header = () => {
           
           {/* AccountWidget icons - right side of header */}
           <div className="header__actions">
-            <button 
+            {/* Region / currency switcher (MA = MAD/COD · EU = EUR · US = USD) */}
+            <select
+              className="header__region-select"
+              value={region === 'OTHER' ? 'US' : region}
+              onChange={(e) => setRegion(e.target.value)}
+              aria-label="Région et devise"
+              style={{
+                appearance: 'auto',
+                background: 'transparent',
+                border: '1px solid rgba(0,0,0,0.15)',
+                borderRadius: '4px',
+                padding: '4px 6px',
+                fontSize: '12px',
+                color: 'inherit',
+                cursor: 'pointer',
+                marginRight: '4px',
+              }}
+            >
+              <option value="MA">🇲🇦 MAD</option>
+              <option value="EU">🇪🇺 EUR</option>
+              <option value="US">🇺🇸 USD</option>
+            </select>
+
+            <button
               className="header__action-btn account-btn"
               onClick={toggleAccount}
               aria-label="Mon compte"

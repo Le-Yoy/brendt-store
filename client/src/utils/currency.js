@@ -49,7 +49,8 @@ export function formatMoney(amount, region) {
   const cfg = getRegionConfig(region);
   if (typeof amount !== 'number') return '';
   if (cfg.currency === 'MAD') {
-    return `${amount.toLocaleString('fr-MA')} DH`;
+    // Preserve the storefront's existing MAD display exactly.
+    return `${amount.toLocaleString()} MAD`;
   }
   try {
     return new Intl.NumberFormat(cfg.locale, { style: 'currency', currency: cfg.currency }).format(amount);

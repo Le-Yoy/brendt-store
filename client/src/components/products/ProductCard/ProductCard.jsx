@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './ProductCard.module.css';
+import { useRegion } from '@/contexts/RegionContext';
 
 /**
  * ProductCard component displays a product in a grid
@@ -14,7 +15,8 @@ import styles from './ProductCard.module.css';
 const ProductCard = ({ product, isFeatured = false }) => {
   const [hovered, setHovered] = useState(false);
   const [imageError, setImageError] = useState(false);
-  
+  const { priceOf, formatProduct } = useRegion();
+
   if (!product) return null;
   
   const {
@@ -96,6 +98,12 @@ const ProductCard = ({ product, isFeatured = false }) => {
   
   // Get effective price for display (main product price, or range if variants have different prices)
   const getDisplayPrice = () => {
+    // EU/US with a regional price set → show the single regional price (per-color
+    // price ranges are MAD-only for now). Falls back to the MAD logic below otherwise.
+    if (priceOf(product).currency !== 'MAD') {
+      return formatProduct(product);
+    }
+
     // Filter available colors only
     const availableColors = colors.filter(color => color.inStock !== false);
     
