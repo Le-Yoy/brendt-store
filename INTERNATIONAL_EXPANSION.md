@@ -62,3 +62,42 @@ EU/USA get PayPal + correct currency + English.
 3. Region-gated payments + PayPal checkout.
 4. next-intl FR/EN (phased).
 5. Analytics multi-currency + Pixel/CAPI/catalog.
+
+---
+
+## PROGRESS LOG
+
+### ✅ SHIPPED & LIVE (June 2026) — region-aware browsing
+Steps 1 & 2 of the build order are deployed to production. Morocco experience is 100% unchanged.
+- **Data model** (`server/models/Product.js`, `Order.js`): `priceEUR` / `priceUSD` (null default),
+  order `currency` (MAD/EUR/USD, default MAD) + `region` (MA/EU/US/OTHER, default MA). Additive/backward-compatible.
+- **Mock prices**: all 70 products have EUR/USD = round5(MAD × 0.275) / round5(MAD × 0.30) (e.g. 890 → €245/$265).
+  These are PLACEHOLDERS — replace with real DDP prices later (see blocker #2).
+- **Region engine**:
+  - `client/src/middleware.js` — Vercel edge geo (`x-vercel-ip-country`) → sets `region` cookie. Verified live.
+    (Next deprecation note: rename `middleware` → `proxy` convention in a cleanup; works as-is.)
+  - `client/src/contexts/RegionContext.jsx` — `useRegion()` → `region`, `setRegion`, `priceOf(product)`,
+    `format(amount)`, `formatProduct(product)`. MAD fallback when EUR/USD not set.
+  - `client/src/utils/currency.js` — region→currency map, country→region, formatting.
+  - Wired into `client/src/app/layout.jsx` (RegionProvider).
+- **Header switcher** (`components/layout/Header/Header.jsx`) — 🇲🇦 MAD / 🇪🇺 EUR / 🇺🇸 USD select.
+- **Region-aware price display**: `ProductCard`, `ProductPrice`, `FeaturedProductCard`, `ProductInfo`,
+  `RelatedProducts`. MA = exact MAD + compare-at; EU/US = single regional price.
+
+### ⏳ NOT YET DONE
+- **Cart + checkout + PayPal** (step 3) — cart still MAD/COD. Built together so cart total == amount charged.
+- **next-intl FR/EN** (step 4). **Analytics multi-currency + Meta Pixel/CAPI/catalog** (step 5).
+- Replace mock EUR/USD prices with real DDP prices.
+
+### PayPal — env vars to set (when we build checkout)
+Account: business "Jobebe", cleared for live PayPal payments. Client IDs received (sandbox + live `BAAH…`).
+We build/test on **Sandbox** first.
+- **Railway (backend)**: `PAYPAL_ENV=sandbox` · `PAYPAL_CLIENT_ID=<sandbox client id>` · `PAYPAL_SECRET=<sandbox secret>`
+- **Vercel (frontend)**: `NEXT_PUBLIC_PAYPAL_CLIENT_ID=<sandbox client id>`
+- Go live later = swap the 3 values to the live app + set `PAYPAL_ENV=live`.
+- Secrets ONLY in these dashboards, never in code/git.
+
+### Owner TODO (operational, parallel — not blocking sandbox build)
+1. Pick carrier (DHL/UPS/Aramex) + get shipping & duty rates → these set the REAL DDP EUR/USD prices.
+2. Provide real EUR/USD prices when ready (mock ×3 live now).
+3. (Optional, saves a step) pre-add the PayPal **sandbox** env vars above to Railway + Vercel.
