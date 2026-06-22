@@ -35,6 +35,18 @@ const productSchema = new mongoose.Schema(
       required: [true, 'Please provide a product price'],
       min: [0, 'Price cannot be negative']
     },
+    // International pricing (manual per-currency, NOT live FX). Base `price` is MAD.
+    // EU/USA DDP prices are set explicitly per product; null = not sold in that currency yet.
+    priceEUR: {
+      type: Number,
+      default: null,
+      min: [0, 'Price cannot be negative']
+    },
+    priceUSD: {
+      type: Number,
+      default: null,
+      min: [0, 'Price cannot be negative']
+    },
     previousPrice: {
       type: Number,
       default: null

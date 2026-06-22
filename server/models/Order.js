@@ -112,6 +112,19 @@ const orderSchema = new mongoose.Schema(
       min: [0, 'Total price cannot be negative'],
       default: 0.0,
     },
+    // Currency the order was actually transacted in (amounts above are in this currency).
+    // Default MAD keeps every existing order valid. EU/USA orders set EUR/USD.
+    currency: {
+      type: String,
+      enum: ['MAD', 'EUR', 'USD'],
+      default: 'MAD',
+    },
+    // Region the order was placed from (MA = COD/virement, EU/US = PayPal). For analytics + payment gating.
+    region: {
+      type: String,
+      enum: ['MA', 'EU', 'US', 'OTHER'],
+      default: 'MA',
+    },
     isPaid: {
       type: Boolean,
       required: true,
