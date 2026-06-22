@@ -95,6 +95,10 @@ anything. All financial/business views stay admin-only.
 5. Later: PayPal/card checkout for EU/USA; Meta ads (in the `brendt-ads` workspace). Analytics
    already defines revenue as "delivered OR paid", so card/PayPal orders need no rework.
 
+### Customer WhatsApp messages
+When Sam pastes a phone number + an order, produce the `https://wa.me/<number>` link + a French
+message in BRENDT's voice. Full voice rules + templates: **`BRENDT_WHATSAPP_PLAYBOOK.md`** (repo root).
+
 ---
 
 ## CRITICAL LESSONS (read before touching anything)
