@@ -4,10 +4,12 @@ import { useState, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import styles from './FeaturedProductCard.module.css';
+import { useRegion } from '@/contexts/RegionContext';
 
 const FeaturedProductCard = ({ product }) => {
   const [hovered, setHovered] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const { priceOf, formatProduct } = useRegion();
   const touchStartRef = useRef(0);
   const touchEndRef = useRef(0);
   const hasMoved = useRef(false);
@@ -97,8 +99,14 @@ const FeaturedProductCard = ({ product }) => {
   };
 
   // Display color name for color variants
-  const displayName = isColorVariant && selectedColor ? 
+  const displayName = isColorVariant && selectedColor ?
     `${name} - ${selectedColor.name}` : name;
+
+  // Region-aware price display. MA keeps the exact original "{price} MAD" literal
+  // (byte-identical); EU/US with a regional price set shows the formatted regional price.
+  const priceDisplay = priceOf(product).currency !== 'MAD'
+    ? formatProduct(product)
+    : `${price} MAD`;
   
   return (
     <div className={styles.productCard}>
@@ -134,14 +142,14 @@ const FeaturedProductCard = ({ product }) => {
             <div className={styles.hoverInfo}>
               <div className={styles.infoBox}>
                 <h3 className={styles.productName}>{displayName}</h3>
-                <span className={styles.productPrice}>{price} MAD</span>
+                <span className={styles.productPrice}>{priceDisplay}</span>
               </div>
             </div>
           </div>
-          
+
           <div className={styles.productInfo}>
             <h3 className={styles.productName}>{displayName}</h3>
-            <span className={styles.productPrice}>{price} MAD</span>
+            <span className={styles.productPrice}>{priceDisplay}</span>
           </div>
         </div>
       </Link>

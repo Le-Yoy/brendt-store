@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import useCart from '../../hooks/useCart';
 import CartNotification from '../ui/CartNotification';
+import { useRegion } from '@/contexts/RegionContext';
 import styles from './ProductInfo.module.css';
 
 const colorNamesInFrench = {
@@ -28,6 +29,7 @@ export default function ProductInfo({
 }) {
   const cart = useCart();
   const router = useRouter();
+  const { priceOf, formatProduct } = useRegion();
   const [isMobileView, setIsMobileView] = useState(false);
   const [buttonMessage, setButtonMessage] = useState('');
   const [isAddedToCart, setIsAddedToCart] = useState(false);
@@ -206,6 +208,10 @@ export default function ProductInfo({
     return product.price;
   };
   
+  // Region-aware: EU/US with a regional price set shows the single regional price
+  // (per-color price + compare-at/discount are MAD-only for now).
+  const isRegional = priceOf(product).currency !== 'MAD';
+
   // Check if any colors are available
   const hasAvailableColors = product.colors.some(color => color.inStock !== false);
   
@@ -222,17 +228,25 @@ export default function ProductInfo({
         
         {/* ✨ FIXED: Single clean price display */}
         <div className={styles.priceContainer}>
-          <p className={styles.currentPrice}>
-            {formatPriceMAD(getEffectivePrice())}
-          </p>
-          
-          {product.previousPrice && (
+          {isRegional ? (
+            <p className={styles.currentPrice}>
+              {formatProduct(product)}
+            </p>
+          ) : (
             <>
-              <p className={styles.originalPrice}>
-                {formatPriceMAD(product.previousPrice)}
+              <p className={styles.currentPrice}>
+                {formatPriceMAD(getEffectivePrice())}
               </p>
-              {product.discount && (
-                <span className={styles.discountBadge}>-{product.discount}%</span>
+
+              {product.previousPrice && (
+                <>
+                  <p className={styles.originalPrice}>
+                    {formatPriceMAD(product.previousPrice)}
+                  </p>
+                  {product.discount && (
+                    <span className={styles.discountBadge}>-{product.discount}%</span>
+                  )}
+                </>
               )}
             </>
           )}

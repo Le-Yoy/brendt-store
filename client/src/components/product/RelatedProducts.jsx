@@ -1,14 +1,18 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import mockData from '@/utils/mockData';
 import productService from '@/services/productService';
+import { useRegion } from '@/contexts/RegionContext';
 import styles from './RelatedProducts.module.css';
 
 const RelatedProducts = ({ category, currentProductId, usingApi = false }) => {
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [wishlist, setWishlist] = useState([]);
+  const { formatProduct } = useRegion();
 
   useEffect(() => {
     async function fetchRelatedProducts() {
@@ -127,7 +131,7 @@ const RelatedProducts = ({ category, currentProductId, usingApi = false }) => {
                 <div className={styles.infoBox}>
                   <h3 className={styles.productName}>{product.name}</h3>
                   <p className={styles.productColor}>{product.colors[0]?.name || 'Default'}</p>
-                  <p className={styles.productPrice}>{product.price} dh</p>
+                  <p className={styles.productPrice}>{formatProduct(product)}</p>
                 </div>
               </div>
             </div>
@@ -135,7 +139,7 @@ const RelatedProducts = ({ category, currentProductId, usingApi = false }) => {
             <div className={styles.productInfo}>
               <h3 className={styles.productName}>{product.name}</h3>
               <p className={styles.productColor}>{product.colors[0]?.name || 'Default'}</p>
-              <p className={styles.productPrice}>{product.price} €</p>
+              <p className={styles.productPrice}>{formatProduct(product)}</p>
             </div>
           </Link>
         ))}
