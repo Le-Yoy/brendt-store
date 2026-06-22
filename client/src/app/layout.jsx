@@ -5,6 +5,7 @@
 import { Cormorant, Inter } from 'next/font/google';
 import { AuthProvider } from '../hooks/useAuth';
 import { CartProvider } from '../contexts/CartContext';
+import { RegionProvider } from '../contexts/RegionContext';
 import Header from '../components/layout/Header/Header';
 import Footer from '../components/layout/Footer/Footer';
 import CookieConsent from '../components/common/CookieConsent/CookieConsent';
@@ -211,12 +212,14 @@ export default function RootLayout({ children }) {
       <body className={isAccountPage ? 'account-body' : ''}>
         <AuthProvider>
           <CartProvider>
-            {!isAdminPage && <Header />}
-            <main className={`main-content ${isAccountPage ? 'account-main' : ''} ${isAdminPage ? 'admin-main' : ''}`}>
-              {children}
-            </main>
-            {!isAdminPage && <Footer />}
-            <CookieConsent />
+            <RegionProvider>
+              {!isAdminPage && <Header />}
+              <main className={`main-content ${isAccountPage ? 'account-main' : ''} ${isAdminPage ? 'admin-main' : ''}`}>
+                {children}
+              </main>
+              {!isAdminPage && <Footer />}
+              <CookieConsent />
+            </RegionProvider>
           </CartProvider>
         </AuthProvider>
       </body>
