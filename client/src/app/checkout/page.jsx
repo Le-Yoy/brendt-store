@@ -13,6 +13,8 @@ import addressService from '@/services/addressService';
 import CartContext from '@/contexts/CartContext';
 import { useContext } from 'react';
 import { trackInitiateCheckout } from '@/utils/facebookPixel'; // ADD THIS LINE
+import { useRegion } from '@/contexts/RegionContext';
+import PayPalCheckout from '@/components/checkout/PayPalCheckout';
 
 const CART_STORAGE_KEY = 'brendt-cart';
 
@@ -22,6 +24,8 @@ function CheckoutPageContent() {
   const cartContext = useContext(CartContext);
   
   const cart = useCart();
+  // Active region/currency. MA → COD + card (Stripe). EU/US/OTHER → PayPal only.
+  const { region, currency, format, isMorocco } = useRegion();
   const [showSignupModal, setShowSignupModal] = useState(false);
   const [formData, setFormData] = useState({
     fullName: '',
@@ -821,6 +825,74 @@ localStorage.setItem('thank-you-data', JSON.stringify(createdOrder));
   const shippingCost = 0;
   const finalTotal = total + shippingCost;
 
+  // Region-aware money display: Morocco keeps the existing MAD formatter,
+  // international uses the active currency (EUR/USD) via the region helper.
+  const displayPrice = (amount) => (isMorocco ? formatPrice(amount) : format(amount));
+
+  // Country to record on international orders (the form doesn't collect one).
+  const regionCountry =
+    region === 'EU' ? 'Europe' : region === 'US' ? 'USA' : isMorocco ? 'Maroc' : 'International';
+
+  // Validation gate run before a PayPal payment is allowed to start.
+  const validateInternational = () => {
+    if (!formData.fullName) return 'Le nom complet est requis';
+    const phoneErr = validatePhone(formData.phone);
+    if (phoneErr) {
+      setPhoneError(phoneErr);
+      return phoneErr;
+    }
+    if (!formData.address) return 'L\'adresse est requise';
+    if (!formData.city) return 'La ville est requise';
+    return null;
+  };
+
+  // Order payload for the PayPal capture flow (amounts already in the active currency).
+  const buildPayPalOrderData = () => ({
+    orderItems: items.map(item => ({
+      product: item.productId,
+      name: item.name,
+      quantity: parseInt(item.quantity, 10) || 1,
+      price: Number(item.price),
+      size: item.size,
+      color: item.color
+    })),
+    shippingAddress: {
+      fullName: formData.fullName,
+      phoneNumber: formData.phone.replace(/\s+/g, ''),
+      address: formData.address || '',
+      city: formData.city || '',
+      postalCode: formData.postalCode || '',
+      country: regionCountry
+    },
+    itemsPrice: Number(total),
+    shippingPrice: shippingCost,
+    totalPrice: Number(finalTotal),
+    currency,
+    region
+  });
+
+  const handlePayPalSuccess = (createdOrder) => {
+    try {
+      sessionStorage.setItem('thank-you-data', JSON.stringify(createdOrder));
+      localStorage.setItem('thank-you-data', JSON.stringify(createdOrder));
+      sessionStorage.setItem('clear-cart-after-redirect', 'true');
+      if (cart.createCartBackup && typeof cart.createCartBackup === 'function') {
+        cart.createCartBackup();
+      }
+    } catch (err) {
+      console.error('[CHECKOUT] Failed to save PayPal thank-you data:', err);
+    }
+    try {
+      router.push('/thank-you');
+    } catch (navError) {
+      window.location.href = '/thank-you';
+    }
+  };
+
+  const handlePayPalError = (message) => {
+    setPaymentError(message || 'Le paiement PayPal a échoué. Veuillez réessayer.');
+  };
+
   return (
     <div className={styles.checkoutContainer}>
       <div className={styles.checkoutHeader}>
@@ -947,23 +1019,37 @@ localStorage.setItem('thank-you-data', JSON.stringify(createdOrder));
               </div>
               
               <div className={styles.paymentButtons}>
-                <button 
-                  type="button"
-                  onClick={handleStripeCheckout} 
-                  disabled={checkoutLoading}
-                  className={styles.onlinePaymentButton}
-                >
-                  {checkoutLoading ? 'REDIRECTION VERS STRIPE...' : 'PAYER AVEC CARTE'}
-                  <span className={styles.discountTag}>-10%</span>
-                </button>
-                
-                <button 
-                  type="submit" 
-                  className={styles.codButton}
-                  disabled={submitting}
-                >
-                  {submitting ? 'TRAITEMENT EN COURS...' : 'PAYER À LA LIVRAISON'}
-                </button>
+                {isMorocco ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handleStripeCheckout}
+                      disabled={checkoutLoading}
+                      className={styles.onlinePaymentButton}
+                    >
+                      {checkoutLoading ? 'REDIRECTION VERS STRIPE...' : 'PAYER AVEC CARTE'}
+                      <span className={styles.discountTag}>-10%</span>
+                    </button>
+
+                    <button
+                      type="submit"
+                      className={styles.codButton}
+                      disabled={submitting}
+                    >
+                      {submitting ? 'TRAITEMENT EN COURS...' : 'PAYER À LA LIVRAISON'}
+                    </button>
+                  </>
+                ) : (
+                  <PayPalCheckout
+                    amount={finalTotal}
+                    currency={currency}
+                    region={region}
+                    validate={validateInternational}
+                    buildOrderData={buildPayPalOrderData}
+                    onSuccess={handlePayPalSuccess}
+                    onError={handlePayPalError}
+                  />
+                )}
               </div>
 
               <div className={styles.contactInfo}>
@@ -1026,7 +1112,7 @@ localStorage.setItem('thank-you-data', JSON.stringify(createdOrder));
                   </div>
                   
                   <div className={styles.itemPrice}>
-                    {formatPrice(item.price * item.quantity)}
+                    {displayPrice(item.price * item.quantity)}
                   </div>
                 </div>
               ))
@@ -1040,17 +1126,17 @@ localStorage.setItem('thank-you-data', JSON.stringify(createdOrder));
           <div className={styles.summaryDetails}>
             <div className={styles.summaryRow}>
               <span>Sous-total</span>
-              <span>{formatPrice(total)}</span>
+              <span>{displayPrice(total)}</span>
             </div>
-            
+
             <div className={styles.summaryRow}>
               <span>Livraison</span>
               <span>Gratuite</span>
             </div>
-            
+
             <div className={styles.summaryTotal}>
               <span>Total</span>
-              <span>{formatPrice(finalTotal)}</span>
+              <span>{displayPrice(finalTotal)}</span>
             </div>
           </div>
           

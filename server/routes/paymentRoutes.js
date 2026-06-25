@@ -7,6 +7,8 @@ dotenv.config();
 
 // Import Order model for webhook processing
 const Order = require('../models/Order');
+const { optionalAuth } = require('../middleware/authMiddleware');
+const { sendPurchaseEvent } = require('../utils/facebookConversionsAPI');
 
 // Security middleware
 const rateLimit = require('express-rate-limit');
@@ -360,12 +362,220 @@ router.get('/config', (req, res) => {
  * @access  Public
  */
 router.get('/health', (req, res) => {
-  res.json({ 
+  res.json({
     status: 'healthy',
     mode: isTestKey ? 'test' : 'live',
     webhookConfigured: !!webhookSecret,
     environment: process.env.NODE_ENV
   });
+});
+
+// =====================================================================
+// PayPal — international checkout (EU / US only). Morocco never sees this.
+// REST Orders v2. Base URL + credentials chosen by PAYPAL_ENV (sandbox|live).
+// =====================================================================
+const PAYPAL_ENV = (process.env.PAYPAL_ENV || 'sandbox').toLowerCase();
+const PAYPAL_BASE = PAYPAL_ENV === 'live'
+  ? 'https://api-m.paypal.com'
+  : 'https://api-m.sandbox.paypal.com';
+const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
+const PAYPAL_SECRET = process.env.PAYPAL_SECRET;
+
+// Region → the only currency PayPal may transact in for that region. MA is absent on purpose.
+const PAYPAL_REGION_CURRENCY = { EU: 'EUR', US: 'USD', OTHER: 'USD' };
+
+console.log('PayPal Payment Routes Initialized:', {
+  env: PAYPAL_ENV,
+  base: PAYPAL_BASE,
+  configured: !!(PAYPAL_CLIENT_ID && PAYPAL_SECRET)
+});
+
+// Get an OAuth2 access token from PayPal (client_credentials).
+async function getPayPalAccessToken() {
+  if (!PAYPAL_CLIENT_ID || !PAYPAL_SECRET) {
+    throw new Error('PayPal credentials not configured');
+  }
+  const auth = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_SECRET}`).toString('base64');
+  const resp = await fetch(`${PAYPAL_BASE}/v1/oauth2/token`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Basic ${auth}`,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: 'grant_type=client_credentials'
+  });
+  if (!resp.ok) {
+    const t = await resp.text();
+    throw new Error(`PayPal OAuth failed: ${resp.status} ${t}`);
+  }
+  const data = await resp.json();
+  return data.access_token;
+}
+
+/**
+ * @route   POST /api/payments/paypal/create-order
+ * @desc    Create a PayPal order (returns the PayPal order id for the JS SDK buttons)
+ * @access  Public (international regions only — gated by region)
+ */
+router.post('/paypal/create-order', paymentLimiter, async (req, res) => {
+  try {
+    const { amount, currency, region } = req.body;
+
+    // Region gate: PayPal is international-only. Morocco must never reach here.
+    if (!region || region === 'MA') {
+      return res.status(400).json({ error: 'PayPal is not available for this region' });
+    }
+    const expectedCurrency = PAYPAL_REGION_CURRENCY[region];
+    if (!expectedCurrency) {
+      return res.status(400).json({ error: 'Unsupported region for PayPal' });
+    }
+    if (currency && currency !== expectedCurrency) {
+      return res.status(400).json({ error: `Currency ${currency} does not match region ${region}` });
+    }
+
+    const value = Number(amount);
+    if (!value || value <= 0) {
+      return res.status(400).json({ error: 'Invalid amount provided' });
+    }
+    const MAX_AMOUNT = 10000; // generous ceiling per order
+    if (value > MAX_AMOUNT) {
+      return res.status(400).json({ error: 'Amount exceeds maximum allowed' });
+    }
+
+    const accessToken = await getPayPalAccessToken();
+    const resp = await fetch(`${PAYPAL_BASE}/v2/checkout/orders`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        intent: 'CAPTURE',
+        purchase_units: [{
+          amount: { currency_code: expectedCurrency, value: value.toFixed(2) },
+          description: 'BRENDT Order'
+        }]
+      })
+    });
+    const data = await resp.json();
+    if (!resp.ok || !data.id) {
+      console.error('PayPal create-order failed:', JSON.stringify(data));
+      return res.status(502).json({ error: 'Failed to create PayPal order' });
+    }
+
+    console.log('PayPal order created:', { id: data.id, region, currency: expectedCurrency, value });
+    res.status(200).json({ id: data.id });
+  } catch (error) {
+    console.error('Error creating PayPal order:', error);
+    res.status(500).json({
+      error: 'Failed to create PayPal order',
+      message: isProduction ? 'Payment processing error' : error.message
+    });
+  }
+});
+
+/**
+ * @route   POST /api/payments/paypal/capture-order
+ * @desc    Capture an approved PayPal order, then create OUR paid order (isPaid:true).
+ *          Order is only persisted after a successful capture (no orphan unpaid orders).
+ * @access  Public (optionalAuth links the order to a logged-in user)
+ */
+router.post('/paypal/capture-order', paymentLimiter, optionalAuth, async (req, res) => {
+  try {
+    const { paypalOrderId, orderData } = req.body;
+    if (!paypalOrderId || !orderData || !orderData.orderItems) {
+      return res.status(400).json({ error: 'Missing paypalOrderId or orderData' });
+    }
+
+    // Re-assert the region gate server-side (never trust the client).
+    const region = orderData.region;
+    if (!region || region === 'MA') {
+      return res.status(400).json({ error: 'PayPal is not available for this region' });
+    }
+    const expectedCurrency = PAYPAL_REGION_CURRENCY[region];
+    if (!expectedCurrency) {
+      return res.status(400).json({ error: 'Unsupported region for PayPal' });
+    }
+    if (orderData.currency && orderData.currency !== expectedCurrency) {
+      return res.status(400).json({ error: 'Currency/region mismatch' });
+    }
+
+    // Capture the payment.
+    const accessToken = await getPayPalAccessToken();
+    const capResp = await fetch(`${PAYPAL_BASE}/v2/checkout/orders/${paypalOrderId}/capture`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    const capture = await capResp.json();
+    if (!capResp.ok || capture.status !== 'COMPLETED') {
+      console.error('PayPal capture failed:', JSON.stringify(capture));
+      return res.status(502).json({ error: 'Payment capture failed', status: capture.status });
+    }
+
+    const captureUnit = capture.purchase_units?.[0]?.payments?.captures?.[0];
+    const payer = capture.payer || {};
+
+    // Build and save our order, paid via PayPal.
+    const order = new Order({
+      orderItems: orderData.orderItems,
+      shippingAddress: orderData.shippingAddress,
+      paymentMethod: 'paypal',
+      itemsPrice: Number(orderData.itemsPrice) || 0,
+      shippingPrice: Number(orderData.shippingPrice) || 0,
+      totalPrice: Number(orderData.totalPrice) || 0,
+      currency: expectedCurrency,
+      region,
+      isPaid: true,
+      paidAt: Date.now(),
+      // Link to the user if authenticated; otherwise it's a guest order.
+      ...(req.user ? { user: req.user._id } : { isGuestOrder: true }),
+      paymentResult: {
+        id: captureUnit?.id || capture.id,
+        status: capture.status,
+        update_time: captureUnit?.update_time || new Date().toISOString(),
+        email_address: payer?.email_address || ''
+      }
+    });
+
+    const validationError = order.validateSync();
+    if (validationError) {
+      console.error('PayPal order validation error:', JSON.stringify(validationError.errors));
+      return res.status(400).json({ error: Object.values(validationError.errors)[0].message });
+    }
+
+    const createdOrder = await order.save();
+    console.log('PayPal order created + paid:', {
+      id: createdOrder._id,
+      orderNumber: createdOrder.orderNumber,
+      currency: expectedCurrency
+    });
+
+    // Facebook Conversions API — parity with the COD/card createOrder path.
+    try {
+      await sendPurchaseEvent({
+        email: payer?.email_address || createdOrder.shippingAddress?.email || 'unknown@brendt.com',
+        phone: createdOrder.shippingAddress?.phoneNumber || '',
+        firstName: payer?.name?.given_name || createdOrder.shippingAddress?.fullName || 'Customer',
+        lastName: payer?.name?.surname || '',
+        totalAmount: createdOrder.totalPrice || 0,
+        orderId: createdOrder.orderNumber || createdOrder._id.toString(),
+        currency: expectedCurrency
+      });
+    } catch (fbError) {
+      console.error('⚠️ Facebook Conversions API failed (PayPal order still created):', fbError.message);
+    }
+
+    res.status(201).json(createdOrder);
+  } catch (error) {
+    console.error('Error capturing PayPal order:', error);
+    res.status(500).json({
+      error: 'Failed to capture PayPal payment',
+      message: isProduction ? 'Payment processing error' : error.message
+    });
+  }
 });
 
 module.exports = router;

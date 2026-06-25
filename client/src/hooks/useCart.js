@@ -3,11 +3,14 @@
 
 import { useContext, useEffect, useState } from 'react';
 import CartContext from '../contexts/CartContext';
+import { useRegion } from '../contexts/RegionContext';
+import { resolvePrice } from '../utils/currency';
 
 const CART_STORAGE_KEY = 'brendt-cart';
 
 export default function useCart() {
  const context = useContext(CartContext);
+ const { region } = useRegion(); // active region drives which currency the cart is priced in
  const [isClient, setIsClient] = useState(false);
  const [isCartReady, setIsCartReady] = useState(false);
  
@@ -134,10 +137,15 @@ export default function useCart() {
      // Ensure quantity is a valid number
      const parsedQuantity = parseInt(quantity, 10) || 1;
 
+     // Price the item in the active region's currency (MA → MAD, EU → EUR, US → USD).
+     // resolvePrice falls back to the MAD base price if a regional price isn't set.
+     const resolved = resolvePrice(product, region);
+
      const newItem = {
        productId: product._id || product.id,
        name: product.name,
-       price: product.price,
+       price: resolved.amount,
+       currency: resolved.currency,
        image: colorImage,
        quantity: parsedQuantity,
        size: selectedSize.eu || selectedSize.name,

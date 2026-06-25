@@ -35,6 +35,17 @@ const createOrder = catchAsync(async (req, res, next) => {
   console.log('Order data:', JSON.stringify(req.body, null, 2));
   
   try {
+    // Region/payment gating. This route handles Morocco's COD + card (Stripe) only.
+    // International (EU/US/OTHER) pays via PayPal, which is captured + persisted in
+    // the /payments/paypal/capture-order route — it must never come through here.
+    const region = req.body.region || 'MA';
+    if (req.body.paymentMethod === 'paypal') {
+      return next(new AppError('PayPal orders are created through the payment capture flow.', 400));
+    }
+    if (region !== 'MA') {
+      return next(new AppError('Ce mode de paiement n\'est pas disponible pour votre région.', 400));
+    }
+
     // Format phone number if needed
     if (req.body.shippingAddress && req.body.shippingAddress.phoneNumber) {
       const phone = req.body.shippingAddress.phoneNumber;
