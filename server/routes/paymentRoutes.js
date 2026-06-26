@@ -412,28 +412,6 @@ async function getPayPalAccessToken() {
   return data.access_token;
 }
 
-// TEMPORARY DIAGNOSTIC — remove after verifying PayPal config. No secrets exposed.
-router.get('/paypal/diag', async (req, res) => {
-  const out = {
-    node: process.version,
-    hasFetch: typeof fetch !== 'undefined',
-    env: PAYPAL_ENV,
-    base: PAYPAL_BASE,
-    clientIdSet: !!PAYPAL_CLIENT_ID,
-    secretSet: !!PAYPAL_SECRET,
-    clientIdPrefix: PAYPAL_CLIENT_ID ? PAYPAL_CLIENT_ID.slice(0, 4) : null,
-  };
-  try {
-    const token = await getPayPalAccessToken();
-    out.oauth = 'ok';
-    out.tokenLen = token ? token.length : 0;
-  } catch (e) {
-    out.oauth = 'failed';
-    out.oauthError = e.message;
-  }
-  res.json(out);
-});
-
 /**
  * @route   POST /api/payments/paypal/create-order
  * @desc    Create a PayPal order (returns the PayPal order id for the JS SDK buttons)
