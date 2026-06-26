@@ -50,6 +50,56 @@ connection ("GitHub Repo not found" = reconnect the repo).
 in that deploy. `/api/admin/*` returns 401 on old AND new builds (the `protect` middleware runs
 before route matching), so it can't tell them apart. A brand-new top-level mount (e.g.
 `/api/atelier/orders`) returns **404 on the old build, 401 on the new** — an unambiguous signal.
+
+**Railway env vars are STAGED until you click Deploy (learned Jun 2026):** Adding/editing a
+variable in the Railway dashboard does NOT take effect immediately. New/changed vars show in
+**purple** with an "Edited" badge on the service card — they are *pending*. You MUST click the
+purple **Deploy** (⇧+Enter) button to apply them and trigger a redeploy. Until you do, the running
+container still has the OLD values. Symptom we hit: the Variables tab clearly showed
+`PAYPAL_CLIENT_ID`/`PAYPAL_SECRET`, but the live container reported them missing — because the
+changes were staged, never deployed. **Reflex when a var "is set but the app can't see it":
+check for purple/staged + tell the user to click Deploy.**
+
+**`.env` inline-comment trap (learned Jun 2026):** Do NOT put a trailing `# comment` on the same
+line as a secret value: `PAYPAL_SECRET=abc...   # paste here`. The comment text gets swallowed
+into the value (we saw an 80-char secret read as 140 chars → PayPal `invalid_client`). Put
+comments on their OWN line above the var. When a credential mysteriously fails auth, **check the
+value's length/prefix** — wrong length = corrupted/extra content, not necessarily a wrong key.
+
+**Env/credential verification reflex — add a temporary diag route.** When a server-side
+credential fails and the real error is masked in production (`isProduction` hides `error.message`),
+add a TEMPORARY GET endpoint that reports booleans + the upstream error (NEVER the secret itself),
+e.g. `{ node, hasFetch, clientIdSet, secretSet, clientIdPrefix, oauth, oauthError }`. Deploy, hit
+it, read the real cause, then remove it in a follow-up commit. This turned a blind "Payment
+processing error" into the exact `401 invalid_client` + "credentials not configured" in one cycle.
+
+---
+
+## PAYPAL / INTERNATIONAL CHECKOUT (added Jun 2026)
+Region-gated: **MA = Stripe card + COD (unchanged); EU/US/OTHER = PayPal only.** Backend ENFORCES
+this (`orderController.createOrder` rejects COD/card for non-MA; PayPal goes ONLY through the
+capture route). Order is persisted only AFTER a successful capture (no orphan unpaid orders).
+```
+Backend  : server/routes/paymentRoutes.js  → /api/payments/paypal/create-order + /capture-order
+           (REST Orders v2; OAuth via getPayPalAccessToken; base URL from PAYPAL_ENV)
+Frontend : client/src/components/checkout/PayPalCheckout.jsx (loads PayPal JS SDK)
+           wired into client/src/app/checkout/page.jsx (region-gated render)
+Cart     : useCart.addItem prices items in active-region currency (resolvePrice)
+```
+**Env vars (sandbox now):** Railway → `PAYPAL_ENV=sandbox`, `PAYPAL_CLIENT_ID` (AQYnv0n…),
+`PAYPAL_SECRET` (EGI7…wec). Vercel → `NEXT_PUBLIC_PAYPAL_CLIENT_ID` (same sandbox client id; the
+public SDK client id MUST match the backend's client id — same PayPal app).
+**PayPal dev dashboard:** developer.paypal.com → Apps & Credentials → toggle **Sandbox vs Live**
+(top-right). The LIVE app "Brendtshoes" client id starts `BAAH…`; the SANDBOX one starts
+`AQYnv0n…`. Reveal a secret with the **👁 eye** icon, copy with the copy icon (gives the clean
+value, no comment). Sandbox BUYER test accounts: developer.paypal.com → Testing Tools → Sandbox
+Accounts.
+**Going live (after sandbox passes):** flip Railway `PAYPAL_ENV=live` + live `PAYPAL_CLIENT_ID`
+(`BAAH…`)/`PAYPAL_SECRET`, and Vercel `NEXT_PUBLIC_PAYPAL_CLIENT_ID`=live client id → **Deploy**
+on Railway + redeploy Vercel. Then re-test with one tiny real order.
+**Known follow-up gap:** the `/cart` page + mini-cart drawer still format with `cart.formatPrice`
+(hardcoded MAD) — for intl the NUMBER is right but the label says MAD. Make them region-aware
+(`useRegion().format`); cart items already carry `currency`.
 ```
 Root  : /Users/almostaphasmart/Desktop/brendt-project/
 Client: /Users/almostaphasmart/Desktop/brendt-project/client/
