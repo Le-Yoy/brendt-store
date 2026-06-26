@@ -1046,6 +1046,11 @@ localStorage.setItem('thank-you-data', JSON.stringify(createdOrder));
                     >
                       {submitting ? 'TRAITEMENT EN COURS...' : 'PAYER À LA LIVRAISON'}
                     </button>
+                    <p style={{ fontSize: '0.8rem', color: '#555', marginTop: '0.5rem', lineHeight: 1.5 }}>
+                      Payez par carte et bénéficiez de <strong>-10%</strong> sur votre commande.
+                      Si votre carte est refusée, activez l&apos;option «&nbsp;paiement en ligne / e-commerce&nbsp;»
+                      (dotation) auprès de votre banque, puis réessayez.
+                    </p>
                   </>
                 ) : (
                   <PayPalCheckout
