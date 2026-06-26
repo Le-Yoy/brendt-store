@@ -7,6 +7,7 @@ import adminService from '@/services/adminService';
 import Modal from '@/components/admin/Modal';
 import OrderDetails from '@/components/admin/OrderDetails';
 import StatusUpdateForm from '@/components/admin/StatusUpdateForm';
+import { formatByCurrency } from '@/utils/currency';
 
 export default function AdminOrdersPage() {
   const { showSuccess, showError } = useNotification();
@@ -182,12 +183,8 @@ export default function AdminOrdersPage() {
     return new Date(dateString).toLocaleDateString('fr-FR');
   };
 
-  const formatPrice = (price) => {
-    return price?.toLocaleString('fr-FR', {
-      style: 'currency',
-      currency: 'MAD'
-    }) || '0,00 MAD';
-  };
+  // Format an order's total in ITS OWN currency (MAD/EUR/USD), not always MAD.
+  const formatPrice = (price, currency = 'MAD') => formatByCurrency(price, currency) || '0,00 MAD';
 
   // Map an order to a label + monochrome badge variant.
   const getStatusDisplay = (order) => {
@@ -335,7 +332,7 @@ export default function AdminOrdersPage() {
                         {order.user?.email || order.shippingAddress?.phoneNumber || ''}
                       </div>
                     </td>
-                    <td className="adm-cell-strong">{formatPrice(order.totalPrice)}</td>
+                    <td className="adm-cell-strong">{formatPrice(order.totalPrice, order.currency)}</td>
                     <td>
                       <span className={`adm-badge ${status.cls}`}>{status.label}</span>
                     </td>

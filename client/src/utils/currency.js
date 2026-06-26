@@ -44,6 +44,22 @@ export function resolvePrice(product, region) {
   return { amount: value, currency: cfg.currency, symbol: cfg.symbol, isFallback: false };
 }
 
+// Format an amount by its CURRENCY code (for orders, which store their own currency).
+// MAD keeps the storefront's "X MAD" style; EUR/USD use proper currency formatting.
+const CURRENCY_LOCALE = { MAD: 'fr-MA', EUR: 'fr-FR', USD: 'en-US' };
+export function formatByCurrency(amount, currency = 'MAD') {
+  if (typeof amount !== 'number' || isNaN(amount)) return '';
+  if (currency === 'MAD') return `${amount.toLocaleString('fr-FR')} MAD`;
+  try {
+    return new Intl.NumberFormat(CURRENCY_LOCALE[currency] || 'en-US', {
+      style: 'currency',
+      currency,
+    }).format(amount);
+  } catch {
+    return `${amount} ${currency}`;
+  }
+}
+
 // Format an amount in a given currency, French/English locale per region.
 export function formatMoney(amount, region) {
   const cfg = getRegionConfig(region);

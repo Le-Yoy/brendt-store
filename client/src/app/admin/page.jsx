@@ -9,6 +9,7 @@ import adminService from '@/services/adminService';
 import AdminLayout from '@/components/admin/AdminLayout';
 import { useNotification } from '@/contexts/NotificationContext';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { formatByCurrency } from '@/utils/currency';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -239,7 +240,7 @@ export default function AdminDashboard() {
             </div>
             {recentOrders.length > 0 ? (
               recentOrders.map((order) => {
-                const total = typeof order.totalPrice === 'number' ? `${order.totalPrice.toLocaleString('fr-FR')} DH` : '';
+                const total = typeof order.totalPrice === 'number' ? formatByCurrency(order.totalPrice, order.currency) : '';
                 const customer = order.user?.name || order.shippingAddress?.fullName || 'Client';
                 return (
                   <button

@@ -127,21 +127,22 @@ function CheckoutPageContent() {
     return null; // No error
   };
 
-  // Calculate estimated delivery date when component mounts
+  // Calculate estimated delivery date when component mounts.
+  // Morocco: next-day / 2-day. International (EU/US): ~5 business days earliest
+  // (the JSX shows the 5–10 jours ouvrés window + customs/DDP note).
   useEffect(() => {
     const today = new Date();
     const currentHour = today.getHours();
-    
-    // If order is placed before 3pm, deliver next day, otherwise in 2 days
-    const deliveryDays = currentHour < 15 ? 1 : 2;
-    
+
+    const deliveryDays = isMorocco ? (currentHour < 15 ? 1 : 2) : 7; // 7 calendar ≈ 5 business days
+
     const estimatedDate = new Date(today);
     estimatedDate.setDate(today.getDate() + deliveryDays);
-    
+
     // Format the date in French
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     setDeliveryDate(estimatedDate.toLocaleDateString('fr-FR', options));
-  }, []);
+  }, [isMorocco]);
 
   // Load user addresses and pre-fill form when authenticated
   useEffect(() => {
@@ -1015,7 +1016,14 @@ localStorage.setItem('thank-you-data', JSON.stringify(createdOrder));
               </div>
               
               <div className={styles.deliveryEstimate}>
-                <p>Livraison estimée à partir du {deliveryDate}</p>
+                {isMorocco ? (
+                  <p>Livraison estimée à partir du {deliveryDate}</p>
+                ) : (
+                  <>
+                    <p>Livraison internationale estimée sous 5 à 10 jours ouvrés (à partir du {deliveryDate}).</p>
+                    <p>Droits de douane et taxes inclus dans le prix (livraison DDP) — rien à payer à la réception.</p>
+                  </>
+                )}
               </div>
               
               <div className={styles.paymentButtons}>

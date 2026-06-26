@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styles from './OrderSummary.module.css';
+import { formatByCurrency } from '@/utils/currency';
 
 const OrderSummary = ({ order }) => {
   const [isExpanded, setIsExpanded] = useState(true); // Default to expanded
@@ -10,11 +11,9 @@ const OrderSummary = ({ order }) => {
   // Extract order items, handling different possible data structures
   const orderItems = order.orderItems || [];
   
-  // Format prices with commas for thousands and always 2 decimal places
-  const formatPrice = (price) => {
-    if (typeof price !== 'number' || isNaN(price)) return '0,00 MAD';
-    return `${price.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} MAD`;
-  };
+  // Format prices in the order's own currency (MAD/EUR/USD).
+  const formatPrice = (price) =>
+    formatByCurrency(typeof price === 'number' ? price : 0, order.currency || 'MAD') || '0,00 MAD';
   
   // Calculate totals
   const subtotal = orderItems.reduce((sum, item) => {
@@ -57,6 +56,8 @@ const OrderSummary = ({ order }) => {
           return 'Paiement à la livraison';
         case 'transfer':
           return 'Virement bancaire';
+        case 'paypal':
+          return 'PayPal';
         default:
           return order.paymentMethod;
       }

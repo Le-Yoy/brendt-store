@@ -33,7 +33,7 @@ function ThankYouPageContent() {
             // Enhanced Purchase event
             window.fbq('track', 'Purchase', {
               value: parseFloat(orderDetails.totalPrice) || 0,
-              currency: 'MAD',
+              currency: orderDetails.currency || 'MAD',
               content_ids: (orderDetails.orderItems || []).map(item => 
                 item.product || item._id || `item_${Date.now()}`
               ),
@@ -46,7 +46,7 @@ function ThankYouPageContent() {
             // Backup method using existing function
             trackPurchase({
               totalPrice: orderDetails.totalPrice,
-              currency: 'MAD',
+              currency: orderDetails.currency || 'MAD',
               items: orderDetails.orderItems || []
             });
             
@@ -55,7 +55,7 @@ function ThankYouPageContent() {
             if (urlParams.get('utm_source') === 'whatsapp') {
               window.fbq('trackCustom', 'WhatsAppPurchase', {
                 value: parseFloat(orderDetails.totalPrice) || 0,
-                currency: 'MAD',
+                currency: orderDetails.currency || 'MAD',
                 campaign: 'morocco2025',
                 payment_method: orderDetails.paymentMethod || 'unknown'
               });
@@ -65,7 +65,7 @@ function ThankYouPageContent() {
             window.fbq('trackCustom', 'PaymentMethodUsed', {
               payment_method: orderDetails.paymentMethod || 'unknown',
               value: parseFloat(orderDetails.totalPrice) || 0,
-              currency: 'MAD'
+              currency: orderDetails.currency || 'MAD'
             });
             
             setPurchaseTracked(true);

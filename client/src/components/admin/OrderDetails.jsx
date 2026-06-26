@@ -1,5 +1,6 @@
 // src/components/admin/OrderDetails.jsx
 import React, { useState } from 'react';
+import { formatByCurrency } from '@/utils/currency';
 
 const OrderDetails = ({ order, onClose, onStatusUpdate }) => {
   // State for active tab
@@ -17,12 +18,8 @@ const OrderDetails = ({ order, onClose, onStatusUpdate }) => {
     });
   };
 
-  const formatPrice = (price) => {
-    return price?.toLocaleString('fr-FR', {
-      style: 'currency',
-      currency: 'MAD'
-    }) || '0,00 MAD';
-  };
+  // All amounts on an order are in the order's own currency (MAD/EUR/USD).
+  const formatPrice = (price) => formatByCurrency(price, order?.currency || 'MAD') || '0,00 MAD';
 
   // Map an order to a label + monochrome badge variant.
   const getStatusDisplay = (order) => {
