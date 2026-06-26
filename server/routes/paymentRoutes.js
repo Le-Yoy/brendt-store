@@ -500,7 +500,38 @@ router.post('/paypal/capture-order', paymentLimiter, optionalAuth, async (req, r
       return res.status(400).json({ error: 'Currency/region mismatch' });
     }
 
-    // Capture the payment.
+    // Normalize the phone to the international format the Order model requires
+    // (mirrors createOrder): a leading "00" → "+", a single leading "0" → "+212".
+    if (orderData.shippingAddress && orderData.shippingAddress.phoneNumber) {
+      let phone = String(orderData.shippingAddress.phoneNumber).replace(/\s+/g, '');
+      if (phone.startsWith('00')) phone = `+${phone.slice(2)}`;
+      else if (phone.startsWith('0')) phone = `+212${phone.slice(1)}`;
+      orderData.shippingAddress.phoneNumber = phone;
+    }
+
+    // Build our order and VALIDATE IT BEFORE CAPTURING — never take money we can't persist.
+    const order = new Order({
+      orderItems: orderData.orderItems,
+      shippingAddress: orderData.shippingAddress,
+      paymentMethod: 'paypal',
+      itemsPrice: Number(orderData.itemsPrice) || 0,
+      shippingPrice: Number(orderData.shippingPrice) || 0,
+      totalPrice: Number(orderData.totalPrice) || 0,
+      currency: expectedCurrency,
+      region,
+      isPaid: true,
+      paidAt: Date.now(),
+      // Link to the user if authenticated; otherwise it's a guest order.
+      ...(req.user ? { user: req.user._id } : { isGuestOrder: true })
+    });
+
+    const validationError = order.validateSync();
+    if (validationError) {
+      console.error('PayPal order validation error (pre-capture):', JSON.stringify(validationError.errors));
+      return res.status(400).json({ error: Object.values(validationError.errors)[0].message });
+    }
+
+    // Capture the payment (order is already known-valid).
     const accessToken = await getPayPalAccessToken();
     const capResp = await fetch(`${PAYPAL_BASE}/v2/checkout/orders/${paypalOrderId}/capture`, {
       method: 'POST',
@@ -518,33 +549,13 @@ router.post('/paypal/capture-order', paymentLimiter, optionalAuth, async (req, r
     const captureUnit = capture.purchase_units?.[0]?.payments?.captures?.[0];
     const payer = capture.payer || {};
 
-    // Build and save our order, paid via PayPal.
-    const order = new Order({
-      orderItems: orderData.orderItems,
-      shippingAddress: orderData.shippingAddress,
-      paymentMethod: 'paypal',
-      itemsPrice: Number(orderData.itemsPrice) || 0,
-      shippingPrice: Number(orderData.shippingPrice) || 0,
-      totalPrice: Number(orderData.totalPrice) || 0,
-      currency: expectedCurrency,
-      region,
-      isPaid: true,
-      paidAt: Date.now(),
-      // Link to the user if authenticated; otherwise it's a guest order.
-      ...(req.user ? { user: req.user._id } : { isGuestOrder: true }),
-      paymentResult: {
-        id: captureUnit?.id || capture.id,
-        status: capture.status,
-        update_time: captureUnit?.update_time || new Date().toISOString(),
-        email_address: payer?.email_address || ''
-      }
-    });
-
-    const validationError = order.validateSync();
-    if (validationError) {
-      console.error('PayPal order validation error:', JSON.stringify(validationError.errors));
-      return res.status(400).json({ error: Object.values(validationError.errors)[0].message });
-    }
+    // Attach the capture result and persist.
+    order.paymentResult = {
+      id: captureUnit?.id || capture.id,
+      status: capture.status,
+      update_time: captureUnit?.update_time || new Date().toISOString(),
+      email_address: payer?.email_address || ''
+    };
 
     const createdOrder = await order.save();
     console.log('PayPal order created + paid:', {
