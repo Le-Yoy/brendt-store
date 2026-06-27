@@ -172,10 +172,19 @@ const Footer = () => {
                 <h4 className="pre-footer__links-heading">Mentions légales & Cookies</h4>
                 <ul className="pre-footer__links-list">
                   <li className="pre-footer__links-item">
+                    <Link href="/mentions-legales" className="pre-footer__link">Mentions Légales</Link>
+                  </li>
+                  <li className="pre-footer__links-item">
                     <Link href="/privacy-policy" className="pre-footer__link">Politique de Confidentialité</Link>
                   </li>
                   <li className="pre-footer__links-item">
                     <Link href="/terms-of-service" className="pre-footer__link">Conditions Générales de Vente</Link>
+                  </li>
+                  <li className="pre-footer__links-item">
+                    <Link href="/livraison" className="pre-footer__link">Livraison & Douanes</Link>
+                  </li>
+                  <li className="pre-footer__links-item">
+                    <Link href="/retours" className="pre-footer__link">Retours & Rétractation</Link>
                   </li>
                   <li className="pre-footer__links-item">
                     <Link href="/support" className="pre-footer__link">Service Client</Link>

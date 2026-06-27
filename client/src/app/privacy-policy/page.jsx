@@ -62,13 +62,15 @@ const PrivacyPolicy = () => {
               <div className={styles.highlightBox}>
                 <ul className={styles.list}>
                   <li className={styles.listItem}>
-                    <strong>Processeurs de paiement</strong> (Stripe) pour traiter vos transactions
+                    <strong>Processeurs de paiement</strong> (Stripe pour le Maroc ; PayPal pour les
+                    commandes internationales) pour traiter vos transactions de manière sécurisée
                   </li>
                   <li className={styles.listItem}>
                     <strong>Services de livraison</strong> pour expédier vos commandes
                   </li>
                   <li className={styles.listItem}>
                     <strong>Prestataires techniques</strong> qui nous aident à exploiter notre plateforme
+                    (hébergement, base de données, mesure d'audience)
                   </li>
                   <li className={styles.listItem}>
                     <strong>Autorités légales</strong> lorsque requis par la loi
@@ -86,14 +88,62 @@ const PrivacyPolicy = () => {
                 personnelles contre l'accès non autorisé, la modification, la divulgation ou la destruction.
               </p>
               <p className={styles.paragraph}>
-                Vos informations de paiement sont traitées de manière sécurisée via Stripe et nous ne 
+                Vos informations de paiement sont traitées de manière sécurisée par nos
+                prestataires de paiement (Stripe au Maroc, PayPal à l'international) et nous ne
                 stockons jamais les détails de votre carte de paiement sur nos serveurs.
               </p>
             </div>
           </section>
 
           <section className={styles.section}>
-            <h2 className={styles.sectionTitle}>5. Vos droits</h2>
+            <h2 className={styles.sectionTitle}>5. Cookies et technologies de suivi</h2>
+            <div className={styles.sectionContent}>
+              <p className={styles.paragraph}>
+                Nous utilisons des cookies et des technologies similaires pour assurer le bon
+                fonctionnement du Site, mémoriser votre panier et votre région, et mesurer
+                l'audience. Avec votre consentement, nous utilisons le pixel Meta (Facebook) à des
+                fins de mesure publicitaire. Vous pouvez gérer vos préférences via notre bannière
+                de consentement et les paramètres de votre navigateur.
+              </p>
+            </div>
+          </section>
+
+          <section className={styles.section}>
+            <h2 className={styles.sectionTitle}>6. Transferts internationaux de données</h2>
+            <div className={styles.sectionContent}>
+              <p className={styles.paragraph}>
+                BRENDT opère à l'international. Vos données peuvent être traitées et stockées en
+                dehors de votre pays de résidence, notamment aux États-Unis (où sont établis
+                certains de nos prestataires d'hébergement et de paiement). Dans ce cadre, nous
+                veillons à ce que des garanties appropriées soient mises en place pour protéger vos
+                données conformément au RGPD.
+              </p>
+            </div>
+          </section>
+
+          <section className={styles.section}>
+            <h2 className={styles.sectionTitle}>7. Résidents de Californie (CalOPPA / CCPA)</h2>
+            <div className={styles.sectionContent}>
+              <p className={styles.paragraph}>
+                Si vous résidez en Californie, la loi vous accorde des droits spécifiques
+                concernant vos données personnelles. Les catégories de données que nous collectons
+                incluent : identifiants (nom, email, téléphone), adresses de livraison et de
+                facturation, informations de commande et d'achat, et données de navigation.
+              </p>
+              <p className={styles.paragraph}>
+                <strong>Ne pas vendre ni partager mes informations personnelles :</strong> BRENDT
+                ne vend pas et ne partage pas vos informations personnelles à des fins
+                publicitaires comportementales croisées. Pour exercer vos droits d'accès, de
+                suppression ou de refus, écrivez-nous à{' '}
+                <a href="mailto:support@brendtshoes.com" className={styles.contactLink}>
+                  support@brendtshoes.com
+                </a>. Cette section est revue chaque année.
+              </p>
+            </div>
+          </section>
+
+          <section className={styles.section}>
+            <h2 className={styles.sectionTitle}>8. Vos droits (RGPD)</h2>
             <div className={styles.sectionContent}>
               <p className={styles.paragraph}>
                 Conformément au RGPD, vous disposez des droits suivants :
@@ -128,7 +178,7 @@ const PrivacyPolicy = () => {
           </section>
 
           <section className={styles.section}>
-            <h2 className={styles.sectionTitle}>6. Nous contacter</h2>
+            <h2 className={styles.sectionTitle}>9. Nous contacter</h2>
             <div className={styles.sectionContent}>
               <p className={styles.paragraph}>
                 Pour toute question concernant cette politique de confidentialité, vous pouvez nous contacter :
@@ -149,9 +199,9 @@ const PrivacyPolicy = () => {
                     </a>
                   </p>
                   <p className={styles.contactDetail}>
-                    <strong>Téléphone :</strong> 
-                    <a href="tel:+19292439936" className={styles.contactLink}>
-                      +1 929 243 9936
+                    <strong>Téléphone / WhatsApp :</strong>{' '}
+                    <a href="https://wa.me/33773436514" className={styles.contactLink}>
+                      +33 7 73 43 65 14
                     </a>
                   </p>
                 </div>

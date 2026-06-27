@@ -52,22 +52,27 @@ const TermsOfService = () => {
               </p>
               
               <div className={styles.paymentInfo}>
-                <h4 className={styles.subTitle}>Moyens de paiement acceptés</h4>
+                <h4 className={styles.subTitle}>Moyens de paiement par région</h4>
                 <div className={styles.paymentGrid}>
                   <div className={styles.paymentItem}>
-                    <span className={styles.paymentLabel}>Cartes de crédit</span>
-                    <span className={styles.paymentDesc}>Visa, Mastercard, American Express</span>
+                    <span className={styles.paymentLabel}>Maroc (MAD)</span>
+                    <span className={styles.paymentDesc}>Carte bancaire (Stripe) et paiement à la livraison</span>
                   </div>
                   <div className={styles.paymentItem}>
-                    <span className={styles.paymentLabel}>Devises</span>
-                    <span className={styles.paymentDesc}>EUR, USD, MAD</span>
+                    <span className={styles.paymentLabel}>Europe, États-Unis &amp; international (EUR / USD)</span>
+                    <span className={styles.paymentDesc}>PayPal (compte PayPal ou carte bancaire via PayPal)</span>
                   </div>
                   <div className={styles.paymentItem}>
                     <span className={styles.paymentLabel}>Sécurité</span>
-                    <span className={styles.paymentDesc}>Paiements sécurisés via Stripe</span>
+                    <span className={styles.paymentDesc}>Paiements sécurisés — aucune donnée de carte stockée sur nos serveurs</span>
                   </div>
                 </div>
               </div>
+              <p className={styles.paragraph}>
+                Le prix total, toutes taxes et frais de douane compris (livraison DDP à
+                l'international), est affiché avant la validation de votre commande. Le bouton de
+                paiement vous engage clairement à régler la commande.
+              </p>
             </div>
           </section>
 
@@ -78,41 +83,27 @@ const TermsOfService = () => {
                 <div className={styles.shippingZone}>
                   <h4 className={styles.zoneTitle}>Maroc</h4>
                   <div className={styles.zoneDetails}>
-                    <span className={styles.zonePrice}>Gratuit</span>
-                    <span className={styles.zoneTime}>3-5 jours ouvrables</span>
+                    <span className={styles.zoneTime}>1 à 2 jours ouvrés</span>
                   </div>
                 </div>
-                
+
                 <div className={styles.shippingZone}>
-                  <h4 className={styles.zoneTitle}>Europe</h4>
+                  <h4 className={styles.zoneTitle}>Europe, États-Unis &amp; international</h4>
                   <div className={styles.zoneDetails}>
-                    <span className={styles.zonePrice}>15€</span>
-                    <span className={styles.zoneTime}>5-7 jours ouvrables</span>
-                    <span className={styles.zoneFree}>Gratuit à partir de 75€</span>
-                  </div>
-                </div>
-                
-                <div className={styles.shippingZone}>
-                  <h4 className={styles.zoneTitle}>Amérique du Nord</h4>
-                  <div className={styles.zoneDetails}>
-                    <span className={styles.zonePrice}>20€</span>
-                    <span className={styles.zoneTime}>7-10 jours ouvrables</span>
-                  </div>
-                </div>
-                
-                <div className={styles.shippingZone}>
-                  <h4 className={styles.zoneTitle}>Autres pays</h4>
-                  <div className={styles.zoneDetails}>
-                    <span className={styles.zonePrice}>25€</span>
-                    <span className={styles.zoneTime}>10-15 jours ouvrables</span>
+                    <span className={styles.zoneTime}>5 à 10 jours ouvrés</span>
+                    <span className={styles.zoneFree}>Droits de douane et taxes inclus (DDP)</span>
                   </div>
                 </div>
               </div>
-              
-              <div className={styles.expressOption}>
-                <h4 className={styles.subTitle}>Expédition express</h4>
-                <p className={styles.paragraph}>
-                  Disponible pour +10€ - Réduction des délais de moitié
+
+              <div className={styles.noteBox}>
+                <p className={styles.noteText}>
+                  Pour les commandes internationales, les droits de douane et taxes sont inclus
+                  dans le prix affiché (livraison DDP) : rien à payer à la réception. Un numéro de
+                  suivi est communiqué dès l'expédition. Détails complets sur notre page{' '}
+                  <a href="/livraison" style={{ color: 'var(--color-accent)', textDecoration: 'underline' }}>
+                    Livraison &amp; Douanes
+                  </a>.
                 </p>
               </div>
             </div>
@@ -123,19 +114,28 @@ const TermsOfService = () => {
             <div className={styles.sectionContent}>
               <div className={styles.returnPolicy}>
                 <div className={styles.policyCard}>
-                  <h4 className={styles.policyTitle}>Politique de retour 30 jours</h4>
+                  <h4 className={styles.policyTitle}>Droit de rétractation 14 jours</h4>
                   <ul className={styles.policyList}>
                     <li className={styles.policyItem}>
-                      Retours acceptés dans les 30 jours suivant la livraison
+                      Droit de rétractation de 14 jours à compter de la réception (directive
+                      européenne 2011/83/UE), sans justification
                     </li>
                     <li className={styles.policyItem}>
                       Articles non portés en condition originale avec emballage et étiquettes
                     </li>
                     <li className={styles.policyItem}>
-                      Frais de retour à la charge du client (sauf erreur de notre part)
+                      Frais directs de retour à la charge du client, sauf article défectueux ou
+                      erroné (à notre charge)
                     </li>
                     <li className={styles.policyItem}>
-                      Remboursement traité sous 5-10 jours ouvrables après réception
+                      Remboursement sous 14 jours après notification, via le moyen de paiement
+                      initial
+                    </li>
+                    <li className={styles.policyItem}>
+                      Procédure complète et formulaire de rétractation sur notre page{' '}
+                      <a href="/retours" style={{ color: 'var(--color-accent)', textDecoration: 'underline' }}>
+                        Retours &amp; Droit de Rétractation
+                      </a>
                     </li>
                   </ul>
                 </div>
@@ -191,14 +191,10 @@ const TermsOfService = () => {
                       </a>
                     </div>
                     <div className={styles.contactRow}>
-                      <span className={styles.contactLabel}>Téléphone</span>
-                      <a href="tel:+19292439936" className={styles.contactLink}>
-                        +1 929 243 9936
+                      <span className={styles.contactLabel}>Téléphone / WhatsApp</span>
+                      <a href="https://wa.me/33773436514" className={styles.contactLink}>
+                        +33 7 73 43 65 14
                       </a>
-                    </div>
-                    <div className={styles.contactRow}>
-                      <span className={styles.contactLabel}>Horaires</span>
-                      <span className={styles.contactValue}>Lun-Ven 9h00-17h00 EST</span>
                     </div>
                   </div>
                 </div>
