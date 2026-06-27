@@ -971,15 +971,19 @@ const getDashboardStats = catchAsync(async (req, res, next) => {
   
   // Get total sales amount. COD-aware: "realized" = delivered OR paid (not
   // cancelled). For a cash-on-delivery store, isPaid alone hides most revenue.
-  const realizedMatch = { isCancelled: { $ne: true }, $or: [{ isDelivered: true }, { isPaid: true }] };
+  // MAD-only: this figure is displayed in DH, so EUR/USD orders must not be
+  // summed in (that would inflate the total). Legacy orders have no `currency`.
+  const madOnly = { $or: [{ currency: 'MAD' }, { currency: { $exists: false } }, { currency: null }] };
+  const realizedMatch = { isCancelled: { $ne: true }, $and: [{ $or: [{ isDelivered: true }, { isPaid: true }] }, madOnly] };
   const salesData = await Order.aggregate([
     { $match: realizedMatch },
-    { $group: { _id: null, totalSales: { $sum: "$totalPrice" } } }
+    { $group: { _id: null, totalSales: { $sum: "$totalPrice" }, count: { $sum: 1 } } }
   ]);
   const totalSales = salesData.length > 0 ? salesData[0].totalSales : 0;
-  
-  // Get average order value
-  const averageOrderValue = ordersCount > 0 ? totalSales / ordersCount : 0;
+  const realizedCount = salesData.length > 0 ? salesData[0].count : 0;
+
+  // Average order value over realized MAD orders (keeps the DH figure coherent)
+  const averageOrderValue = realizedCount > 0 ? totalSales / realizedCount : 0;
   
   // Get total customers count
   const totalCustomers = await User.countDocuments({ role: 'user' });
@@ -989,7 +993,7 @@ const getDashboardStats = catchAsync(async (req, res, next) => {
   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
   
   const salesByPeriod = await Order.aggregate([
-    { $match: { createdAt: { $gte: sixMonthsAgo }, isCancelled: { $ne: true } } },
+    { $match: { createdAt: { $gte: sixMonthsAgo }, isCancelled: { $ne: true }, ...madOnly } },
     {
       $group: {
         _id: { 
@@ -1309,18 +1313,23 @@ const getStoreAnalytics = catchAsync(async (req, res, next) => {
             cancelled: { $sum: { $cond: [{ $eq: ['$isCancelled', true] }, 1, 0] } },
           },
         }],
-        revenueTotals: [{
+        // Revenue grouped by currency. Orders are placed in MAD (Morocco),
+        // EUR or USD (international) — summing them blindly is meaningless
+        // (a €150 order would add 150 to the MAD total). Legacy orders have
+        // no `currency` field → treated as MAD. The frontend shows MAD as the
+        // headline and lists EUR/USD separately.
+        revenueByCurrency: [{
           $group: {
-            _id: null,
+            _id: { $ifNull: ['$currency', 'MAD'] },
             realized: { $sum: { $cond: [isRealized, '$totalPrice', 0] } },
             pending: { $sum: { $cond: [isPendingMoney, '$totalPrice', 0] } },
             cancelled: { $sum: { $cond: [{ $eq: ['$isCancelled', true] }, '$totalPrice', 0] } },
           },
         }],
-        // Monthly order intake (value of non-cancelled orders placed). Realized
-        // deliveries are sparse/old, so intake is the meaningful activity trend.
+        // Monthly order intake (value of non-cancelled orders placed). The
+        // chart is single-currency (MAD/DH), so restrict to MAD/legacy orders.
         revenueByMonth: [
-          { $match: { isCancelled: { $ne: true }, createdAt: { $gte: twelveMonthsAgo } } },
+          { $match: { isCancelled: { $ne: true }, createdAt: { $gte: twelveMonthsAgo }, $or: [{ currency: 'MAD' }, { currency: { $exists: false } }, { currency: null }] } },
           { $group: { _id: { y: { $year: '$createdAt' }, m: { $month: '$createdAt' } }, sales: { $sum: '$totalPrice' } } },
           { $sort: { '_id.y': 1, '_id.m': 1 } },
         ],
@@ -1357,7 +1366,15 @@ const getStoreAnalytics = catchAsync(async (req, res, next) => {
 
   const monthsFr = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'];
   const funnel = facet.funnel[0] || { total: 0, confirmed: 0, shipped: 0, delivered: 0, cancelled: 0 };
-  const revenueTotals = facet.revenueTotals[0] || { realized: 0, pending: 0, cancelled: 0 };
+  const byCurrency = (facet.revenueByCurrency || []).map((c) => ({
+    currency: c._id || 'MAD',
+    realized: c.realized,
+    pending: c.pending,
+    cancelled: c.cancelled,
+  }));
+  // MAD is the headline currency (Morocco is the core market). EUR/USD are
+  // reported separately so totals are never mixed across currencies.
+  const revenueTotals = byCurrency.find((c) => c.currency === 'MAD') || { realized: 0, pending: 0, cancelled: 0 };
   const aging = facet.pendingAging[0] || { count: 0, avgAgeMs: 0, over7days: 0 };
 
   res.status(200).json({
@@ -1378,6 +1395,8 @@ const getStoreAnalytics = catchAsync(async (req, res, next) => {
       pending: revenueTotals.pending,
       cancelled: revenueTotals.cancelled,
       byMonth: facet.revenueByMonth.map((r) => ({ period: monthsFr[r._id.m - 1], sales: r.sales })),
+      // Per-currency breakdown (MAD + any EUR/USD international orders).
+      byCurrency,
     },
     products: {
       bySize: facet.bySize.map((s) => ({ key: s._id, units: s.units, revenue: s.revenue })),

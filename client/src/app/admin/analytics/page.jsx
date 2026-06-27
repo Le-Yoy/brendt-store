@@ -8,6 +8,12 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 const fmtMoney = (n) =>
   typeof n === 'number' ? `${Math.round(n).toLocaleString('fr-FR')} DH` : '—';
 
+const CURRENCY_SYMBOL = { MAD: 'DH', EUR: '€', USD: '$' };
+const fmtCur = (n, cur) =>
+  typeof n === 'number'
+    ? `${Math.round(n).toLocaleString('fr-FR')} ${CURRENCY_SYMBOL[cur] || cur}`
+    : '—';
+
 const pct = (part, whole) => (whole > 0 ? Math.round((part / whole) * 100) : 0);
 
 export default function AdminAnalyticsPage() {
@@ -34,6 +40,10 @@ export default function AdminAnalyticsPage() {
 
   const funnel = data?.funnel;
   const revenue = data?.revenue;
+  // Non-MAD currencies with any activity — shown separately so totals never mix.
+  const intlRevenue = (revenue?.byCurrency || []).filter(
+    (c) => c.currency !== 'MAD' && (c.realized || c.pending || c.cancelled)
+  );
   const products = data?.products;
   const cities = data?.cities || [];
   const cancellations = data?.cancellations;
@@ -126,7 +136,7 @@ export default function AdminAnalyticsPage() {
           </div>
 
           {/* ---------- Revenue ---------- */}
-          <h2 className="adm-card-title" style={{ marginBottom: '.75rem' }}>Chiffre d'affaires</h2>
+          <h2 className="adm-card-title" style={{ marginBottom: '.75rem' }}>Chiffre d'affaires (MAD — Maroc)</h2>
           <div className="adm-stats-grid">
             <div className="adm-stat">
               <div className="adm-stat-label">Réalisé</div>
@@ -150,8 +160,30 @@ export default function AdminAnalyticsPage() {
             </div>
           </div>
 
+          {/* ---------- International revenue (per currency) ---------- */}
+          {intlRevenue.length > 0 && (
+            <div className="adm-table-wrap adm-mb-lg">
+              <h3 className="adm-card-title" style={{ marginBottom: '.5rem' }}>Chiffre d'affaires international</h3>
+              <table className="adm-table">
+                <thead>
+                  <tr><th>Devise</th><th>Réalisé</th><th>En attente</th><th>Annulé</th></tr>
+                </thead>
+                <tbody>
+                  {intlRevenue.map((c) => (
+                    <tr key={c.currency}>
+                      <td className="adm-cell-strong">{c.currency}</td>
+                      <td className="adm-cell-muted">{fmtCur(c.realized, c.currency)}</td>
+                      <td className="adm-cell-muted">{fmtCur(c.pending, c.currency)}</td>
+                      <td className="adm-cell-muted">{fmtCur(c.cancelled, c.currency)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
           <div className="adm-card adm-card-pad adm-mb-lg">
-            <h3 className="adm-card-title">Valeur des commandes par mois</h3>
+            <h3 className="adm-card-title">Valeur des commandes par mois (MAD)</h3>
             {revenue.byMonth.length > 0 ? (
               <div style={{ width: '100%', height: 260 }}>
                 <ResponsiveContainer width="100%" height="100%">
