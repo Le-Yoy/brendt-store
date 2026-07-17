@@ -6,6 +6,7 @@ import styles from './ProductPage.module.css';
 
 import ProductGallery from '@/components/product/ProductGallery';
 import ProductInfo from '@/components/product/ProductInfo';
+import RaffiaAcompteNote from '@/components/product/RaffiaAcompteNote';
 import ProductAdditionalInfo from '@/components/product/ProductAdditionalInfo';
 import RelatedProducts from '@/components/product/RelatedProducts';
 import { trackViewContent } from '@/utils/facebookPixel';
@@ -293,6 +294,7 @@ export default function ProductPage({ params }) {
             selectedSize={selectedSize}
             setSelectedSize={setSelectedSize}
           />
+          <RaffiaAcompteNote product={product} />
           <ProductAdditionalInfo product={product} />
         </div>
       </div>
