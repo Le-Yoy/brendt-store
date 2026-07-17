@@ -28,10 +28,12 @@ export default function ProductGallery({ images, productName }) {
     isCommitted: false
   });
   
-  // Ensure we have at least 6 images (duplicate if needed)
-  const normalizedImages = images && images.length > 0 
-    ? [...images, ...Array(Math.max(0, 6 - images.length)).fill(images[0])]
-    : Array(6).fill('/assets/images/placeholder.jpg');
+  // Show the real images only — no padding with duplicates of the first image.
+  // (Previously padded to 6 by repeating images[0], which made galleries with
+  // few photos look duplicated.)
+  const normalizedImages = images && images.length > 0
+    ? images
+    : ['/assets/images/placeholder.jpg'];
   
   useEffect(() => {
     const checkIsMobile = () => {
@@ -259,6 +261,8 @@ export default function ProductGallery({ images, productName }) {
                   fill
                   sizes="100vw"
                   priority={index === 0}
+                  fetchPriority={index === 0 ? "high" : "auto"}
+                  loading={index > 2 ? "lazy" : "eager"}
                   className={styles.productImage}
                   draggable={false}
                 />
@@ -308,6 +312,8 @@ export default function ProductGallery({ images, productName }) {
                 fill
                 sizes="(max-width: 768px) 100vw, 32.5vw"
                 priority={index < 2}
+                fetchPriority={index === 0 ? "high" : "auto"}
+                loading={index > 2 ? "lazy" : "eager"}
                 className={styles.productImage}
                 draggable={false}
               />
