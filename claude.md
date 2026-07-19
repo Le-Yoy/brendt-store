@@ -108,6 +108,47 @@ Server: /Users/almostaphasmart/Desktop/brendt-project/server/
 
 ---
 
+## RAFFIA / TARHAZOUT (added Jul 2026)
+
+**`/tarhazout` ads landing** (`client/src/app/tarhazout/page.jsx`): dedicated MEN collection page
+for Meta ads → `brendtshoes.com/tarhazout`. Reuses the standard category grid (ProductCard +
+color expansion). Shows the Tarhazout product's 5 colors + Anchor Point = **6 tiles**; femme
+"Sandales Tarhazout" excluded; the **duplicate Anchor Point** DB record is de-duped in the page
+filter (⚠️ two identical "Anchor Point" products exist in prod — clean up later).
+
+**Per-color galleries refreshed with REAL photos**: 12 optimized lifestyle shots (`<300KB` WebP,
+1200×1600) added to Beige/Marron/Marron & Beige/Bleu & Beige folders. Final counts: Beige 6,
+Marron 5, Marron & Beige 4, Bleu & Beige 5, **Bleu 2 (studio-only — no lifestyle exists yet)**.
+
+**Gallery duplicate-padding FIXED** (`components/product/ProductGallery.jsx`): it used to pad to
+6 images by repeating `images[0]`, which made galleries with few photos look duplicated. Now it
+renders the real images only (site-wide fix).
+
+**Photoshoot masters** (NOT in git, ~12MB each): `~/Desktop/Important/Brendt_Shooting/` —
+`Brendt_Shooting_Aout_2025/BrendtShootingAout2025AfterPS/` = best retouched raffia lifestyle
+(IMG_1630/1633/1637… = Beige/Naturel; IMG_1645/1649/1656 = Marron); July `…AfterPS/TarhazoutRaffia*.jpg`
+= Marron & Beige + Bleu & Beige. ⚠️ **Agafay** & **Lecce** are DIFFERENT models that look like
+natural raffia — don't mix them into Tarhazout. Resize to ~1200×1600 WebP `<300KB` before committing.
+
+**⚠️ Editing live product images/colors = direct prod-DB write** (no admin API for it):
+`server/.env` `MONGO_URI` is **localhost** (NOT prod). The real prod Atlas URI is hardcoded in
+`server/scripts/add-anchor-point.js`
+(`mongodb+srv://brendt-admin:…@ce-yoy.l3gz0br.mongodb.net/brendt`). Pattern used by
+`server/scripts/update-tarhazout-images.js`: `require('../models/Product')` → connect → `findById`
+→ mutate → `markModified('colors')` → `save()`. Deploy the image FILES to Vercel (git push, wait
+for HTTP 200) **before** pointing the DB at them, else the gallery 404s. Tarhazout id =
+`684de02754a158e11ff1cad5`.
+
+**Morocco "acompte / VIP" note** (`components/product/RaffiaAcompteNote.jsx`): MA-only banner
+(`useRegion().isMorocco`) shown ONLY on raffia products, between ProductInfo and
+ProductAdditionalInfo. Pre-frames the deposit as VIP/reservation ("avance par virement réserve
+votre paire, prête sous 1–2 jours, reste à la livraison") + WhatsApp CTA (`wa.me/33773436514`) so
+the avance isn't a surprise on WhatsApp (owner was getting no replies asking for it after the
+order). No checkout/payment change — deposit collected manually. Online-card acompte deferred
+(needs Stripe "dotation e-commerce" activation for MA).
+
+---
+
 ## TEAM, WORKSPACES & ROLES
 
 ### Claude workspaces (terminal shortcuts)
