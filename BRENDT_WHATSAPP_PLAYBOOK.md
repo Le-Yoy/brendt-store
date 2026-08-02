@@ -21,6 +21,7 @@ If useful I'll give a short **recommended** version + one or two alternatives (s
 4. **Always confirm the order back**: produit(s) + pointure + couleur + prix + total + adresse/ville → `c'est bien ça ?`
 5. **Emojis: sparingly** — 😊 👍 🙏 only. Never spammy.
 6. **Production reality (current):** paires **prêtes / livrées d'ici 1 à 2 jours**. (Do NOT use the old "10 jours ouvrables" line unless a model genuinely needs it.)
+   - **Casablanca = livraison le jour même possible.** For any Casa order, ALWAYS ask if the client is available **aujourd'hui ou demain** and let them pick the moment.
 7. **Payment:**
    - Default = **paiement à la livraison (COD)**.
    - **Tarhazout & VIP models** (and special large sizes like 46) → **gently ask for a small avance** by virement to launch production; send RIB on confirmation. Stay flexible (offer COD) for trusted/returning clients.
