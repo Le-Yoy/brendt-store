@@ -1,5 +1,5 @@
 // server/scripts/update-chukka-bleu-images.js
-// Points the Chukka Grainé "Bleu" color at its new, sharper photo set (4 images).
+// Points the Chukka Grainé "Bleu" color at its new, sharper photo set (3 images).
 // Run ONLY after the image files are deployed on Vercel.
 const fs = require('fs');
 const path = require('path');
@@ -23,7 +23,7 @@ async function updateBleuImages() {
     const bleu = product.colors.find((c) => c.name === 'Bleu');
     if (!bleu) throw new Error('Bleu color not found');
 
-    bleu.images = [1, 2, 3, 4].map((n) => `${IMG}/${n}.webp`);
+    bleu.images = [1, 2, 3].map((n) => `${IMG}/${n}.webp`);
     product.markModified('colors');
     await product.save();
 

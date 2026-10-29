@@ -42,7 +42,7 @@ export const CHUKKA_COLORS = [
     folder: 'Bleu',
     swatch: '#2f5f9e',
     video: video('bleu'),
-    media: [video('bleu'), photo('Bleu', 1), photo('Bleu', 2), photo('Bleu', 3), photo('Bleu', 4)],
+    media: [video('bleu'), photo('Bleu', 1), photo('Bleu', 2), photo('Bleu', 3)],
   },
 ];
 
