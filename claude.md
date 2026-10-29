@@ -3,6 +3,17 @@
 
 ---
 
+## 🤝 SHARED NOTES WITH brendt-ads — READ FIRST
+@~/Documents/BRENDT-shared.md
+
+The file above (`~/Documents/BRENDT-shared.md`) is shared with the **brendt-ads** workspace.
+- **Start of session:** read its MESSAGES; tell the owner about any `ads → site` message newer than our last session.
+- **When we ship something marketing-relevant** (new product, price/stock change, new photos/videos, new landing page,
+  checkout/region change): update **WHAT'S LIVE** and add one dated line `YYYY-MM-DD · site → ads · …` to MESSAGES (newest on top).
+- **Owner says "tell brendt-ads …"** → add that message there.
+
+---
+
 ## STACK & URLS
 ```
 Frontend : Next.js 15.1.5 + React 19 → Vercel (auto-deploy on push)
