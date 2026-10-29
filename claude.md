@@ -160,6 +160,22 @@ order). No checkout/payment change — deposit collected manually. Online-card a
 
 ---
 
+## CHUKKA GRAINÉ (added Oct 2026)
+Men's boot, **459 MAD**, sizes 39–44, colors Noir / Bleu Navy / Marron / Bleu, stock 20/color.
+Prod id `6ae36a4181aeaef007bcaf49`; added via `server/scripts/add-chukka-graine.js`
+(Bleu image list via `update-chukka-bleu-images.js`).
+- **`/chukka` landing** (`client/src/app/chukka/`) for Meta ads: collection video + one section per
+  color (video + photos) + "Commander en <couleur> | prix →" CTA + standard color-tile grid.
+- **Chukka product page ONLY** gets a video hero + photo gallery (`components/chukka/ChukkaProductHero.jsx`,
+  `ChukkaGallery.jsx`), gated by `isChukka(product)` in `app/products/[productId]/page.jsx`. ProductInfo/cart unchanged.
+- **Media order** lives in `components/chukka/chukkaMedia.js` (shared by both): always open on the clearest asset
+  (Bleu opens on its video). Videos: `public/assets/videos/chukka/*.mp4` (+ `-poster.webp`).
+- ⚠️ **Color `stock` must be > 0** — `stockMiddleware.js` rejects orders when a color's stock < quantity.
+- Owner prefers designs that match the rest of the site (not a "too professional" redesign); never a WhatsApp fallback — always route to checkout.
+- Local dev must run on **port 3000/3001** (API CORS), else products don't load locally.
+
+---
+
 ## TEAM, WORKSPACES & ROLES
 
 ### Claude workspaces (terminal shortcuts)
