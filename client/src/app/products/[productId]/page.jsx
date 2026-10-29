@@ -9,6 +9,9 @@ import ProductInfo from '@/components/product/ProductInfo';
 import RaffiaAcompteNote from '@/components/product/RaffiaAcompteNote';
 import ProductAdditionalInfo from '@/components/product/ProductAdditionalInfo';
 import RelatedProducts from '@/components/product/RelatedProducts';
+import ChukkaProductHero from '@/components/chukka/ChukkaProductHero';
+import ChukkaGallery from '@/components/chukka/ChukkaGallery';
+import { isChukka } from '@/components/chukka/chukkaMedia';
 import { trackViewContent } from '@/utils/facebookPixel';
 
 // Import the product service
@@ -278,12 +281,24 @@ export default function ProductPage({ params }) {
   return (
     <div className={styles.productPageContainer}>
       {dataSourceIndicator}
-      <div className={styles.productContentWrapper}>
+      {/* Chukka Grainé only: video hero like the /chukka landing */}
+      {isChukka(product) && (
+        <ChukkaProductHero
+          product={product}
+          selectedColor={selectedColor}
+          onColorChange={handleColorChange}
+        />
+      )}
+      <div id="acheter" className={styles.productContentWrapper}>
         <div className={styles.productGallerySection}>
-          <ProductGallery 
-            images={selectedColor ? selectedColor.images : product.colors[0]?.images || []} 
-            productName={product.name}
-          />
+          {isChukka(product) ? (
+            <ChukkaGallery selectedColor={selectedColor} />
+          ) : (
+            <ProductGallery 
+              images={selectedColor ? selectedColor.images : product.colors[0]?.images || []} 
+              productName={product.name}
+            />
+          )}
         </div>
         
         <div className={styles.productInfoSection}>

@@ -14,23 +14,18 @@ import styles from './ChukkaPage.module.css';
  * can click through to choose size/color on the product page → cart → checkout.
  * Media is static (public/assets); the CTA/grid use the live DB product.
  */
-const PRODUCT_NAME = 'chukka grainé';
-const IMG = '/assets/images/products/brendt-new/Homme/chaussures/boots/Chukka-Graine';
-const VID = '/assets/videos/chukka';
+import {
+  CHUKKA_COLORS as COLORS,
+  COLLECTION_VIDEO,
+  isChukka,
+} from '@/components/chukka/chukkaMedia';
 
-const COLORS = [
-  { name: 'Noir', folder: 'Noir', video: 'noir', count: 5, swatch: '#111111' },
-  { name: 'Bleu Navy', folder: 'Bleu-Navy', video: 'bleu-navy', count: 4, swatch: '#1f2a44' },
-  { name: 'Marron', folder: 'Marron', video: 'marron', count: 4, swatch: '#4a3226' },
-  { name: 'Bleu', folder: 'Bleu', video: 'bleu', count: 5, swatch: '#2f5f9e' },
-];
-
-function ShowcaseVideo({ name, label }) {
+function ShowcaseVideo({ media, label }) {
   return (
     <video
       className={styles.video}
-      src={`${VID}/${name}.mp4`}
-      poster={`${VID}/${name}-poster.webp`}
+      src={media.src}
+      poster={media.poster}
       autoPlay
       muted
       loop
@@ -52,9 +47,7 @@ export default function ChukkaPage() {
       try {
         const result = await productService.getProducts({ limit: 200 });
         const allProducts = result.data?.data || result.data || result || [];
-        const found = allProducts.find(
-          (p) => (p.name || '').toLowerCase() === PRODUCT_NAME
-        );
+        const found = allProducts.find(isChukka);
         setProduct(found || null);
       } catch (error) {
         console.error('Error fetching Chukka product:', error);
@@ -110,7 +103,7 @@ export default function ChukkaPage() {
           </div>
         </div>
         <div className={styles.heroMedia}>
-          <ShowcaseVideo name="collection" label="Chukka Grainé — toutes les couleurs" />
+          <ShowcaseVideo media={COLLECTION_VIDEO} label="Chukka Grainé — toutes les couleurs" />
         </div>
       </section>
 
@@ -126,29 +119,25 @@ export default function ChukkaPage() {
               </h2>
               {href && (
                 <Link href={href} className={styles.cta}>
-                  Choisir ma taille
+                  <span>Commander en {c.name}</span>
+                  {product && <span className={styles.ctaPrice}>{formatProduct(product)}</span>}
+                  <span className={styles.ctaArrow} aria-hidden="true">→</span>
                 </Link>
               )}
             </div>
             <div className={styles.mediaRow}>
-              <div className={styles.mediaItem}>
-                <img
-                  src={`${IMG}/${c.folder}/1.webp`}
-                  alt={`Chukka Grainé ${c.name} — photo 1`}
-                  className={styles.photo}
-                />
-              </div>
-              <div className={styles.mediaItem}>
-                <ShowcaseVideo name={c.video} label={`Chukka Grainé ${c.name} — vidéo`} />
-              </div>
-              {Array.from({ length: c.count - 1 }, (_, i) => (
-                <div key={i} className={styles.mediaItem}>
-                  <img
-                    src={`${IMG}/${c.folder}/${i + 2}.webp`}
-                    alt={`Chukka Grainé ${c.name} — photo ${i + 2}`}
-                    loading="lazy"
-                    className={styles.photo}
-                  />
+              {c.media.map((m, i) => (
+                <div key={m.src} className={styles.mediaItem}>
+                  {m.type === 'video' ? (
+                    <ShowcaseVideo media={m} label={`Chukka Grainé ${c.name} — vidéo`} />
+                  ) : (
+                    <img
+                      src={m.src}
+                      alt={`Chukka Grainé ${c.name} — photo ${i + 1}`}
+                      loading={i < 2 ? 'eager' : 'lazy'}
+                      className={styles.photo}
+                    />
+                  )}
                 </div>
               ))}
             </div>
