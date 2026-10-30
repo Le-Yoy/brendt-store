@@ -258,21 +258,23 @@
   position: absolute;
   right: 12px;
   bottom: 12px;
-  min-height: 44px;
-  padding: 0 16px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
   border: none;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.72);
-  color: #fff;
-  font-family: 'Inter', sans-serif;
-  font-size: 0.85rem;
-  font-weight: 500;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  color: #000;
   cursor: pointer;
+  transition: background 0.2s ease;
 }
 
 .soundBtn:hover,
 .soundBtn:focus-visible {
-  background: #000;
-  outline: 2px solid #d4af37;
+  background: #fff;
+  outline: 1px solid #d4af37;
   outline-offset: 2px;
 }

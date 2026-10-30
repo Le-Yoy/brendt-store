@@ -27,11 +27,21 @@ export default function ChukkaVideo({ media, label, className, sound = false }) 
       return;
     }
 
+    // Start only once the browser can play to the end without pausing to
+    // buffer — playing on the first frames made phones stutter.
+    let visible = false;
+    const playWhenReady = () => {
+      if (visible) video.play().catch(() => {});
+    };
+    video.addEventListener('canplaythrough', playWhenReady);
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
+        visible = entry.isIntersecting;
+        if (visible) {
           video.preload = 'auto';
-          video.play().catch(() => {});
+          if (video.readyState >= 3) playWhenReady(); // already buffered (seen before)
+          else if (video.readyState === 0) video.load(); // first time: fetch, canplaythrough plays it
         } else {
           video.pause();
         }
@@ -39,7 +49,10 @@ export default function ChukkaVideo({ media, label, className, sound = false }) 
       { threshold: 0.25 }
     );
     observer.observe(video);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      video.removeEventListener('canplaythrough', playWhenReady);
+    };
   }, [media.src]);
 
   const toggleSound = () => {
@@ -70,8 +83,21 @@ export default function ChukkaVideo({ media, label, className, sound = false }) 
   return (
     <div className={styles.soundWrap}>
       {player}
-      <button type="button" className={styles.soundBtn} onClick={toggleSound} aria-pressed={!muted}>
-        {muted ? '🔇 Activer le son' : '🔊 Couper le son'}
+      <button
+        type="button"
+        className={styles.soundBtn}
+        onClick={toggleSound}
+        aria-pressed={!muted}
+        aria-label={muted ? 'Activer le son' : 'Couper le son'}
+      >
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+          <path d="M4 9h4l5-4v14l-5-4H4z" strokeLinejoin="round" />
+          {muted ? (
+            <path d="M17 9.5l5 5M22 9.5l-5 5" strokeLinecap="round" />
+          ) : (
+            <path d="M17 8.5a5 5 0 0 1 0 7M19.5 6a8.5 8.5 0 0 1 0 12" strokeLinecap="round" />
+          )}
+        </svg>
       </button>
     </div>
   );
