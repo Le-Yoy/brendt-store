@@ -18,22 +18,12 @@ import {
   CHUKKA_COLORS as COLORS,
   COLLECTION_VIDEO,
   isChukka,
+  photoSrcSet,
 } from '@/components/chukka/chukkaMedia';
+import ChukkaVideo from '@/components/chukka/ChukkaVideo';
 
 function ShowcaseVideo({ media, label }) {
-  return (
-    <video
-      className={styles.video}
-      src={media.src}
-      poster={media.poster}
-      autoPlay
-      muted
-      loop
-      playsInline
-      preload="metadata"
-      aria-label={label}
-    />
-  );
+  return <ChukkaVideo media={media} label={label} className={styles.video} />;
 }
 
 export default function ChukkaPage() {
@@ -133,6 +123,8 @@ export default function ChukkaPage() {
                   ) : (
                     <img
                       src={m.src}
+                      srcSet={photoSrcSet(m.src)}
+                      sizes="(min-width: 1024px) 33vw, (min-width: 768px) 34vw, 78vw"
                       alt={`Chukka Grainé ${c.name} — photo ${i + 1}`}
                       loading={i < 2 ? 'eager' : 'lazy'}
                       className={styles.photo}

@@ -2,6 +2,7 @@
 
 import { useRegion } from '@/contexts/RegionContext';
 import { CHUKKA_COLORS, chukkaColor } from './chukkaMedia';
+import ChukkaVideo from './ChukkaVideo';
 import styles from './ChukkaProduct.module.css';
 
 /**
@@ -60,17 +61,10 @@ export default function ChukkaProductHero({ product, selectedColor, onColorChang
       </div>
 
       <div className={styles.heroMedia}>
-        <video
-          key={active.video.src}
+        <ChukkaVideo
+          media={active.video}
+          label={`Chukka Grainé ${active.name} — vidéo`}
           className={styles.video}
-          src={active.video.src}
-          poster={active.video.poster}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          aria-label={`Chukka Grainé ${active.name} — vidéo`}
         />
       </div>
     </section>

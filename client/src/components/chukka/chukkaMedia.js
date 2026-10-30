@@ -51,3 +51,6 @@ export const isChukka = (product) =>
 
 export const chukkaColor = (name) =>
   CHUKKA_COLORS.find((c) => c.name === name) || CHUKKA_COLORS[0];
+
+// Responsive photos: every N.webp (1200w) has an N-800.webp sibling for phones.
+export const photoSrcSet = (src) => `${src.replace(/\.webp$/, '-800.webp')} 800w, ${src} 1200w`;

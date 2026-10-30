@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { chukkaColor } from './chukkaMedia';
+import { chukkaColor, photoSrcSet } from './chukkaMedia';
 import styles from './ChukkaProduct.module.css';
 
 /**
@@ -38,6 +38,8 @@ export default function ChukkaGallery({ selectedColor }) {
           <div key={p.src} className={styles.slide}>
             <img
               src={p.src}
+              srcSet={photoSrcSet(p.src)}
+              sizes="(min-width: 1024px) 30vw, 100vw"
               alt={`Chukka Grainé ${color.name} — photo ${i + 1}`}
               loading={i < 2 ? 'eager' : 'lazy'}
               className={styles.photo}
