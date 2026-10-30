@@ -15,8 +15,8 @@ const video = (name) => ({
   poster: `${VID}/${name}-poster.webp`,
 });
 
-// 12s cut with music (same as the Meta ad) — /chukka hero, sound on tap.
-export const COLLECTION_VIDEO = video('collection-12s');
+// 10s collection cut with the ad's music (3x speed, even frame step = no judder).
+export const COLLECTION_VIDEO = video('collection-short');
 
 export const CHUKKA_COLORS = [
   {
@@ -60,3 +60,35 @@ export const chukkaColor = (name) =>
 
 // Responsive photos: every N.webp (1200w) has an N-800.webp sibling for phones.
 export const photoSrcSet = (src) => `${src.replace(/\.webp$/, '-800.webp')} 800w, ${src} 1200w`;
+
+// Warm the browser cache with every photo, in display order, once the page
+// has finished loading (+ a short pause so the first photo/video go first).
+// Uses the same srcset/sizes as the <img>, so the browser fetches the exact
+// file it will show — swiping a carousel then never flashes an empty box.
+export function preloadPhotos(srcs, sizes, delay = 1500) {
+  let cancelled = false;
+  let timer;
+  const queue = [...new Set(srcs)];
+
+  const next = () => {
+    if (cancelled || !queue.length) return;
+    const src = queue.shift();
+    const img = new Image();
+    img.onload = img.onerror = next; // one at a time: never competes with what's on screen
+    img.sizes = sizes;
+    img.srcset = photoSrcSet(src);
+    img.src = src;
+  };
+
+  const start = () => { timer = setTimeout(next, delay); };
+  if (document.readyState === 'complete') start();
+  else window.addEventListener('load', start, { once: true });
+
+  return () => {
+    cancelled = true;
+    clearTimeout(timer);
+    window.removeEventListener('load', start);
+  };
+}
+
+export const photosOf = (color) => color.media.filter((m) => m.type === 'image').map((m) => m.src);

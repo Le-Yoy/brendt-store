@@ -6,7 +6,6 @@
   margin-top: var(--spacing-6); /* 24px - minimal consistent spacing */
   /* ✨ Prevent layout shifting */
   overscroll-behavior: auto;
-  -webkit-overflow-scrolling: touch;
 }
 
 .productContentWrapper {
@@ -15,8 +14,6 @@
   gap: 5%;
   margin-bottom: var(--spacing-8);
   /* ✨ Container stability */
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
 }
 
 .productGallerySection {
@@ -25,8 +22,6 @@
   position: relative;
   padding-right: var(--spacing-2);
   /* ✨ Gallery section isolation */
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
 }
 
 .productInfoSection {
@@ -36,8 +31,6 @@
   padding-left: var(--spacing-3);
   padding-right: var(--spacing-2);
   /* ✨ Info section optimization */
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
 }
 
 .relatedProductsSection {
@@ -101,13 +94,9 @@
     /* ✨ CRITICAL: Natural mobile scroll */
     overscroll-behavior-y: auto;
     overscroll-behavior-x: auto;
-    -webkit-overflow-scrolling: touch;
     /* ✨ Stable mobile viewport */
     min-height: 100dvh;
     /* ✨ Hardware acceleration for smooth scrolling */
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    will-change: scroll-position;
   }
   
   .productContentWrapper {
@@ -126,8 +115,6 @@
     overflow: hidden;
     /* ✨ Create proper stacking context */
     z-index: 1;
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
     /* ✨ NO EXTRA SPACING - Images start immediately */
     margin: 0;
   }
@@ -140,8 +127,7 @@
     /* ✨ Info section below gallery */
     position: relative;
     z-index: 2;
-    /* ✨ Account for sticky button space */
-    padding-bottom: calc(var(--spacing-20) + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(var(--spacing-8) + env(safe-area-inset-bottom, 0px));
   }
 }
 
@@ -175,7 +161,6 @@
   @media (max-width: 768px) {
     .productPageContainer {
       /* ✨ iOS Safari scroll optimization */
-      -webkit-overflow-scrolling: touch;
       overscroll-behavior: auto;
       /* ✨ Account for iOS header behavior */
       margin-top: var(--spacing-1); /* Minimal for iOS */
@@ -183,10 +168,6 @@
     
     .productGallerySection {
       /* ✨ iOS Safari carousel container */
-      -webkit-transform: translateZ(0);
-      transform: translateZ(0);
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
     }
   }
 }
@@ -196,16 +177,12 @@
   @media (max-width: 768px) {
     .productPageContainer {
       /* ✨ Android scroll optimization */
-      overscroll-behavior-y: contain;
-      overscroll-behavior-x: none;
       /* ✨ Consistent Android spacing */
       margin-top: var(--spacing-2); /* 8px */
     }
     
     .productGallerySection {
       /* ✨ Android carousel optimization */
-      transform: translate3d(0, 0, 0);
-      -webkit-transform: translate3d(0, 0, 0);
     }
   }
 }

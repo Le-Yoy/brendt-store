@@ -1,23 +1,18 @@
 'use client';
 
 import { useRegion } from '@/contexts/RegionContext';
-import { CHUKKA_COLORS, chukkaColor } from './chukkaMedia';
+import { chukkaColor } from './chukkaMedia';
 import ChukkaVideo from './ChukkaVideo';
 import styles from './ChukkaProduct.module.css';
 
 /**
  * Top band of the Chukka Grainé product page — same look as the /chukka hero:
- * text + color buttons on one side, the selected color's video on the other.
- * Color buttons drive the page's selected color; the CTA scrolls to sizes/cart.
+ * text on one side, the selected color's video on the other. The color is
+ * picked below the photos (ProductInfo); the CTA scrolls there.
  */
-export default function ChukkaProductHero({ product, selectedColor, onColorChange }) {
+export default function ChukkaProductHero({ product, selectedColor }) {
   const { formatProduct } = useRegion();
   const active = chukkaColor(selectedColor?.name);
-
-  const pick = (name) => {
-    const color = (product.colors || []).find((c) => c.name === name);
-    if (color) onColorChange(color);
-  };
 
   const scrollToBuy = () => {
     const el = document.getElementById('acheter');
@@ -38,22 +33,6 @@ export default function ChukkaProductHero({ product, selectedColor, onColorChang
         <p className={styles.colorLabel}>
           Couleur : <strong>{active.name}</strong>
         </p>
-        <div className={styles.swatches} role="radiogroup" aria-label="Couleur">
-          {CHUKKA_COLORS.map((c) => (
-            <button
-              key={c.name}
-              type="button"
-              role="radio"
-              aria-checked={c.name === active.name}
-              className={`${styles.swatchBtn} ${c.name === active.name ? styles.swatchBtnActive : ''}`}
-              onClick={() => pick(c.name)}
-            >
-              <span className={styles.swatch} style={{ background: c.swatch }} />
-              {c.name}
-            </button>
-          ))}
-        </div>
-
         <button type="button" className={styles.cta} onClick={scrollToBuy}>
           <span>Choisir ma pointure</span>
           <span className={styles.ctaArrow} aria-hidden="true">↓</span>

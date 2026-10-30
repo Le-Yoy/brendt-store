@@ -97,21 +97,24 @@
   width: 100%;
   min-height: 52px;
   padding: 0 1.5rem;
-  background: #000;
-  color: #fff;
-  border: 1px solid #000;
+  /* Same look as the site's "Ajouter au panier" button */
+  background: var(--color-white, #fff);
+  color: var(--color-accent);
+  border: 2px solid var(--color-accent);
+  border-radius: var(--radius-md);
   font-family: inherit;
   font-size: 0.9rem;
+  font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.2s ease, color 0.2s ease;
+  touch-action: manipulation;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .cta:hover {
-  background: #d4af37;
-  border-color: #d4af37;
-  color: #000;
+  background: var(--color-accent);
+  color: var(--color-white, #fff);
 }
 
 .ctaArrow {

@@ -30,7 +30,6 @@ export default function ProductInfo({
   const cart = useCart();
   const router = useRouter();
   const { priceOf, formatProduct } = useRegion();
-  const [isMobileView, setIsMobileView] = useState(false);
   const [buttonMessage, setButtonMessage] = useState('');
   const [isAddedToCart, setIsAddedToCart] = useState(false);
   const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
@@ -38,51 +37,6 @@ export default function ProductInfo({
   // ✨ NEW: Cart notification state
   const [showNotification, setShowNotification] = useState(false);
   
-  useEffect(() => {
-    setIsMobileView(window.innerWidth <= 768);
-    
-    const handleResize = () => {
-      setIsMobileView(window.innerWidth <= 768);
-    };
-    
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-  
-  // ✨ FIXED: Remove sticky button logic - handle in CSS only
-  // Add state for sticky button visibility
-  const [stickyButtonVisible, setStickyButtonVisible] = useState(true);
-  
-  // Handle scroll for sticky button visibility
-  useEffect(() => {
-    let ticking = false;
-    
-    const handleScroll = () => {
-      if (!ticking && isMobileView) {
-        requestAnimationFrame(() => {
-          const scrollY = window.scrollY;
-          const windowHeight = window.innerHeight;
-          const documentHeight = document.documentElement.scrollHeight;
-          
-          // Hide when near bottom of page
-          if (scrollY + windowHeight >= documentHeight - 100) {
-            setStickyButtonVisible(false);
-          } else {
-            setStickyButtonVisible(true);
-          }
-          
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-    
-    if (isMobileView) {
-      window.addEventListener('scroll', handleScroll, { passive: true });
-    }
-    
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isMobileView]);
   
   // Reset message when selections change
   useEffect(() => {
@@ -318,6 +272,18 @@ export default function ProductInfo({
       {/* ✨ FIXED: Proper desktop buttons */}
       <div className={styles.actionsSection}>
         <div className={styles.buttonGroup}>
+          {/* Main action first: straight to checkout. Add-to-cart second. */}
+          <button 
+            className={`${styles.buyNowBtn} ${isCheckoutLoading ? styles.loading : ''} ${!product.inStock || !hasAvailableColors ? styles.disabled : ''}`}
+            onClick={proceedToCheckout}
+            disabled={!product.inStock || !hasAvailableColors || isCheckoutLoading}
+          >
+            {!product.inStock || !hasAvailableColors ? 
+              'Rupture de stock' : 
+              (isCheckoutLoading ? 'Redirection...' : 'Acheter maintenant')
+            }
+          </button>
+
           <button 
             className={`${styles.addToCartBtn} ${isAddedToCart ? styles.success : ''} ${!product.inStock || !hasAvailableColors ? styles.disabled : ''}`}
             onClick={addToCart}
@@ -328,44 +294,12 @@ export default function ProductInfo({
               (isAddedToCart ? 'Ajouté au panier ✓' : 'Ajouter au panier')
             }
           </button>
-          
-          {/* ✨ FIXED: Only show on desktop */}
-          {!isMobileView && (
-            <button 
-              className={`${styles.buyNowBtn} ${isCheckoutLoading ? styles.loading : ''} ${!product.inStock || !hasAvailableColors ? styles.disabled : ''}`}
-              onClick={proceedToCheckout}
-              disabled={!product.inStock || !hasAvailableColors || isCheckoutLoading}
-            >
-              {!product.inStock || !hasAvailableColors ? 
-                'Rupture de stock' : 
-                (isCheckoutLoading ? 'Redirection...' : 'Acheter maintenant')
-              }
-            </button>
-          )}
         </div>
         
         {buttonMessage && !isAddedToCart && (
           <p className={styles.errorMessage}>{buttonMessage}</p>
         )}
       </div>
-
-      {/* ✨ FIXED: Mobile sticky button - only on mobile */}
-      {isMobileView && stickyButtonVisible && (
-        <div className={styles.mobileSticky}>
-          <div className={styles.mobileStickyContent}>
-            <button 
-              className={`${styles.mobileBuyNowBtn} ${isCheckoutLoading ? styles.loading : ''} ${!product.inStock || !hasAvailableColors ? styles.disabled : ''}`}
-              onClick={proceedToCheckout}
-              disabled={!product.inStock || !hasAvailableColors || isCheckoutLoading}
-            >
-              {!product.inStock || !hasAvailableColors ? 
-                'Rupture de stock' : 
-                (isCheckoutLoading ? 'Redirection...' : 'Acheter maintenant')
-              }
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* ✨ Cart Notification */}
       <CartNotification

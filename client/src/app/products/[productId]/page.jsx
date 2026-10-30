@@ -286,7 +286,6 @@ export default function ProductPage({ params }) {
         <ChukkaProductHero
           product={product}
           selectedColor={selectedColor}
-          onColorChange={handleColorChange}
         />
       )}
       <div id="acheter" className={styles.productContentWrapper}>

@@ -19,8 +19,12 @@ import {
   COLLECTION_VIDEO,
   isChukka,
   photoSrcSet,
+  photosOf,
+  preloadPhotos,
 } from '@/components/chukka/chukkaMedia';
 import ChukkaVideo from '@/components/chukka/ChukkaVideo';
+
+const MEDIA_SIZES = '(min-width: 1024px) 33vw, (min-width: 768px) 34vw, 78vw';
 
 function ShowcaseVideo({ media, label, sound }) {
   return <ChukkaVideo media={media} label={label} className={styles.video} sound={sound} />;
@@ -48,6 +52,9 @@ export default function ChukkaPage() {
 
     fetchChukka();
   }, []);
+
+  // After load, fetch every section's photos in page order (Noir → … → Bleu).
+  useEffect(() => preloadPhotos(COLORS.flatMap(photosOf), MEDIA_SIZES), []);
 
   // Link to the real product page for a given color (never a synthetic id).
   const productHref = (colorName) => {
@@ -124,7 +131,7 @@ export default function ChukkaPage() {
                     <img
                       src={m.src}
                       srcSet={photoSrcSet(m.src)}
-                      sizes="(min-width: 1024px) 33vw, (min-width: 768px) 34vw, 78vw"
+                      sizes={MEDIA_SIZES}
                       alt={`Chukka Grainé ${c.name} — photo ${i + 1}`}
                       loading={i < 2 ? 'eager' : 'lazy'}
                       className={styles.photo}
