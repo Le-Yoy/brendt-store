@@ -80,10 +80,10 @@
 }
 
 .heroMedia {
-  max-width: 420px;
+  max-width: 520px;
   width: 100%;
   margin: 0 auto;
-  aspect-ratio: 9 / 16;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   background: #111;
 }

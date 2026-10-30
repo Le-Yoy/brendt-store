@@ -22,8 +22,8 @@ import {
 } from '@/components/chukka/chukkaMedia';
 import ChukkaVideo from '@/components/chukka/ChukkaVideo';
 
-function ShowcaseVideo({ media, label }) {
-  return <ChukkaVideo media={media} label={label} className={styles.video} />;
+function ShowcaseVideo({ media, label, sound }) {
+  return <ChukkaVideo media={media} label={label} className={styles.video} sound={sound} />;
 }
 
 export default function ChukkaPage() {
@@ -93,7 +93,7 @@ export default function ChukkaPage() {
           </div>
         </div>
         <div className={styles.heroMedia}>
-          <ShowcaseVideo media={COLLECTION_VIDEO} label="Chukka Grainé — toutes les couleurs" />
+          <ShowcaseVideo media={COLLECTION_VIDEO} label="Chukka Grainé — toutes les couleurs" sound />
         </div>
       </section>
 
