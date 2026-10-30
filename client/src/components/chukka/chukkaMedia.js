@@ -15,7 +15,7 @@ const video = (name) => ({
   poster: `${VID}/${name}-poster.webp`,
 });
 
-// 10s collection cut with the ad's music (3x speed, even frame step = no judder).
+// 10s vertical (story 9:16) collection cut with the ad's music (3x speed, even frame step = no judder).
 export const COLLECTION_VIDEO = video('collection-short');
 
 export const CHUKKA_COLORS = [
@@ -34,7 +34,8 @@ export const CHUKKA_COLORS = [
     folder: 'Bleu-Navy',
     swatch: '#1f2a44',
     video: video('bleu-navy'),
-    media: [photo('Bleu-Navy', 1), lifestyle('Bleu-Navy', 'bench'), video('bleu-navy'), photo('Bleu-Navy', 2), photo('Bleu-Navy', 3), photo('Bleu-Navy', 4)],
+    // Opens on its video, zoomed out ~18% (blurred edges) so the whole shoe shows.
+    media: [video('bleu-navy-wide'), photo('Bleu-Navy', 1), lifestyle('Bleu-Navy', 'bench'), photo('Bleu-Navy', 2), photo('Bleu-Navy', 3), photo('Bleu-Navy', 4)],
   },
   {
     name: 'Marron',

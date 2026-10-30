@@ -443,8 +443,12 @@
 @media (max-width: 768px) {
   .productInfoContainer {
     padding: var(--spacing-3) 0;
-    /* Add bottom padding for sticky button */
-    padding-bottom: calc(var(--spacing-20) + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* More air between blocks, lighter buttons */
+  .colorSection,
+  .sizeSection {
+    margin-bottom: var(--spacing-8);
   }
   
   .productName {
@@ -475,14 +479,15 @@
   }
   
   .buttonGroup {
-    gap: var(--spacing-2);
+    gap: var(--spacing-3);
   }
   
   .addToCartBtn,
   .buyNowBtn {
-    padding: var(--spacing-3) var(--spacing-4);
-    font-size: var(--font-size-sm);
-    min-height: 48px;
+    padding: var(--spacing-2) var(--spacing-4);
+    font-size: 0.8rem;
+    min-height: 44px;
+    border-width: 1px;
   }
 }
 
