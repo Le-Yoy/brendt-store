@@ -9,7 +9,6 @@ import OrderStatus from './OrderStatus';
 import RecommendedProducts from './RecommendedProducts';
 import CartContext from '@/contexts/CartContext';
 import useCart from '@/hooks/useCart';
-import { trackPurchase } from '@/utils/facebookPixel';
 
 function ThankYouPageContent() {
   const searchParams = useSearchParams();
@@ -30,7 +29,19 @@ function ThankYouPageContent() {
           console.log('🔥 TRACKING FACEBOOK PURCHASE:', orderDetails);
           
           if (typeof window !== 'undefined' && window.fbq) {
-            // Enhanced Purchase event
+            // ONE Purchase per order. It used to fire twice (direct + trackPurchase
+            // backup) with no eventID, so Meta could count 2 sales per order.
+            // eventID = order id lets Meta dedupe; the localStorage guard stops
+            // a reload of this page from re-sending it.
+            const orderId = orderDetails._id && !['pending', 'canceled'].includes(orderDetails._id)
+              ? String(orderDetails._id)
+              : orderDetails.orderNumber ? String(orderDetails.orderNumber) : null;
+            const sentKey = orderId ? `fb-purchase-sent-${orderId}` : null;
+            if (sentKey && localStorage.getItem(sentKey)) {
+              setPurchaseTracked(true);
+              return;
+            }
+
             window.fbq('track', 'Purchase', {
               value: parseFloat(orderDetails.totalPrice) || 0,
               currency: orderDetails.currency || 'MAD',
@@ -41,14 +52,8 @@ function ThankYouPageContent() {
               num_items: (orderDetails.orderItems || []).length,
               content_name: 'BRENDT Shoes Purchase',
               content_category: 'shoes'
-            });
-            
-            // Backup method using existing function
-            trackPurchase({
-              totalPrice: orderDetails.totalPrice,
-              currency: orderDetails.currency || 'MAD',
-              items: orderDetails.orderItems || []
-            });
+            }, orderId ? { eventID: `purchase-${orderId}` } : undefined);
+            if (sentKey) localStorage.setItem(sentKey, '1');
             
             // WhatsApp attribution
             const urlParams = new URLSearchParams(window.location.search);
