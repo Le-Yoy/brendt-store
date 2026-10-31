@@ -173,6 +173,17 @@ Prod id `6ae36a4181aeaef007bcaf49`; added via `server/scripts/add-chukka-graine.
 - ⚠️ **Color `stock` must be > 0** — `stockMiddleware.js` rejects orders when a color's stock < quantity.
 - Owner prefers designs that match the rest of the site (not a "too professional" redesign); never a WhatsApp fallback — always route to checkout.
 - Local dev must run on **port 3000/3001** (API CORS), else products don't load locally.
+- **Oct 30 polish:** `/chukka` hero = `collection-short.mp4` (10s, vertical 9:16, ad music, round speaker icon to unmute);
+  Bleu Navy opens on `bleu-navy-wide.mp4` (zoomed out ~18%, blurred edges); 6 AI lifestyle shots from brendt-ads
+  (`<Color>/lifestyle-*.webp`) sit after each color's first studio photo. Photos preload in display order after
+  page load (`preloadPhotos` in `chukkaMedia.js`); videos start only on `canplaythrough` (`ChukkaVideo.jsx`).
+  On phones both Chukka pages use a negative top margin to sit ~24px under the header (see lesson 7).
+
+### Product page (ALL products, Oct 2026)
+- **"Acheter maintenant" first, "Ajouter au panier" below**, both inline under the sizes (44px, 1px border).
+  The fixed mobile sticky buy bar was REMOVED (it sat where Safari's toolbar pops up).
+- `ProductPage.module.css`: removed `translateZ(0)` / `will-change` / `overscroll-behavior: contain` hacks —
+  they forced huge GPU layers on iOS → white flashes + jerky scroll. Don't re-add them.
 
 ---
 
@@ -276,6 +287,21 @@ GET /api/products     → { data: [...], totalProducts, ... }   // array in .dat
 GET /api/products/:id → product object directly               // no wrapper
 ```
 Handle both: `const product = response.data || response`
+
+
+### 7. Blank band under the header (site-wide, not fixed yet)
+Fixed header is ~82px on phones, but `body { padding-top: var(--header-height) }` (80px) **plus**
+`.main-content { padding-top: 120px }` reserve 200px → ~120px of empty space at the top of every page.
+Only the Chukka pages compensate (negative margin). Fix properly in the redesign (keep ONE of the two paddings).
+
+### 8. Video judder & phone video files (learned Oct 2026)
+- Speeding footage up by a NON-integer factor (e.g. 2.5×) keeps frames unevenly → visible stutter. Use 2× / 3×
+  (uniform frame step). Detect it by frame-to-frame motion: a repeating small/big pattern = judder.
+- Many owner phone videos carry a broken rotation tag (`tx` = 1080 on a 480px-wide frame) → re-encodes come out
+  black/32KB. Normalize the transform (shift the rotated box to origin) before compositing.
+- No ffmpeg on this Mac: Swift AVFoundation scripts (reader/writer, AVMutableVideoComposition, CIFilter handler).
+- Mobile-friendly video: ~1.3–1.5 Mbps, ≤ 640px wide, `preload="none"` + play on `canplaythrough` when visible.
+- Don't put product videos on YouTube: same frames, adds branding, slower, no muted autoplay control.
 
 ---
 
