@@ -35,9 +35,50 @@
   margin: 0 0 0.5rem;
 }
 
-.price {
-  font-size: 1.25rem;
+.offer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.15rem 0.45rem;
   margin: 0 0 1rem;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+.offerPrice {
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.offerDot {
+  color: #b5aa95;
+}
+
+/* Same look as the site's "Acheter maintenant" button */
+.heroCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  padding: 0 1.5rem;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  background: var(--color-accent);
+  color: var(--color-white, #fff);
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.heroCta:hover {
+  background: var(--color-accent-dark, #7a3f37);
 }
 
 .lead {
@@ -47,27 +88,8 @@
   color: #444;
 }
 
-.swatches {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.25rem 1rem;
-}
 
-.swatchLink {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  min-height: 44px;
-  font-size: 0.95rem;
-  color: inherit;
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-}
 
-.swatchLink:hover {
-  border-bottom-color: #d4af37;
-}
 
 .swatch {
   display: inline-block;
@@ -85,6 +107,142 @@
   aspect-ratio: 9 / 16; /* vertical, like an Instagram story */
   overflow: hidden;
   background: #111;
+}
+
+/* 2×2 color picker */
+.picker {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem 0.75rem;
+  margin-top: 1.75rem;
+  scroll-margin-top: 6.5rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  color: inherit;
+  text-decoration: none;
+  text-align: center;
+}
+
+.cardMedia {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
+  background: #f4f1ec;
+  margin-bottom: 0.35rem;
+}
+
+.cardName {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-cormorant), serif;
+  font-size: 1.2rem;
+}
+
+.cardPrice {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+/* Same look as the site's "Ajouter au panier" button */
+.cardCta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+  margin-top: 0.25rem;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  color: var(--color-accent);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.card:hover .cardCta {
+  background: var(--color-accent);
+  color: var(--color-white, #fff);
+}
+
+/* Sticky "Commander" bar (phones only) */
+.sticky {
+  display: none;
+}
+
+/* Color sheet opened by the sticky bar */
+.sheetBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: flex-end;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.sheet {
+  width: 100%;
+  background: #fff;
+  border-radius: 12px 12px 0 0;
+  padding: 0.5rem 1rem calc(1rem + env(safe-area-inset-bottom, 0px));
+}
+
+.sheetHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #eee;
+}
+
+.sheetTitle {
+  margin: 0;
+  font-family: var(--font-cormorant), serif;
+  font-size: 1.25rem;
+}
+
+.sheetClose {
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: none;
+  font-size: 1.6rem;
+  line-height: 1;
+  color: #333;
+  cursor: pointer;
+}
+
+.sheetRow {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  min-height: 68px;
+  border-bottom: 1px solid #f0ece4;
+  color: inherit;
+  text-decoration: none;
+}
+
+.sheetThumb {
+  width: 48px;
+  height: 60px;
+  object-fit: cover;
+  background: #f4f1ec;
+}
+
+.sheetName {
+  flex: 1;
+  font-size: 1rem;
+}
+
+.sheetArrow {
+  color: var(--color-accent);
 }
 
 .video {
@@ -201,31 +359,9 @@
 }
 
 /* Shop grid */
-.shop {
-  margin-top: 4rem;
-}
 
-.shopTitle {
-  text-align: center;
-  font-family: var(--font-cormorant), serif;
-  font-weight: 300;
-  font-size: 1.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  margin-bottom: 1.5rem;
-}
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-}
 
-.loading {
-  text-align: center;
-  color: #666;
-  padding: 2rem 0;
-}
 
 @media (min-width: 768px) {
   .page {
@@ -259,10 +395,6 @@
     margin-left: 0;
   }
 
-  .swatches {
-    justify-content: flex-start;
-  }
-
   .mediaRow {
     grid-auto-flow: row;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -273,8 +405,13 @@
     display: none;
   }
 
-  .grid {
+  .picker {
     grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .heroCta {
+    width: auto;
+    padding: 0 2.5rem;
   }
 }
 
@@ -283,5 +420,70 @@
 @media (max-width: 768px) {
   .page {
     margin-top: -94px;
+  }
+}
+
+/* Phones: product + price + button + a SHORT video all fit on the first screen. */
+@media (max-width: 767px) {
+  .page {
+    padding-bottom: 6rem; /* room for the sticky bar */
+  }
+
+  .hero {
+    gap: 1rem;
+  }
+
+  .kicker {
+    margin-bottom: 0.25rem;
+  }
+
+  .title {
+    font-size: 2rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .lead {
+    display: none; /* the story is told by the video + color sections */
+  }
+
+  .heroMedia {
+    max-width: none;
+    aspect-ratio: auto;
+    height: 50vh;
+    height: 50svh; /* ~half the screen, never full-screen */
+  }
+
+  .sticky {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+    padding: 0.6rem 1rem calc(0.6rem + env(safe-area-inset-bottom, 0px));
+    background: #fff;
+    border-top: 1px solid #e8e2d4;
+    transform: translateY(110%);
+    transition: transform 0.25s ease;
+  }
+
+  .stickyShown {
+    transform: translateY(0);
+  }
+
+  .stickyBtn {
+    width: 100%;
+    min-height: 46px;
+    border: none;
+    border-radius: var(--radius-md);
+    background: var(--color-accent);
+    color: var(--color-white, #fff);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    touch-action: manipulation;
   }
 }
