@@ -179,6 +179,11 @@ Prod id `6ae36a4181aeaef007bcaf49`; added via `server/scripts/add-chukka-graine.
   page load (`preloadPhotos` in `chukkaMedia.js`); videos start only on `canplaythrough` (`ChukkaVideo.jsx`).
   On phones both Chukka pages use a negative top margin to sit ~24px under the header (see lesson 7).
 
+- **Nov 1 ad-funnel (asked by brendt-ads, 106 visits → 13 product views):** phone hero = name + "459 MAD · Paiement à la
+  livraison · Livraison gratuite" (MA only) + "Choisir ma couleur" + video capped at 50svh; 2×2 color cards (order
+  Noir · Bleu · Marron · Bleu Navy — never Navy next to Noir); sticky "Commander" bar → color sheet; `utm_*`/`fbclid`
+  carried to product links. Ads use `/chukka` + `?color=…&colorIndex=…` — never change those URLs.
+
 ### Product page (ALL products, Oct 2026)
 - **"Acheter maintenant" first, "Ajouter au panier" below**, both inline under the sizes (44px, 1px border).
   The fixed mobile sticky buy bar was REMOVED (it sat where Safari's toolbar pops up).
