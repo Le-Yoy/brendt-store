@@ -1,0 +1,23 @@
+/* /brendtford reuses the /chukka styles (ChukkaPage.module.css); only the picker
+   differs: 3 colors instead of 4, so 3 cards in a row at every width. */
+.picker {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem 0.5rem;
+}
+
+.cardCta {
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+}
+
+@media (min-width: 1024px) {
+  .picker {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  .cardCta {
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+  }
+}
