@@ -192,6 +192,9 @@ Prod id `6aebf16bfaa766015ab141ba`; added via `server/scripts/add-brendtford.js`
 - All real photos come from a shoot with a wooden shoe tree. `Noir/real-2` is a crop that hides it; `Bleu/real-1` is Bleu-05 (no tree in the shoe) with blurred top/bottom to reach 4:5.
 - `noir.mp4` fades in from black: take posters from ~1s, not the first frame.
 
+**Old price on Chukka + Brendtford (Nov 2026):** `previousPrice` 649, price 549. Crossed-out price shows BEFORE the current one
+for these two only (`showsOldPriceFirst` in `components/chukka/OldPrice.jsx`); other products keep current price first.
+
 ### Product page (ALL products, Oct 2026)
 - **"Acheter maintenant" first, "Ajouter au panier" below**, both inline under the sizes (44px, 1px border).
   The fixed mobile sticky buy bar was REMOVED (it sat where Safari's toolbar pops up).
