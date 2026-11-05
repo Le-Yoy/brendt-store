@@ -184,6 +184,14 @@ Prod id `6ae36a4181aeaef007bcaf49`; added via `server/scripts/add-chukka-graine.
   Noir · Bleu · Marron · Bleu Navy — never Navy next to Noir); sticky "Commander" bar → color sheet; `utm_*`/`fbclid`
   carried to product links. Ads use `/chukka` + `?color=…&colorIndex=…` — never change those URLs.
 
+## BRENDTFORD (added Nov 2026)
+Men's slip-on, **549 MAD**, sizes 39–44 (assumed from Chukka), colors Noir / Marron / Bleu (indexes 0/1/2), stock 20/color.
+Prod id `6aebf16bfaa766015ab141ba`; added via `server/scripts/add-brendtford.js`; listed under `sneaker`.
+- **`/brendtford` landing** (`client/src/app/brendtford/`): same funnel as `/chukka`, reuses its CSS + `ChukkaVideo`; media list in `brendtfordMedia.js`.
+- **Product page = the standard one** (no video hero): gallery order comes from the DB: AI profile → real photos → AI worn → AI pair.
+- All real photos come from a shoot with a wooden shoe tree. `Noir/real-2` is a crop that hides it; `Bleu/real-1` is Bleu-05 (no tree in the shoe) with blurred top/bottom to reach 4:5.
+- `noir.mp4` fades in from black: take posters from ~1s, not the first frame.
+
 ### Product page (ALL products, Oct 2026)
 - **"Acheter maintenant" first, "Ajouter au panier" below**, both inline under the sizes (44px, 1px border).
   The fixed mobile sticky buy bar was REMOVED (it sat where Safari's toolbar pops up).
