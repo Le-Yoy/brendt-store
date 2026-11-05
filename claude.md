@@ -161,7 +161,7 @@ order). No checkout/payment change — deposit collected manually. Online-card a
 ---
 
 ## CHUKKA GRAINÉ (added Oct 2026)
-Men's boot, **459 MAD**, sizes 39–44, colors Noir / Bleu Navy / Marron / Bleu, stock 20/color.
+Men's boot, **549 MAD** (459 until Nov 5 2026), sizes 39–44, colors Noir / Bleu Navy / Marron / Bleu, stock 20/color.
 Prod id `6ae36a4181aeaef007bcaf49`; added via `server/scripts/add-chukka-graine.js`
 (Bleu image list via `update-chukka-bleu-images.js`).
 - **`/chukka` landing** (`client/src/app/chukka/`) for Meta ads: collection video + one section per
