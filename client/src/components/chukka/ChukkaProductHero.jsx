@@ -3,6 +3,7 @@
 import { useRegion } from '@/contexts/RegionContext';
 import { chukkaColor } from './chukkaMedia';
 import ChukkaVideo from './ChukkaVideo';
+import OldPrice from './OldPrice';
 import styles from './ChukkaProduct.module.css';
 
 /**
@@ -24,7 +25,9 @@ export default function ChukkaProductHero({ product, selectedColor }) {
       <div className={styles.heroText}>
         <p className={styles.kicker}>Collection Homme · Boots</p>
         <h1 className={styles.title}>Chukka Grainé</h1>
-        <p className={styles.price}>{formatProduct(product)}</p>
+        <p className={styles.price}>
+          <OldPrice product={product} className={styles.oldPrice} /> {formatProduct(product)}
+        </p>
         <p className={styles.lead}>
           Cuir grainé, doublure moutarde et semelle épaisse et légère.
           Une chukka confortable pour tous les jours.

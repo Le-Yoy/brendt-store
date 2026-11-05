@@ -52,6 +52,10 @@
   margin: 0;
 }
 
+.oldPriceFirst .originalPrice {
+  order: -1;
+}
+
 .discountBadge {
   background-color: #e74c3c;
   color: var(--color-white);

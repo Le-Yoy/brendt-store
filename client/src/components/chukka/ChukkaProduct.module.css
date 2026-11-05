@@ -37,6 +37,11 @@
   margin: 0 0 1rem;
 }
 
+.oldPrice {
+  color: #8a8a8a;
+  margin-right: 0.25rem;
+}
+
 .lead {
   max-width: 34rem;
   margin: 0 auto 1.25rem;

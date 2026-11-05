@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { showsOldPriceFirst } from '@/components/chukka/OldPrice';
 import styles from './ProductCard.module.css';
 import { useRegion } from '@/contexts/RegionContext';
 
@@ -202,7 +203,7 @@ const ProductCard = ({ product, isFeatured = false }) => {
             <div className={styles.colorName}>{selectedColor.name}</div>
           )}
           
-          <div className={styles.priceWrapper}>
+          <div className={`${styles.priceWrapper} ${showsOldPriceFirst(product) ? styles.oldPriceFirst : ''}`}>
             <span className={styles.productPrice}>{getDisplayPrice()}</span>
             {previousPrice && previousPrice > price && (
               <span className={styles.previousPrice}>{previousPrice.toLocaleString()} MAD</span>

@@ -24,6 +24,7 @@ import {
   preloadPhotos,
 } from '@/components/chukka/chukkaMedia';
 import ChukkaVideo from '@/components/chukka/ChukkaVideo';
+import OldPrice from '@/components/chukka/OldPrice';
 
 const MEDIA_SIZES = '(min-width: 1024px) 33vw, (min-width: 768px) 34vw, 78vw';
 const CARD_SIZES = '(min-width: 1024px) 22vw, 46vw';
@@ -118,6 +119,7 @@ export default function ChukkaPage() {
           <p className={styles.kicker}>Collection Homme · Boots</p>
           <h1 className={styles.title}>Chukka Grainé</h1>
           <p className={styles.offer}>
+            <OldPrice product={product} className={styles.oldPrice} />
             {price && <strong className={styles.offerPrice}>{price}</strong>}
             {isMorocco && (
               <>
@@ -162,7 +164,11 @@ export default function ChukkaPage() {
                 <span className={styles.swatch} style={{ background: c.swatch }} />
                 {c.name}
               </span>
-              {price && <span className={styles.cardPrice}>{price}</span>}
+              {price && (
+                <span className={styles.cardPrice}>
+                  <OldPrice product={product} className={styles.oldPrice} /> {price}
+                </span>
+              )}
               <span className={styles.cardCta}>Commander</span>
             </Link>
           );

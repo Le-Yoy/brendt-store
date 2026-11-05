@@ -6,6 +6,7 @@ import productService from '@/services/productService';
 import { useRegion } from '@/contexts/RegionContext';
 import { photoSrcSet, preloadPhotos } from '@/components/chukka/chukkaMedia';
 import ChukkaVideo from '@/components/chukka/ChukkaVideo';
+import OldPrice from '@/components/chukka/OldPrice';
 import styles from '../chukka/ChukkaPage.module.css';
 import own from './BrendtfordPage.module.css';
 import { BRENDTFORD_COLORS as COLORS, HERO_VIDEO, isBrendtford } from './brendtfordMedia';
@@ -99,6 +100,7 @@ export default function BrendtfordPage() {
           <p className={styles.kicker}>Collection Homme · Slip-on</p>
           <h1 className={styles.title}>Brendtford</h1>
           <p className={styles.offer}>
+            <OldPrice product={product} className={styles.oldPrice} />
             {price && <strong className={styles.offerPrice}>{price}</strong>}
             {isMorocco && (
               <>
@@ -144,7 +146,11 @@ export default function BrendtfordPage() {
               <span className={styles.swatch} style={{ background: c.swatch }} />
               {c.name}
             </span>
-            {price && <span className={styles.cardPrice}>{price}</span>}
+            {price && (
+              <span className={styles.cardPrice}>
+                <OldPrice product={product} className={styles.oldPrice} /> {price}
+              </span>
+            )}
             <span className={`${styles.cardCta} ${own.cardCta}`}>Commander</span>
           </Link>
         ))}

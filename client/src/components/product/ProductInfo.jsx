@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import useCart from '../../hooks/useCart';
 import CartNotification from '../ui/CartNotification';
 import { useRegion } from '@/contexts/RegionContext';
+import { showsOldPriceFirst } from '@/components/chukka/OldPrice';
 import styles from './ProductInfo.module.css';
 
 const colorNamesInFrench = {
@@ -181,7 +182,7 @@ export default function ProductInfo({
         )}
         
         {/* ✨ FIXED: Single clean price display */}
-        <div className={styles.priceContainer}>
+        <div className={`${styles.priceContainer} ${showsOldPriceFirst(product) ? styles.oldPriceFirst : ''}`}>
           {isRegional ? (
             <p className={styles.currentPrice}>
               {formatProduct(product)}

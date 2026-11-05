@@ -125,6 +125,10 @@
   min-height: 1.2em;
 }
 
+.oldPriceFirst .previousPrice {
+  order: -1;
+}
+
 .previousPrice {
   font-size: 0.75rem;
   color: var(--text-secondary, #999);
